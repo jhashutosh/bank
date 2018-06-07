@@ -1,0 +1,57 @@
+<?
+include "config.php";
+$customer_id=$_REQUEST['id'];
+$type=$_REQUEST['type'];
+$typeIn='m';
+//echo "Type index is :$typeIn";
+$account_no=$_REQUEST['ac_no'];
+$opening_date=$_REQUEST['op_dt'];
+$nominee_status=$_REQUEST['r1'];
+$n_name=$_REQUEST['n_name'];
+$n_add=$_REQUEST['n_add'];
+$n_age=$_REQUEST['n_age'];
+$relation=$_REQUEST['relation'];
+$minor_status=$_REQUEST['r2'];
+$dob=$_REQUEST['ndob'];
+$no_of_share=$_REQUEST['no_of_share'];
+$val_of_share=$_REQUEST['val_of_share']*$no_of_share;
+//$staff_id=verifyAutho();
+$relation=getIndex($relation_array,$relation);
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+echo "<HTML>";
+echo "<head>";
+echo "<meta http-equiv=\"refresh\" content=\"1, url=land_info_t_ef.php?membership_no=$account_no\">";
+echo "</head>";
+echo "<BODY bgcolor=\"silver\">";
+echo "<h1><b>Membership Form</h1>";
+echo "<h5>just check wait.....</h5><hr>";
+$sql_statement="INSERT INTO customer_account (customer_id,opening_date,account_no, account_type,operator_code,entry_time,status)values('$customer_id','$opening_date', '$account_no','$typeIn','$staff_id',now(),'op');Insert into share_ledger (tran_id,member_id,action_date, no_of_share_purchaes, value_of_purchaes, no_of_share_balance,value_of_balance,entry_time,particular)values('t-'||cast(nextval('tran_id') as varchar),'$account_no','$opening_date',$no_of_share, $val_of_share,$no_of_share, $val_of_share,now(),'opening')";
+echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_affected_rows($result)<1)
+ {
+  echo "<h4><font color=RED>FAILED TO INSERT DATA INTO THE MEMBERSHIP TABLE</font></h4>";
+ }
+else{  
+	if($nominee_status=="yes" )
+	 {
+ 	  if($minor_status=="yes")
+       	   {
+             $sql_statement="INSERT INTO nominee (account_no,account_type,name,address,age, relation,dob) values('$account_no','$typeIn','$n_name','$n_add',age,'$relation','$ndob')";
+	   }
+	  else{
+	     $sql_statement="INSERT INTO nominee (account_no,account_type,name,address,age, relation) values('$account_no','$typeIn','$n_name','$n_add',$n_age,'$relation')";
+              }	
+	  echo   $sql_statement;
+	  $result=pg_Exec($db,$sql_statement);
+	  if(pg_affected_rows($result)<1)
+ 	   {
+  		echo "<h4><font color=RED>FAILED TO INSERT DATA INTO THE NOMINEE TABLE</font></h4>";
+ 	   }
+	  
+          }
+   	echo "<h4><font color=GREEN>SUCESS TO INSERT DATA INTO DATABASE</h4>";
+
+ }
+?>

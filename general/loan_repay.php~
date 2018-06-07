@@ -1,0 +1,31 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+
+$menu=$_REQUEST['menu'];
+isPermissible($menu);
+
+if($menu=='kcc'){$l_name='KCC';$status='../kcc/kcc_loan_repayment.php?menu=kcc';}
+if($menu=='mt'){$l_name='MT';$status='../mtloan/mtl_loan_repayment.php?menu=mt';}
+if($menu=='pl'){$l_name='PLEDGE';$status='../pl/pl_loan_repayment.php?menu=pl';}
+//if($menu=='shg'){$l_name='SHG';$status='sgl';}
+if($menu=='ccl'){$l_name='Cash Credit';$status='../ccl/ccl_loan_repayment.php?menu=ccl';}
+if($menu=='kpl'){$l_name='Kishan Bikhash Pathra';$status='../kpl/kpl_loan_repayment.php?menu=kpl';}
+if($menu=='bdl'){$l_name='Bond';$status='../bdl/bdl_loan_repayment.php?menu=bdl';}
+if($menu=='sfl'){$l_name='Staff';$status='../sfl/sfl_loan_repayment.php?menu=sfl';}
+if($menu=='spl'){$l_name='SMP';$status='../spl/spl_loan_repayment.php?menu=spl';}
+echo "<script language=\"JavaScript\" src=\"../JS/gen_validatorv31.js\" type=\"text/javascript\"></script>";
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"ac.focus();\">";
+echo "<h1>$l_name Loan Repayment Form</h1>";
+echo "varify before submit";
+echo "<hr>";
+echo "<form name=\"f1\" action=\"$status\" method=\"post\">";
+echo "<table bgcolor=\"BLACK\" width=\"70%\" align=\"CENTER\">";
+echo "<tr bgcolor=YELLOW><td align=\"RIGHT\">Action Date :<td><input type=\"TEXT\" name=\"action_date\" size=\"12\" id=\"ac\" $HIGHLIGHT>&nbsp;<input type=\"SUBMIT\" VALUE=\"Enter\" $HIGHLIGHT>"; 
+echo "</form>";
+?>
+<script language="JavaScript" type="text/javascript">
+ var frmvalidator  = new Validator("f1");
+ frmvalidator.addValidation("action_date","req","Please enter Issuing Date");
+</script>

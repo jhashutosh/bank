@@ -1,0 +1,161 @@
+<?php
+include "../config/config.php";
+echo "<script src=\"../JS/calendar.js\">";
+echo "</script>";
+?>
+<SCRIPT LANGUAGE="JavaScript">
+function closeme() { close(); }
+function check(){
+if(document.f1.end_date.value.length==0){
+	alert("Please enter the Date before processing")
+	document.f1.month.focus();
+	return false;
+	}
+f_s_dt=document.f1.f_start_dt.value;
+f_e_dt=document.f1.f_end_dt.value;
+end_dt=document.f1.end_date.value;
+if(!IsDateLess(f_s_dt,end_dt)){
+	alert("Ending Date beyond of starting date of Financial Year")
+	document.f1.end_date.focus();
+	return false;
+	}
+
+if(!IsDateLess(end_dt,f_e_dt)){
+	alert("Ending Date beyond of ending date of Financial Year")
+	document.f1.end_date.focus();
+	return false;
+	}
+
+}
+
+</script>
+<?php
+$staff_id=verifyAutho();
+$fy=$_SESSION['fy'];
+getDetailFy($fy,&$f_start_dt,&$f_end_dt);
+if(empty($start_date) ) { $start_date=$f_start_dt; }
+$end_date=$_REQUEST["end_date"];
+if(empty($end_date) ) { $end_date=$f_end_dt;}
+$menu=$_REQUEST['menu'];
+$crop_id=$_REQUEST['crop_id'];//new
+if($menu=='kcc'){
+	$i_page="../kcc/kcc_loan_issue.php?menu=kcc&account_no=";
+	$r_page="../kcc/kcc_loan_repayment.php?menu=kcc&account_no=";
+	$s_page="../kcc/kcc_loan_statement.php?menu=kcc&op=i&account_no=";
+	}	
+if($menu=='pl'){$i_page="../pl/pl_loan_issue_ef.php?menu=pl&account_no=";
+		$r_page="../pl/pl_loan_repayment.php?menu=pl&account_no=";
+		$s_page="../pl/pl_statement.php?menu=pl&op=i&account_no=";
+		}
+if($menu=='ccl'){$i_page="../ccl/ccl_loan_issue_ef.php?menu=ccl&account_no=";
+		$r_page="../ccl/ccl_loan_repayment.php?menu=ccl&account_no=";
+		$s_page="../ccl/ccl_statement.php?menu=ccl&op=i&account_no=";
+		}
+if($menu=='kpl'){$i_page="../kpl/kpl_loan_issue_ef.php?menu=kpl&account_no=";
+		$r_page="../kpl/kpl_loan_repayment.php?menu=kpl&account_no=";
+		$s_page="../kpl/kpl_statement.php?menu=kpl&op=i&account_no=";
+		}
+if($menu=='spl'){$i_page="../spl/spl_loan_issue_ef.php?menu=spl&account_no=";
+		$r_page="../spl/spl_loan_repayment.php?menu=spl&account_no=";
+		$s_page="../spl/spl_statement.php?menu=spl&op=i&account_no=";
+		}
+if($menu=='bdl'){$i_page="../bdl/bdl_loan_issue_ef.php?menu=bdl&account_no=";
+		$r_page="../bdl/bdl_loan_repayment.php?menu=bdl&account_no=";
+		$s_page="../bdl/bdl_statement.php?menu=bdl&op=i&account_no=";
+		}
+if($menu=='sfl'){$i_page="../sfl/sfl_loan_issue_ef.php?menu=sfl&account_no=";
+		$r_page="../sfl/sfl_loan_repayment.php?menu=sfl&account_no=";
+		$s_page="../sfl/sfl_statement.php?menu=sfl&op=i&account_no=";
+		}
+if($menu=='ser'){$i_page="../service/service_loan_issue_ef.php?menu=ser&account_no=";
+		$r_page="../service/service_loan_repayment.php?menu=ser&account_no=";
+		$s_page="../service/service_statement.php?menu=ser&op=i&account_no=";
+		}
+if($menu=='fis'){$i_page="../fisary/fis_loan_issue_ef.php?menu=fis&account_no=";
+		$r_page="../fisary/fis_loan_repayment.php?menu=fis&account_no=";
+		$s_page="../fisary/fis_statement.php?menu=fis&op=i&account_no=";
+		}
+
+if($menu=='mt'){$i_page="../mtloan/mtloan_ledger_ef.php?menu=mt&account_no=";
+		$r_page="../mtloan/mtl_loan_repayment.php?menu=mt&account_no=";
+		$s_page="../mtloan/mtloan_statement.php?menu=mt&op=i&account_no=";
+		}
+if($menu=='shg'){
+	$i_page="../shg/shg_loan_ledger_ef.php?menu=shg&account_no=";
+}
+echo "<body bgcolor=\"silver\">";
+$sql_statement="truncate table loan_cal_int;SELECT loan_calculation('$menu','$end_date') as int";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_result($result,'int')=='k'){$flag=1;}
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+//echo "<font size=+3>$SYSTEM_TITLE</font> <br><font size=+1><b>Report Date:".date('d.m.Y')."::".getPrintTime()."</b></font><hr>";
+echo "<table align=center bgcolor=\"silver\"><tr><td  align=\"\"><b><font size=+3>$SYSTEM_TITLE</font> <br><font size=+1><b>Report Date:".date('d.m.Y')."::".getPrintTime()."</b></font><hr>";
+echo "</table>";
+echo "<form name=\"f1\" action=\"loan_list.php?menu=$menu\" method=\"POST\" onsubmit=\"return check();\">";
+echo "<table align=center bgcolor=\"#90EE90\"><tr><td  align=\"\"><b>Debtors List as on Dated (DD/MM/YYYY) :<td><input type=TEXT size=12 name=\"end_date\" id =\"end_date\" value=\"$end_date\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.end_date,'dd/mm/yyyy','Choose Date')\">";
+echo "<input type=\"HIDDEN\" name=\"f_start_dt\" id=\"f_start_dt\" value=\"$f_start_dt\">";
+echo "<input type=\"HIDDEN\" name=\"f_end_dt\" id=\"f_end_dt\" value=\"$f_end_dt\">";
+
+echo "<tr><td bgcolor=\"#90EE90\"> Select Crop:<td bgcolor=\"#90EE90\">";//new
+crop_name_Selection('crop_id');
+//echo"<td>$crop_id</td>";
+
+echo "&nbsp;<input type=\"Submit\"  value=\"Enter\">";
+echo "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"BUTTON\" name=\"CLOSE_BUTTON\" value=\"Close\" onclick=\"closeme()\"> ";
+echo " <input type=\"BUTTON\" name=\"PRINT_BUTTON\" value=\"Print\" onclick=\"print()\"> ";
+echo "</table></form>";
+echo "<hr>";
+if($flag==1){
+$sql_statement="select account_no,round(SUM(due_int)) as d,round(SUM(overdue_int)) as o,round(SUM(principal)) as p from loan_cal_int WHERE crop_id='$crop_id' and (status='d') group by account_no ORDER BY account_no";
+//$sql_statement="select account_no,round(SUM(due_int)) as d,round(SUM(overdue_int)) as o,round(SUM(principal)) as p from loan_cal_int WHERE status='d' OR status='o' group by account_no ORDER BY CAST(account_no) DESC";
+//echo $sql_statement; 
+$result=dBConnect($sql_statement);
+echo "<Table bgcolor=\"Black\" width=\"100%\" >";
+echo "<tr><th bgcolor=\"Yello\" colspan=\"5\" align=center><font color=\"white\">Debtors Summary As On $end_date</font>";
+$color="GREEN";
+echo "<tr><th bgcolor=$color>Account No.</th>";
+echo "<th bgcolor=$color>Name</th>";
+//echo "<th bgcolor=$color>Loan Amount</th>";
+echo "<th bgcolor=$color>Due Principal</th>";
+echo "<th bgcolor=$color>Due Interest</th>";
+//echo "<th bgcolor=$color>Over Due Interest</th>";
+echo "<th bgcolor=$color>Total</th>";
+
+if(pg_NumRows($result)>0){
+for($j=1; $j<=pg_NumRows($result); $j++){
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+if(isOverDue($row['account_no'])){
+$fcolor="#DC143C";
+}
+else{
+$fcolor="BLACK";
+}
+echo "<tr>";
+//echo "<table valign=\"top\" width=\"100%\" align=center>";
+
+echo "<td align=CENTER bgcolor=$color width =\"68\"><a href=\"$s_page".$row['account_no']."\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes,top=100,left=150, width=1050,height=500'); return false;\"><font color=$fcolor>".$row['account_no']."</a></td>";
+$id=getCustomerId($row['account_no'],$menu);
+echo "<td bgcolor=$color width =\"200\"><font color=$fcolor>".getName('customer_id',$id,'name1','customer_master')."</td>";
+echo "<td align=right bgcolor=$color width=\"80\"><font color=$fcolor>".amount2Rs($row['p'])."</td>";
+echo "<td align=right bgcolor=$color width =\"75\"><font color=$fcolor>".amount2Rs($row['d'])."</td>";
+//echo "<td align=right bgcolor=$color width =\"75\"><font color=$fcolor>".amount2Rs($row['o'])."</td>";
+echo "<td align=right bgcolor=$color width =\"75\"><font color=$fcolor>".amount2Rs($row['p']+$row['d']+$row['o'])."</td>";
+
+$t_d_p+=$row['p'];
+$t_d_i+=$row['d'];
+$t_od_i+=$row['o'];
+$t_t+=($row['p']+$row['d']+$row['o']);
+  }
+echo "<tr bgcolor=\"AQUA\"><th colspan=\"2\">Total:  ".$j." Account Found!!!!!<th align=\"right\">".amount2Rs($t_d_p)."<th align=\"right\">".amount2Rs($t_d_i)."<th align=\"right\">".amount2Rs($t_t);
+}
+}
+else{
+echo "<br><h5><font color=\"RED\">Failed to Calcutation of debtors list.</font></h5>";
+}
+echo "</body>";
+echo "</html>";
+
+?>

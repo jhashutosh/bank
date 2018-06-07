@@ -1,0 +1,79 @@
+<?
+include "config.php";
+$staff_id=verifyAutho();
+// PHP4 
+$account_no_new=$_REQUEST["current_account_no"];
+$account_no=$_REQUEST["account_no"];
+//echo $account_no;
+$menu=$_REQUEST['menu'];
+$staff_id=verifyAutho();
+//$menu=$_REQUEST["menu"];
+//echo $menu;
+echo "<html>";
+echo "<head>";
+echo "<title>Statement";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+if ($account_no==null){$account_no=$account_no_new;}
+echo "<h3>Account Statement [$account_no]";
+echo "</h3><hr>";
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+// Customization required for WHERE CLAUSE
+$c_id=getCustomerId($account_no);
+//echo "$c_id";
+$flag=getGeneralInfo_Customer($c_id);
+if($flag==1)
+{
+$sql_statement="SELECT * FROM share_ledger WHERE member_id='$account_no' order by entry_time DESC";
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>Not found!!!</h4>";
+} else {
+echo "<table valign=\"top\" width=\"100%\">";
+echo "<tr><td bgcolor=\"green\" colspan=\"14\" align=\"center\"><font color=\"white\">Statement</font>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color rowspan=2>Transaction No</th>";
+echo "<th bgcolor=$color rowspan=2>Particulars</th>";
+echo "<th bgcolor=$color rowspan=2>Action Date</th>";
+echo "<th bgcolor=$color colspan=\"2\">Issue</th>";
+echo "<th bgcolor=$color colspan=\"2\">Withdraw</th>";
+echo "<th bgcolor=$color colspan=\"2\">Balance</th><tr>";
+echo "<th bgcolor=$color colspan=\"1\">share</th>";
+echo "<th bgcolor=$color colspan=\"1\">value</th>";
+//echo "<th bgcolor=$color colspan=\"1\">dividend</th>";
+echo "<th bgcolor=$color colspan=\"1\">share</th>";
+echo "<th bgcolor=$color colspan=\"1\">value</th>";
+//echo "<th bgcolor=$color colspan=\"1\">dividend</th>";
+echo "<th bgcolor=$color colspan=\"1\">share</th>";
+echo "<th bgcolor=$color colspan=\"1\">value</th>";
+//echo "<th bgcolor=$color colspan=\"1\">dividend</th>";
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+echo "<td align=left bgcolor=$color>".$row['tran_id']."</td>";
+echo "<td align=left bgcolor=$color>".$row['particular']."</td>";
+echo "<td align=left bgcolor=$color>".$row['action_date']."</td>";
+echo "<td align=right bgcolor=$color>".$row['no_of_share_purchaes']."</td>";
+echo "<td align=right bgcolor=$color>".$row['value_of_purchaes']."</td>";
+//echo "<td align=right bgcolor=$color>".$row['issue_dividend']."</td>";
+echo "<td align=right bgcolor=$color>".$row['no_of_share_sales']."</td>";
+echo "<td align=right bgcolor=$color>".$row['value_of_sales']."</td>";
+//echo "<td align=right bgcolor=$color>".$row['with_dividend']."</td>";
+echo "<td align=right bgcolor=$color>".$row['no_of_share_balance']."</td>";
+echo "<td align=right bgcolor=$color>".$row['value_of_balance']."</td>";
+//echo "<td align=right bgcolor=$color>".$row['bal_dividend']."</td>";
+   }
+echo "</table>";
+ }
+}
+footer();
+
+echo "</body>";
+echo "</html>";
+?>

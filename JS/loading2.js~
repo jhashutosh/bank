@@ -1,0 +1,49 @@
+var xmlhttp
+function showHint(str){
+if (str.length==0)
+  {
+  document.getElementById("txtHint").innerHTML="";
+  return;
+  }
+//if(str=="ln"){document.getElementById("type_of_ln").disabled=false;}
+//else{document.getElementById("type_of_ln").disabled=true;}
+xmlhttp=GetXmlHttpObject();
+if (xmlhttp==null)
+  {
+  alert ("Your browser does not support XMLHTTP!");
+  return;
+  }
+//var s_type=document.getElementById("type_of").value;
+var url="loading.php";
+//url=url+"?q="+str+"&s_type="+s_type;
+url=url+"?q="+str;
+//alert(url)
+url=url+"&sid="+Math.random();
+xmlhttp.onreadystatechange=stateChanged;
+xmlhttp.open("GET",url,true);
+xmlhttp.send(null);
+}
+//state change function
+function stateChanged()
+{
+if (xmlhttp.readyState==4)
+  {
+    document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+  
+  }
+}
+//browser define function
+function GetXmlHttpObject()
+{
+if (window.XMLHttpRequest)
+  {
+  // code for IE7+, Firefox, Chrome, Opera, Safari
+  return new XMLHttpRequest();
+  }
+if (window.ActiveXObject)
+  {
+  // code for IE6, IE5
+  return new ActiveXObject("Microsoft.XMLHTTP");
+  }
+return null;
+}

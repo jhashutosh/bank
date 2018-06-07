@@ -1,0 +1,7 @@
+<?
+$month=(float)date('m');
+echo $month;
+$amount=10;
+$amount=-$amount;
+echo $amount;
+?>

@@ -1,0 +1,48 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$group_no=$_SESSION["current_account_no"];
+$account_no=$_REQUEST['group_no'];
+$menu=$_REQUEST['menu'];
+isPermissible($menu);
+if(empty($group_no)){$group_no=$account_no;}
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"applied_amount.focus();\">";
+$c_id=getCustomerIdFromGroupId($group_no);
+$flag1=getGeneralInfo_Customer($c_id);
+if($flag1==1){
+echo "<hr>";
+$flag=checkloanEl($group_no,$loan_el_date);
+if($flag)
+{
+echo "<form method=\"POST\" action=\"loan_ledger_evfd.php?menu=$menu\">";
+echo "<table bgcolor=AQUA align=center width=80%>";
+echo "<tr><TH colspan=5 bgcolor=BLUE><font color=WHITE size=+3><b>Loan Issue Form";
+echo "<tr><td align=\"left\">Group No:<td><input type=\"TEXT\" name=\"group_no\" size=\"10\" value=\"$group_no\" readonly $HIGHLIGHT>";
+echo "<td><td align=\"left\">Loan Issued Date:<td><input type=\"TEXT\" name=\"date_of_issue\" size=\"10\" value=\"".date('d/m/Y')."\" readonly $HIGHLIGHT><td>";
+echo "<tr><td align=\"left\">Loan Limit:<td><input type=\"TEXT\" name=\"loan_limit\" size=\"15\" value=\"".shg_loan_limit($group_no)."\" readonly $HIGHLIGHT><td>";
+echo "<td align=\"left\">Payment Terms:<td>";
+makeSelect($payment_term_array,'pay_term',"");
+echo "<tr><td align=\"left\">Interest Rate:<td><input type=\"TEXT\" name=\"interest_rate\" size=\"10\" value=\"11\" $HIGHLIGHT><td>";
+echo "<td align=\"left\">Over DueInterest Rate:<td><input type=\"TEXT\" name=\"overdue_interest_rate\" size=\"10\" value=\"12\" $HIGHLIGHT><td>";
+echo "<tr><td align=\"left\">Applied Amount:<td><input type=\"TEXT\" name=\"applied_amount\" size=\"15\" value=\"\" id=\"applied_amount\" $HIGHLIGHT>";
+echo "<td><td align=\"left\">Issued Amount:<td><input type=\"TEXT\" name=\"loan_amount\" size=\"15\" value=\"\" $HIGHLIGHT><br>";
+echo "<tr><td align=\"left\">Loan Repayment Period :<td><input type=\"TEXT\" name=\"repay_date\" size=\"15\" value=\"1\" $HIGHLIGHT><td><font color=RED size=-1>Year&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>";
+echo "<td align=\"left\">Purpose :<td><input type=\"TEXT\" name=\"purpose\" size=\"15\" value=\"Business\" $HIGHLIGHT><br>";
+echo "<tr><tr><td><td><td><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Enter\">";
+echo "  <input type=\"RESET\" name=\"RESET_BUTTON\" value=\"Reset\"><br>";
+echo "</table>";
+echo "</form>";
+}
+else{
+	      echo "<h1><b><font color=Red><center><blink>You Are Not Eligible for loan</blink></b><center></font></h1>";
+              echo "<h2><center><b>You Will come after :$loan_el_date</h2></center></b>";
+	      echo "<a href=\"../main/nextaccount.php?menu=shg\">BACK</a>";
+}
+}
+echo "</body>";
+echo "</html>";
+?>

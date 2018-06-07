@@ -1,0 +1,252 @@
+<?
+include "../config/config.php";
+$operator_code=verifyAutho();
+$q=$_REQUEST['q'];
+$fy=$_SESSION['fy'];
+getDetailfy($fy,&$str_dt,&$end_dt);
+$fy='2014-2015';
+echo "<head>";
+echo "<title>Crop Master</title>";
+echo"</head>";
+echo "<script src=\"../JS/calendar.js\"></script>";
+echo "<script language=\"JavaScript\" src=\"../JS/loading_mini.js\" type=\"text/javascript\"></script>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+?>
+<SCRIPT>
+function cal_days(){
+
+var dat_a=new Date(document.getElementById('ses_strt_dt').value);
+
+var dat_b=new Date(document.getElementById('ses_end_dt').value);
+
+if(dat_a>dat_b){
+
+
+document.getElementById('ses_strt_dt').value="";
+document.getElementById('ses_end_dt').value="";
+alert("Give  End date greater than Start date")
+ }
+}
+
+function f2(str){
+//alert(str)
+showseason(str)
+}
+
+
+function val(){
+
+var e=parseInt(document.getElementById('crop_id').value.length);
+
+if(e == 0)
+	{
+alert("You Must select crop");
+return false;
+	}
+
+e=parseInt(document.getElementById('season').value.length);
+
+if(e == 0)
+	{
+alert("You Must select Season for crop");
+return false;
+	}
+
+e=parseInt(document.getElementById('crp_rt').value.length);
+
+if(e == 0)
+	{
+alert("You Must specify crop rate");
+return false;
+	}
+
+e=parseInt(document.getElementById('ovrdue_rt').value.length);
+
+if(e == 0)
+	{
+alert("You Must specify overdue rate for crop");
+return false;
+	}
+
+var d=parseInt(document.getElementById('ovrdue_dt').value.length);
+if(d < 6)
+	{
+alert("You Must enter date");
+return false;
+	}
+else{
+ 
+var opd=document.getElementById('ovrdue_dt').value; 
+var flag=0;
+var i;
+var opds=opd.split('');
+for(i=0;i<=opd.length;i++)
+	{
+if(opds[i]=='/')
+{
+flag=1;
+break;
+}
+if(opds[i]=='.')
+{flag=2;
+break;
+}
+if(opds[i]=='-')
+{flag=3;
+break;
+}
+
+	}
+//alert("hello"+flag)
+
+if(flag==1)
+opdar=opd.split('/');
+if(flag==2)
+opdar=opd.split('.');
+if(flag==3)
+opdar=opd.split('-');
+var leap=0;
+if(parseInt(opdar[2])%4==0 && parseInt(opdar[2])%100!=0 || parseInt(opdar[2])%400==0){
+leap=1;
+}
+
+if(parseInt(opdar[1])==4||parseInt(opdar[1])==6||parseInt(opdar[1])==9||parseInt(opdar[1])==11){
+//alert (opdar[0]+"<-date"+opdar[1]+"<-month"+opdar[2]+"<-year")
+if( parseInt(opdar[0]) < 1 ||  parseInt(opdar[0]) > 30 ||  parseInt(opdar[1]) < 1 ||  parseInt(opdar[1]) > 12 ||  parseInt(opdar[2]) > 2050 ||  parseInt(opdar[2]) < 2000 )
+     
+flag=4;
+
+     }
+else if(parseInt(opdar[1])==2 && leap==1 ){
+
+if( parseInt(opdar[0]) < 1 ||  parseInt(opdar[0]) > 29 ||  parseInt(opdar[1]) < 1 ||  parseInt(opdar[1]) > 12 ||  parseInt(opdar[2]) > 2050 ||  parseInt(opdar[2]) < 2000 )
+flag=5;
+
+}
+
+else if(parseInt(opdar[1])==2 && leap==0){
+
+if( parseInt(opdar[0]) < 1 ||  parseInt(opdar[0]) > 28 ||  parseInt(opdar[1]) < 1 ||  parseInt(opdar[1]) > 12 ||  parseInt(opdar[2]) > 2050 ||  parseInt(opdar[2]) < 2000 )
+flag=6;
+
+} 
+else {
+if( parseInt(opdar[0]) < 1 ||  parseInt(opdar[0]) > 31 ||  parseInt(opdar[1]) < 1 ||  parseInt(opdar[1]) > 12 ||  parseInt(opdar[2]) > 2050 ||  parseInt(opdar[2]) < 2000 )
+flag=7;
+
+}
+if(flag==4||flag==5||flag==6||flag==7){
+
+alert("Please Enter Correct Date in dd/mm/yyyy format \n within 01/01/2000 To 31/12/2050");
+return false;
+}
+//return false;
+}
+     
+
+}
+
+
+</SCRIPT>
+<?
+echo "<body bgcolor=\"silver\" >";
+echo"<center>";
+if(empty($q)){
+echo"<font color=\"GREEN\"><H1>Crop Master </H1></font></center>";
+echo"<hr>";
+}
+echo "<form name=\"f1\" method=\"POST\" action=\"crop_master_tan.php?op=i\" onsubmit=\"return val();\">";
+if($op=='i')
+{
+$crop_id=$_REQUEST['crop_id'];
+//echo $crop_id;
+$ses_desc=$_REQUEST['season'];
+$crp_rt=$_REQUEST['crp_rt'];
+$ovrdue_rt=$_REQUEST['ovrdue_rt'];
+$ovrdue_dt=$_REQUEST['ovrdue_dt'];
+$wid_efft_dt=$_REQUEST['with_efct_frm'];
+$entry_time=date('d/m/Y H:i:s ');
+$ids="select nextval('seq_LC_Crop_Rate_Master')";
+$res=dBConnect($ids);
+$rw=pg_fetch_array($res,0);
+$id_crop=$rw['nextval'];
+$sql="insert into  LC_Crop_Rate_Master(id,Id_crop_mas,id_season_master,Crop_rate,Overdue_rate,Overdue_date,With_effect_from,Operator_code,Entry_time) 
+values($id_crop,$crop_id,'$ses_desc',$crp_rt,$ovrdue_rt,'$ovrdue_dt','$wid_efft_dt','$operator_code','$entry_time')"; 
+$res=dBConnect($sql);
+//echo $sql;
+}
+if(empty($q)){
+echo "<table width=\"100%\" bgcolor=\"#D8D8D8\" align=\"CENTER\" valign='top'>";
+echo "<tr><th colspan=\"6\" bgcolor=#043C70><b><font color=White>New operator details entry form</font></b></th>";
+echo"<tr>";
+echo "<td  colspan=\"2\" align='right' ><font color='black' size='2' align='left'>Select Crop&nbsp;:&nbsp;&nbsp;&nbsp;</td>";
+echo "<td align='left' ><select name=\"crop_id\" id=\"crop_id\"> <option value=''> Select</option>";
+$sql="select * from crop_mas";
+$res=dBConnect($sql);
+//echo $sql;
+for($j=0;$j<pg_NumRows($res);$j++){
+$row=pg_fetch_array($res,$j);
+echo $sql;
+echo"<option value=".$row['crop_id'].">".ucwords($row['crop_desc'])."</option>";
+}
+echo"</select></td>";
+echo"<td colspan=\"1\" align='right'><font color='black' size='2' align='left'>Season Description&nbsp;:&nbsp;&nbsp;&nbsp;</td>";
+echo"<td colspan=\"2\" align='left'>";
+$seas_sql="select * from lc_season_master where fy='$fy'";
+$seas_res=dBConnect($seas_sql);
+echo"<select name='season' id='season' onchange=\"f2(this.value);\"><option value=''>Select</option>";
+for($j=0;$j<pg_NumRows($seas_res);$j++){
+$row=pg_fetch_array($seas_res,$j);
+echo"<option value=".$row['id'].">".$row['season_desc']."</option>";
+}
+echo"</tr>";}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if($q){
+$sql="select * from lc_season_master where id=$q";
+$res=dBConnect($sql);
+$row=pg_fetch_array($res,0);
+echo"<table width='100%'>";
+echo "<tr><td align='right'><font color='black' align='left'>Season Start Date&nbsp;:&nbsp;</td>";
+echo"<td align='left'><input type=\"TEXT\" name=\"ses_strt_dt\" size=\"10\" value=\"".$row['season_start_dt']."\" id=\"ses_strt_dt\" onChange=\"cal_days()\" onKeyup=\"cal_days()\" $HIGHLIGHT>";
+//echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\"  onclick=\"showCalendar(f1.ses_strt_dt,'dd/mm/yyyy','Choose Date')\" >&nbsp;";
+echo"</td>";
+echo"<td align='left'><font color='black'size='2' colspan=2 align='left'>&nbsp;&nbsp;&nbsp;&nbsp;Season End Date:<input type=\"TEXT\" name=\"ses_end_dt\" size=\"10\" value=\"".$row['season_end_dt']."\" id=\"ses_end_dt\" onChange=\"cal_days()\" onKeyup=\"cal_days()\" $HIGHLIGHT></td>";
+//echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\"  onclick=\"showCalendar(f1.ses_end_dt,'dd/mm/yyyy','Choose Date')\" >&nbsp;";
+echo"</td></tr></table>";
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if(empty($q)){
+echo"<td colspan='4'><span id='txtHint'></span></td>";
+echo"<td align='right'><font color='black' size='2' align='left'>Enter Crop Rate&nbsp;:&nbsp;&nbsp;&nbsp;</td>";
+echo"<td align='left'><input type='text' name='crp_rt' id='crp_rt' size='10'$HIGHLIGHT >&nbsp;&nbsp;Rs./ Satak</td></tr>";
+echo"</tr>";
+echo "<tr>";
+echo"<td colspan=\"1\" align='right'><font color='black' size='2' align='left'>OverDue Rate&nbsp;:&nbsp;&nbsp;&nbsp;</td>";
+echo"<td align='left'><input type='text' name='ovrdue_rt' id='ovrdue_rt' size='10'$HIGHLIGHT > Rs./ Satak</td>";
+echo"<td align='right'><font color='black'size='2' align='left'>OverDue Date&nbsp;:&nbsp;</td>";
+echo"<td><input type=\"TEXT\" name=\"ovrdue_dt\" size=\"10\" value=\"$end_dt\" id=\"ovrdue_dt\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\"  onclick=\"showCalendar(f1.ovrdue_dt,'dd/mm/yyyy','Choose Date')\" >&nbsp;";
+echo"</td>";
+echo"<td align='right'><font color='black'size='2' align='left'>With Effect From&nbsp;:&nbsp;</td>";
+echo"<td><input type=\"TEXT\" name=\"with_efct_frm\" size=\"10\" value=\"$str_dt\" id=\"with_efct_frm\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\"  onclick=\"showCalendar(f1.with_efct_frm,'dd/mm/yyyy','Choose Date')\" >&nbsp;";
+echo"</td></tr>";
+echo"<tr><td  colspan='2'></td></tr><tr><td  colspan='2'></td></tr><tr><td  colspan='2'></td></tr>";
+echo"<tr><td  bgcolor='#043C70' colspan=\"6\" height='10%'></td></tr>";
+echo"<tr><td  colspan='2'></td></tr><tr><td  colspan='2'></td></tr><tr><td  colspan='2'></td></tr>";
+echo"<tr><td align='center'  colspan='6'><input type='submit' value='Submit'></td></tr>";
+echo"<tr><td  colspan='2'></td></tr><tr><td  colspan='3'></td></tr><tr><td  colspan='2'></td></tr>";
+echo"</table>";
+echo"<table width='100%' >";
+echo"<tr>";
+echo "<th bgcolor='#BCA9F5' width=\"15%\"><font color='#043C70' size='2'>Crop Description</font></th>";
+echo "<th bgcolor='#BCA9F5' width=\"15%\"><font color='#043C70' size='2'>Season Description</font></th>";
+echo "<th bgcolor='#BCA9F5' width=\"15%\"><font color='#043C70' size='2'>Crop Rate</font></th>";
+echo "<th bgcolor='#BCA9F5' width=\"15%\"><font color='#043C70' size='2'>OverDue Rate</font></th>";
+echo "<th bgcolor='#BCA9F5' width=\"20%\"><font color='#043C70' size='2'>OverDue Date</font></th>";
+echo "<th bgcolor='#BCA9F5' width=\"20%\"><font color='#043C70' size='2'>With Effect Date</font></th>";
+echo"<tr><td colspan=\"7\" align=center><iframe src=\"crp_mst_grid.php?id_crop_mas=$id_crop_mas\" width=\"100%\" height=\"150\" scrollbars=yes, top=100,left=150, width=1098,height=300></iframe>";
+echo"</table>";}
+echo"</form>";
+echo"</body>";
+?>

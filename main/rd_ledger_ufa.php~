@@ -1,0 +1,68 @@
+<?
+include "config.php";
+
+$staff_id=verifyAutho();
+$operator_code=$staff_id;
+$menu=$_REQUEST["menu"];
+
+// PHP4 
+$account_no=$_REQUEST["account_no"];
+$opening_date=$_REQUEST["opening_date"];
+$period=$_REQUEST["period"];
+$due_date_type=$_REQUEST["due_date_type"];
+$monthly_deposit=$_REQUEST["monthly_deposit"];
+$rate_of_interest=$_REQUEST["rate_of_interest"];
+$maturity_amount=$_REQUEST["maturity_amount"];
+$maturity_date=$_REQUEST["maturity_date"];
+$withdrawn_type=$_REQUEST["withdrawn_type"];
+$withdrawal_date=$_REQUEST["withdrawal_date"];
+$penalty=$_REQUEST["penalty"];
+$withdrawal_amount=$_REQUEST["withdrawal_amount"];
+/*
+$action_date=$_REQUEST["action_date"];
+$particulars_type=$_REQUEST["particulars_type"];
+$amount_deposit=$_REQUEST["amount_deposit"];
+$balance=$_REQUEST["balance"];
+$remarks=$_REQUEST["remarks"];
+$operator_code=$_REQUEST["operator_code"];
+$entry_time=$_REQUEST["entry_time"];
+$officer_code=$_REQUEST["officer_code"];
+$signature_time=$_REQUEST["signature_time"];
+$status=$_REQUEST["status"];
+$updateable=$_REQUEST["updateable"];
+*/
+
+echo "<html>";
+echo "<head>";
+echo "<title>Update Form - RD ";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<h1>Update Form - RD";
+echo "</h1>";
+echo "<h3>Your submission has been accepted.";
+echo "</h3>";
+echo "<hr>";
+
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+
+// Modification required for WHERE CLAUSE
+$sql_statement="UPDATE rd_info SET withdrawn_type='$withdrawn_type', withdrawal_date='$withdrawal_date', withdrawal_amount=$withdrawal_amount, operator_code='$operator_code', entry_time=now() WHERE account_no='$account_no'";
+//$sql_statement="UPDATE rd_ledger SET  account_no='$account_no', opening_date='$opening_date', period='$period', due_date_type='$due_date_type', monthly_deposit=$monthly_deposit, rate_of_interest=$rate_of_interest, maturity_amount=$maturity_amount, maturity_date='$maturity_date', withdrawn_type='$withdrawn_type', withdrawal_date='$withdrawal_date', withdrawal_amount=$withdrawal_amount, action_date='$action_date', particulars_type='$particulars_type', amount_deposit=$amount_deposit, balance=$balance, remarks='$remarks', operator_code='$operator_code', entry_time='$entry_time', officer_code='$officer_code', signature_time='$signature_time', status='$status', updateable='$updateable' WHERE account_no='$account_no'";
+
+$sql_statement=$sql_statement."; INSERT INTO penalty_t(account_no, type_of_account, date_of_penalty, amount_penalty, operator_code, entry_time) VALUES ('$account_no','$withdrawn_type', now(), $penalty,'$operator_code',now())";
+$result=pg_Exec($db,$sql_statement);
+
+if(pg_NumRows($result)!=0) {
+	echo "<br><h5><font color=\"RED\">Failed to update data into database.</font></h5>";
+	//$backref= "rd_ledger_uf.php?account_no=".urlencode($account_no)."&opening_date=".urlencode($opening_date)."&period=".urlencode($period)."&due_date_type=".urlencode($due_date_type)."&monthly_deposit=".urlencode($monthly_deposit)."&rate_of_interest=".urlencode($rate_of_interest)."&maturity_amount=".urlencode($maturity_amount)."&maturity_date=".urlencode($maturity_date)."&withdrawn_type=".urlencode($withdrawn_type)."&withdrawal_date=".urlencode($withdrawal_date)."&withdrawal_amount=".urlencode($withdrawal_amount)."&action_date=".urlencode($action_date)."&particulars_type=".urlencode($particulars_type)."&amount_deposit=".urlencode($amount_deposit)."&balance=".urlencode($balance)."&remarks=".urlencode($remarks)."&operator_code=".urlencode($operator_code)."&entry_time=".urlencode($entry_time)."&officer_code=".urlencode($officer_code)."&signature_time=".urlencode($signature_time)."&status=".urlencode($status)."&updateable=".urlencode($updateable);
+//echo "Click <a href=\"rd_ledger_uf.php?account_no=".urlencode($account_no)."&opening_date=".urlencode($opening_date)."&period=".urlencode($period)."&due_date_type=".urlencode($due_date_type)."&monthly_deposit=".urlencode($monthly_deposit)."&rate_of_interest=".urlencode($rate_of_interest)."&maturity_amount=".urlencode($maturity_amount)."&maturity_date=".urlencode($maturity_date)."&withdrawn_type=".urlencode($withdrawn_type)."&withdrawal_date=".urlencode($withdrawal_date)."&withdrawal_amount=".urlencode($withdrawal_amount)."&action_date=".urlencode($action_date)."&particulars_type=".urlencode($particulars_type)."&amount_deposit=".urlencode($amount_deposit)."&balance=".urlencode($balance)."&remarks=".urlencode($remarks)."&operator_code=".urlencode($operator_code)."&entry_time=".urlencode($entry_time)."&officer_code=".urlencode($officer_code)."&signature_time=".urlencode($signature_time)."&status=".urlencode($status)."&updateable=".urlencode($updateable).">here</a> to look back.";
+} else {
+	echo "<br><h5><font color=\"GREEN\">Data entered into database.</font></h5>";
+}
+
+footer();
+echo "</body>";
+echo "</html>";
+?>

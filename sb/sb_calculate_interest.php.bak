@@ -1,0 +1,32 @@
+<?php
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST["menu"];
+$operator_code=$staff_id;
+echo "<html>";
+echo "<head>";
+echo "<title>Saving Bank interest computation";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$title='Saving Bank';
+echo "<h1>Saving bank interest computation";
+echo "</h1>";
+echo "<hr>";
+$action_date=date('d.m.Y');
+$fy=getFy($action_date);
+$sql_statement="SELECT compute_interest('$fy') as int";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) {
+	echo "<h5><font color=\"RED\">Failed to compute.</font></h5>";
+} else {
+	$total_interest=pg_result($result,'int');
+	echo "<h5><font color=\"GREEN\">Computation of interest of saving deposits have been completed.</font></h5>";
+	echo " Total Interest = <B>$total_interest</B>";
+}
+
+echo "</body>";
+echo "</html>";
+
+?>

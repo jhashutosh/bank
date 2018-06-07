@@ -1,0 +1,131 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+echo "<html>";
+echo "<head>";
+echo "<title>Statement";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+?>
+<script language="javascript">
+function check()
+{
+var avd=document.getElementById('txt5').value;
+var ptn=document.getElementById('txt6').value;
+var rab=document.getElementById('txt7').value;
+var kha=document.getElementById('txt8').value;
+var bor=document.getElementById('txt9').value;
+if(avd.length==0)
+{
+alert("Please enter the Valid Till Date.!!!");
+document.getElementById('txt5').focus();
+return false;
+}
+
+if(ptn.length==0)
+{
+alert("Please enter Petition No.!!!");
+document.getElementById('txt6').focus();
+return false;
+}
+if(rab.length==0 && kha.length==0 && bor.length==0)
+{
+alert("Please Enter the Credit Limit");
+document.getElementById('txt7').focus();
+return false;
+
+}
+}
+</script>
+<?
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+
+$customer_id=getCustomerId($account_no,'kcc');
+$customer_name=getCustomerName($customer_id);
+echo "<form name=\"form1\" method=\"post\" action=\"kcc_approval_eadd.php\">";
+echo "<table width=\"100%\">";
+echo "<tr><th colspan=\"3\" bgcolor=\"green\">KCC Approval Form</th>";
+$apr_no=countRows('kcc_approval');
+echo "<tr><th width=\"20\">Approval No:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" id=\"txt3\" name=\"text3\" value=\"$apr_no\"></th>";
+echo "<th width=\"20\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer ID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" id=\"txt1\" name=\"text1\" value=\"$customer_id\"></th>";
+echo "<th width=\"20\">Name:&nbsp;&nbsp;<input type=\"text\" id=\"txt2\" name=\"text2\" value=\"$customer_name\"></th>";
+echo "<tr><th width=\"20\">Approval date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" id=\"txt4\" name=\"text4\"></th>";
+echo "<th width=\"20\" align=\"right\">Approval Valid Date:&nbsp;&nbsp;&nbsp;<input type=\"text\" id=\"txt5\" name=\"text5\"></th>";
+echo "<tr><th width=\"20\">Petition No:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" id=\"txt6\" name=\"text6\"></th>";
+//echo "</table>";
+//echo "<hr>";
+//echo "<table width=\"100%\">";
+echo "<tr><th width=\"20\" align=\"left\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rabi (Rs.)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" id=\"txt7\" name=\"text7\"></th>";
+echo "<tr><th width=\"20\" align=\"left\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kharif (Rs.)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" id=\"txt8\" name=\"text8\"></th>";
+echo "<tr><th width=\"20\" align=\"left\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Boro (Rs.)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" id=\"txt9\" name=\"text9\"></th>";
+$sql_statement="SELECT * FROM land_info WHERE customer_id='$customer_id'";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0){
+echo "<tr><th width=\"20\" align=\"right\"><input type=\"submit\" name=\"button1\" value=\"submit\" disabled></th>";
+}
+else
+{
+echo "<tr><th width=\"20\" align=\"right\"><input type=\"submit\" name=\"button1\" value=\"submit\" onclick=\"return check(this.value);\"></th>";
+}
+echo "</table>";
+//echo "</form>";
+echo "<hr>";
+
+
+if(pg_NumRows($result)==0) {
+echo "<center><h1>Please Enter Your Land Information !!!!!!!!</h1></center>";
+}
+else {
+echo "<table valign=\"top\" width=\"100%\">";
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=GREEN colspan=12>Land Statement[$account_no]  Customer_ID[$customer_id]</th>";
+echo "<tr>";
+echo "<th bgcolor=$color Rowspan=\"2\">Land Id</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Action Date</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Dag No.</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Mouja No.</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">JL No.</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">GP</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Mark</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Mini No.</th>";
+echo "<th colspan=\"3\" bgcolor=$color>Karbanama</th>";
+//echo "<th bgcolor=$color Rowspan=\"2\">Operation</th>";
+echo "<tr bgcolor=$color><th>Bond No.</th>";
+echo "<th bgcolor=$color>Area</th>";
+echo "<th bgcolor=$color>Value</th>";
+
+for($j=0; $j<pg_NumRows($result); $j++){
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,$j);
+echo "<tr>";
+//echo "<td align=right bgcolor=$color><input type=\"checkbox\" name=\"music\" value=\"".$row['land_id']."\" onclick=\"ShowInfo();\">".$row['land_id']."</td>";
+echo "<td align=CENTER bgcolor=$color><input type=\"checkbox\" name=\"music\" value=\"".$row['land_id']."\">".$row['land_id']."</td>";
+echo "</form>";
+echo "<td bgcolor=$color>".$row['action_date']."</td>";
+echo "<td align=right bgcolor=$color>".$row['dag_no']."</td>";
+echo "<td bgcolor=$color>".ucwords($row['mouja_no'])."</td>";
+echo "<td align=right bgcolor=$color>".$row['jl_no']."</td>";
+echo "<td  bgcolor=$color>".getName('panchayat_id',trim($row['gp']),'panchayat_desc
+','panchayat_mas'). "</td>";
+echo "<td  bgcolor=$color>".getName('mark_id',trim($row['land_identity']),'mark_desc','land_identification_mas')."</td>";
+echo "<td  bgcolor=$color>".getName('mini_id',trim($row['mini_no']),'mini_desc','mini_mas')."</td>";
+echo "<td  bgcolor=$color>".$row['karbanama_bond_no']."</td>";
+$t_area+=$row['land_area'];
+echo "<td align=right bgcolor=$color>".getAcer($row['land_area'])."</td>";
+$t_value+=$row['land_value'];
+echo "<td align=right bgcolor=$color>".(float)$row['land_value']."</td>";
+//echo "<td align=center bgcolor=$color><a href=\"land_ledger_ef.php?menu=ln\">New </a>&nbsp||&nbsp<a href=\"land_ledger_ef.php?menu=ln&op=up&land_id=".$row['land_id']."\">Alter </a>&nbsp||&nbsp<a href=\"land_statement.php?menu=ln&op=s&land_id=".$row['land_id']."\">Less </a></td>";
+   }
+echo "<tr bgcolor=AQUA>";
+echo "<th colspan=9>Total : $j Land Infomation Found!!!!!!";
+echo "<th><b>".getAcer($t_area);
+echo "<th><b>$t_value <td>";
+echo "</table>";
+}
+
+echo "</body>";
+echo "</html>";
+
+?>

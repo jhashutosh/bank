@@ -1,0 +1,300 @@
+<?php
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST["menu"];
+$type=$_REQUEST["type"];
+$update=$_REQUEST["update"];
+$name1=strtolower($_REQUEST["name1"]);
+$sex1=$_REQUEST["sex1"];
+$dob1=$_REQUEST["dob1"];
+$customer_status=$_REQUEST['c_cat'];
+if(empty($customer_status)){$customer_status='non';}
+$caste1=getIndex($caste_array,$_REQUEST["caste1"]);
+$father_name1=strtolower($_REQUEST["father_name1"]);
+$address11=strtolower($_REQUEST['address11']);
+$address12=strtolower($_REQUEST['address12']);
+$address13=strtolower($_REQUEST['address13']);
+$pin1=$_REQUEST['pin1'];
+$telephone1=$_REQUEST['telephone1'];
+$email1=strtolower($_REQUEST['email1']);
+$qualification1=$_REQUEST['qualification1'];
+$occupation1=$_REQUEST['occupation1'];
+$voter_id_no1=strtoupper($_REQUEST['voter_id_no1']);
+$pan_card_no1=$_REQUEST['pan_card_no1'];
+$identity_proof1=getIndex($identity_proof_array,$_REQUEST["identity_proof1"]);
+$dob_proof1=getIndex($dob_proof_array,$_REQUEST["dob_proof1"]);
+$address_proof1=getIndex($address_proof_array,$_REQUEST["address_proof1"]);
+
+//REQEST FOR SECOND PERSON INFORMATION
+$name2=strtolower($_REQUEST["name2"]);
+$sex2=$_REQUEST["sex2"];
+$dob2=$_REQUEST["dob2"];
+$caste2=getIndex($caste_array,$_REQUEST["caste2"]);
+$father_name2=strtolower($_REQUEST["father_name2"]);
+$address21=strtolower($_REQUEST['address21']);
+$address22=strtolower($_REQUEST['address22']);
+$address23=strtolower($_REQUEST['address23']);
+$pin2=$_REQUEST['pin2'];
+$telephone2=$_REQUEST['telephone2'];
+$email2=strtolower($_REQUEST['email2']);
+$qualification2=$_REQUEST['qualification2'];
+$occupation2=$_REQUEST['occupation2'];
+$designation1=$_REQUEST['designation1'];
+$voter_id_no2=strtoupper($_REQUEST['voter_id_no2']);
+$pan_card_no2=$_REQUEST['pan_card_no2'];
+$identity_proof2=getIndex($identity_proof_array,$_REQUEST["identity_proof2"]);
+$dob_proof2=getIndex($dob_proof_array,$_REQUEST["dob_proof2"]);
+$address_proof2=getIndex($address_proof_array,$_REQUEST["address_proof2"]);
+
+//REQEST FOR THIRD PERSON INFORMATION
+$name3=strtolower($_REQUEST["name3"]);
+$sex3=$_REQUEST["sex3"];
+$dob3=$_REQUEST["dob3"];
+$caste3=getIndex($caste_array,$_REQUEST["caste3"]);
+$father_name3=strtolower($_REQUEST["father_name3"]);
+$address31=strtolower($_REQUEST['address31']);
+$address32=strtolower($_REQUEST['address32']);
+$address33=strtolower($_REQUEST['address33']);
+$pin3=$_REQUEST['pin3'];
+$telephone3=$_REQUEST['telephone3'];
+$email3=strtolower($_REQUEST['email3']);
+$qualification3=$_REQUEST['qualification3'];
+$occupation3=$_REQUEST['occupation3'];
+$designation2=$_REQUEST['designation2'];
+$voter_id_no3=strtoupper($_REQUEST['voter_id_no3']);
+$pan_card_no3=$_REQUEST['pan_card_no3'];
+$identity_proof3=getIndex($identity_proof_array,$_REQUEST["identity_proof3"]);
+$dob_proof3=getIndex($dob_proof_array,$_REQUEST["dob_proof3"]);
+$address_proof3=getIndex($address_proof_array,$_REQUEST["address_proof3"]);
+
+
+//REQEST FOR FORTH PERSON INFORMATION
+$name4=strtolower($_REQUEST["name4"]);
+$sex4=$_REQUEST["sex4"];
+$dob4=$_REQUEST["dob4"];
+$caste4=getIndex($caste_array,$_REQUEST["caste4"]);
+$father_name4=strtolower($_REQUEST["father_name4"]);
+$address41=strtolower($_REQUEST['address41']);
+$address42=strtolower($_REQUEST['address42']);
+$address43=strtolower($_REQUEST['address43']);
+$pin4=$_REQUEST['pin4'];
+$telephone4=$_REQUEST['telephone4'];
+$email4=strtolower($_REQUEST['email4']);
+$qualification4=$_REQUEST['qualification4'];
+$occupation4=$_REQUEST['occupation4'];
+$designation3=$_REQUEST['designation3'];
+$voter_id_no4=strtoupper($_REQUEST['voter_id_no4']);
+$pan_card_no4=$_REQUEST['pan_card_no4'];
+$identity_proof4=getIndex($identity_proof_array,$_REQUEST["identity_proof4"]);
+$dob_proof4=getIndex($dob_proof_array,$_REQUEST["dob_proof4"]);
+$address_proof4=getIndex($address_proof_array,$_REQUEST["address_proof4"]);
+$leader=strtolower($_REQUEST['leader']);
+$no_of_member=$_REQUEST['no_of_member'];
+$date_of_opening=$_REQUEST['date_of_opening'];
+$introducer_id=$_REQUEST['introducer_id'];
+$remarks=$_REQUEST['remarks'];
+$sex1=getIndex($sex_array,$sex1);
+$mode=getIndex($account_operation_array,$mode);
+$type=getIndex($type_of_account2_array,$type);
+$qualification1=getIndex($customer_qualification_array,$qualification1);
+$occupation1=getIndex($customer_occupation_array,$occupation1);
+$sex2=getIndex($sex_array,$sex2);
+$qualification2=getIndex($customer_qualification_array,$qualification2);
+$occupation2=getIndex($customer_occupation_array,$occupation2);
+$sex3=getIndex($sex_array,$sex3);
+$qualification3=getIndex($customer_qualification_array,$qualification3);
+$occupation3=getIndex($customer_occupation_array,$occupation3);
+$qualification4=getIndex($customer_qualification_array,$qualification4);
+$occupation4=getIndex($customer_occupation_array,$occupation4);
+$sex4=getIndex($sex_array,$sex4);
+$designation1=getIndex($designation_orga_array,$designation1);
+$designation2=getIndex($designation_orga_array,$designation2);
+$designation3=getIndex($designation_orga_array,$designation3);
+if(empty($dob1)){$dob1=$DOB_DEFAULT;}
+if(empty($date_of_opening)){$date_of_opening=date('d/m/Y');}
+if(empty($dob2)){$dob2=$DOB_DEFAULT;}
+if(empty($dob3)){$dob3=$DOB_DEFAULT;}
+if(empty($dob4)){$dob4=$DOB_DEFAULT;}
+
+if($update)
+{
+$customer_id=trim($_REQUEST['customer_id']);
+}
+else 
+{
+$cust_id_sql="select case when (MAX(cast(substr(customer_id,3,length(customer_id)) as int))+1) is null then 1 else (MAX(cast(substr(customer_id,3,length(customer_id)) as int))+1) end id from customer_master where customer_id like 'C-%'";
+$cust_id_res=dBConnect($cust_id_sql);
+$c_id=pg_fetch_array($cust_id_res,0);
+$customer_id='C-'.$c_id['id'];
+
+//echo "<h1>$customer_id</h1>";
+//$customer_id="C-".getNExtVal("c_id");
+
+}
+
+echo "<html>";
+echo "<head>";
+echo "<title>Entry Form - Customer";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$title='Customer';
+echo "<h2Entry Form - $title";
+echo "</h5>";
+echo "<h5> Just check this form";
+echo "</h5>";
+echo "<hr>";
+if($update)
+{
+	if(($type=="so") or ($type=="nr"))
+	{
+	      $sql_statement="UPDATE customer_master SET type_of_customer='$type',name1='$name1',
+ 	sex1='$sex1',dob1='$dob1',caste1='$caste1',father_name1='$father_name1',
+	address11='$address11',address12='$address12',address13='$address13',pin1='$pin1',
+	telephone1='$telephone1',email1='$email1',pan_card_no1='$pan_card_no1',
+        voter_id_no1='$voter_id_no1',occupation1='$occupation1',qualification1='$qualification1',
+       identity_proof1='$identity_proof1',address_proof1='$address_proof1',dob_proof1='$dob_proof1'
+	,introducer_id='$introducer_id',remarks='$remarks',date_of_opening='$date_of_opening' where customer_id='$customer_id'";   
+	}
+	elseif($type=="jn")
+	{
+	$sql_statement="UPDATE customer_master SET type_of_customer='$type',
+	name1='$name1',sex1='$sex1',dob1='$dob1',caste1='$caste1',father_name1='$father_name1',
+	address11='$address11',address12='$address12',address13='$address13',pin1='$pin1',
+	telephone1='$telephone1',email1='$email1',pan_card_no1='$pan_card_no1',
+	voter_id_no1='$voter_id_no1',occupation1='$occupation1',qualification1='$qualification1',
+       identity_proof1='$identity_proof1',address_proof1='$address_proof1',dob_proof1='$dob_proof1'
+	,name2='$name2',sex2='$sex2',dob2='$dob2',caste2='$caste2',father_name2='$father_name2',
+	address21='$address21',address22='$address22',address23='$address23',pin2='$pin2',
+	telephone2='$telephone2',email2='$email2',pan_card_no2='$pan_card_no2',
+	voter_id_no2='$voter_id_no2',occupation2='$occupation2',qualification2='$qualification2',
+       identity_proof2='$identity_proof2',address_proof2='$address_proof2',dob_proof2='$dob_proof2'
+	,name3='$name3',sex3='$sex3',dob3='$dob3',caste3='$caste3',father_name3='$father_name3',
+	address31='$address31',address32='$address32',address33='$address33',pin3='$pin3',
+	telephone3='$telephone3',email3='$email3',pan_card_no3='$pan_card_no3',
+	voter_id_no3='$voter_id_no3',occupation3='$occupation3',qualification3='$qualification3',
+       identity_proof3='$identity_proof3',address_proof3='$address_proof3',dob_proof3='$dob_proof3'
+	,introducer_id='$introducer_id',remarks='$remarks' where customer_id='$customer_id'";
+	}
+	elseif($type=="or")
+	{
+	$sql_statement="UPDATE customer_master SET type_of_customer='$type',
+	name1='$name1',
+	address11='$address11',address12='$address12',address13='$address13',pin1='$pin1',
+	telephone1='$telephone1',email1='$email1',pan_card_no1='$pan_card_no1',
+	name2='$name2',sex2='$sex2',dob2='$dob2',caste2='$caste2',father_name2='$father_name2',
+	address21='$address21',address22='$address22',address23='$address23',pin2='$pin2',
+	telephone2='$telephone2',email2='$email2',pan_card_no2='$pan_card_no2',
+	voter_id_no2='$voter_id_no2',occupation2='$occupation2',qualification2='$qualification2',
+       identity_proof2='$identity_proof2',address_proof2='$address_proof2',dob_proof2='$dob_proof2'
+	,name3='$name3',sex3='$sex3',dob3='$dob3',caste3='$caste3',father_name3='$father_name3',
+	address31='$address31',address32='$address32',address33='$address33',pin3='$pin3',
+	telephone3='$telephone3',email3='$email3',pan_card_no3='$pan_card_no3',
+	voter_id_no3='$voter_id_no3',occupation3='$occupation3',qualification3='$qualification3',
+       identity_proof3='$identity_proof3',address_proof3='$address_proof3',dob_proof3='$dob_proof3'
+	,name4='$name4',sex4='$sex4',dob4='$dob4',caste4='$caste4',father_name4='$father_name4',
+	address41='$address41',address42='$address42',address43='$address43',pin4='$pin4',
+	telephone4='$telephone4',email4='$email4',pan_card_no4='$pan_card_no4',
+	voter_id_no4='$voter_id_no4',occupation4='$occupation4',qualification4='$qualification4',
+       identity_proof4='$identity_proof4',address_proof4='$address_proof4',dob_proof4='$dob_proof4'
+	,introducer_id='$introducer_id',remarks='$remarks' where customer_id='$customer_id'";
+	}
+	elseif($type=="gp"){
+	getSHGInfo($customer_id,$no_of_member1,$leader1,$group_id);
+	$sql_statement="UPDATE customer_master SET name1='$name1',sex1='$sex1',address11='$address11',address12='$address12', address13='$address13',pin1='$pin1',introducer_id='$introducer_id', date_of_opening='$date_of_opening',operator_code='$staff_id' WHERE customer_id='$customer_id'";
+	$sql_statement.=";UPDATE customer_master SET name1='$leader' WHERE type_of_customer='$group_id' AND name1 LIKE '%$leader1%'";
+	$sql_statement.=";UPDATE shg_info SET opening_date='$date_of_opening',shg_type='$sex1', leader_name='$leader',no_of_member=$no_of_member,operator_code='$staff_id' WHERE customer_id='$customer_id'";
+	//$sql_statement.=";UPDATE customer_master SET name1='$leader' WHERE type_of_customer='$group_id' AND name1 LIKE '%$leader1%'";
+	}
+	elseif($type=="jl"){
+	getJLGInfo($customer_id,&$no_of_member1,&$leader1,&$group_id);
+	$sql_statement="UPDATE customer_master SET name1='$name1',sex1='$sex1',address11='$address11',address12='$address12', address13='$address13',pin1='$pin1',introducer_id='$introducer_id', date_of_opening='$date_of_opening',operator_code='$staff_id' WHERE customer_id='$customer_id'";
+	$sql_statement.=";UPDATE customer_master SET name1='$leader' WHERE type_of_customer='$group_id' AND name1 LIKE '%$leader1%'";
+	$sql_statement.=";UPDATE shg_info SET opening_date='$date_of_opening',shg_type='$sex1', leader_name='$leader',no_of_member=$no_of_member,operator_code='$staff_id' WHERE customer_id='$customer_id'";
+	//$sql_statement.=";UPDATE customer_master SET name1='$leader' WHERE type_of_customer='$group_id' AND name1 LIKE '%$leader1%'";
+	}
+
+	
+	echo $sql_statement;
+	$result=dBConnect($sql_statement);
+	if(pg_affected_rows($result)<1){
+ 	echo "<h4><font color=RED>FAILED TO INSERT DATA INTO THE DATABASE</font></h4>";
+	//echo $sql_statement;
+	}
+	else{ 
+ //echo "successfully update";
+      if($menu=='shg'){$account=$group_id;}
+      else{$account=$customer_id;}
+      header("Location:../main/set_account.php?menu=cust&account_no=$account");
+		}
+}//end for update
+else
+{
+if(!empty($a_id)){
+echo "<h1><b><font color=RED>Customer Already Exist and Customer Id is :$customer_id </h1></font><b>";
+echo "<b><a href=\"set_account.php?menu=cust&account_no=$customer_id\">Click</a> here to see the Customer Details</b>"; 
+}
+// For insert date
+else{
+if(($type=="so") or ($type=="nr") or ($type=='st') or ($type=='ot') ){
+
+$sql_statement="INSERT INTO customer_master (customer_id,type_of_customer,name1,sex1,dob1, caste1,father_name1,address11,address12,address13,pin1,telephone1,email1,pan_card_no1, voter_id_no1,occupation1,qualification1,identity_proof1,address_proof1,dob_proof1, introducer_id,date_of_opening, operator_code ,entry_time,remarks,customer_status) VALUES('$customer_id','$type','$name1','$sex1','$dob1', '$caste1', '$father_name1','$address11','$address12','$address13','$pin1','$telephone1','$email1', '$pan_card_no1','$voter_id_no1', '$occupation1','$qualification1','$identity_proof1','$dob_proof1','$address_proof1', '$introducer_id','$date_of_opening','$staff_id',now(),'$remarks','$customer_status')";
+	if($type=='st'){
+		$s_id=$_REQUEST['s_id'];
+		$sql_statement=$sql_statement."; UPDATE staff SET customer_id='$customer_id' WHERE id='$s_id'";
+	}
+}
+elseif($type=="jn"){
+$sex1=getIndex($sex_array,$sex1);
+$sql_statement="INSERT INTO customer_master (customer_id,type_of_customer,name1,sex1,dob1, caste1,father_name1,address11,address12,address13,pin1,telephone1,email1,pan_card_no1, voter_id_no1,occupation1,qualification1,
+name2,sex2,dob2,caste2,father_name2,address21, address22,address23,pin2,telephone2,email2,pan_card_no2,voter_id_no2,occupation2, qualification2,name3,sex3,dob3,caste3,father_name3,address31,address32,address33,pin3, telephone3,email3,pan_card_no3,voter_id_no3,occupation3,qualification3,introducer_id, date_of_opening,operator_code,entry_time,remarks,customer_status) VALUES('$customer_id','$type','$name1','$sex1','$dob1','$caste1','$father_name1','$address11','$address12','$address13',
+'$pin1','$telephone1','$email1','$pan_card_no1','$voter_id_no1','$occupation1','$qualification1', 
+'$name2','$sex2','$dob2','$caste2','$father_name2','$address21','$address22','$address23','$pin2','$telephone2','$email2',
+'$pan_card_no2','$voter_id_no2','$occupation2','$qualification2',
+'$name3','$sex3','$dob3','$caste3', '$father_name3','$address31', '$address32','$address33','$pin3','$telephone3','$email3','$pan_card_no3','$voter_id_no3', '$occupation3','$qualification3','$introducer_id','$date_of_opening','$staff_id',now(),'$remarks','$customer_status')";
+	}
+elseif($type=="or"){
+
+//$sex1=getIndex($sex_array,$sex1);
+$sql_statement="INSERT INTO customer_master (customer_id,type_of_customer,name1, address11,address12,address13,pin1,telephone1,email1,pan_card_no1, name2,designation2,sex2,dob2,caste2,father_name2,address21, address22,address23,pin2, telephone2,email2,pan_card_no2,voter_id_no2,occupation2,qualification2,identity_proof2, address_proof1,dob_proof2,name3,designation3, sex3,dob3,caste3,father_name3,address31, address32,address33,pin3, telephone3,email3,pan_card_no3,voter_id_no3,occupation3, qualification3,identity_proof3,address_proof3,dob_proof3,name4,designation4, sex4,dob4,caste4,father_name4,address41, address42,address43,pin4, telephone4, email4,pan_card_no4,voter_id_no4,occupation4,qualification4,identity_proof4, address_proof4,dob_proof4,introducer_id, date_of_opening,operator_code,entry_time,remarks,customer_status) VALUES('$customer_id','$type','$name1','$address11', '$address12','$address13','$pin1','$telephone1', '$email1','$pan_card_no1', '$name2','$designation1', '$sex2','$dob2', '$caste2','$father_name2','$address21', '$address22','$address23','$pin2', '$telephone2','$email2', '$pan_card_no2', '$voter_id_no2','$occupation2', '$qualification2','$identity_proof2','$dob_proof2','$address_proof2',
+'$name3','$designation2','$sex3','$dob3','$caste3', '$father_name3','$address31', '$address32', '$address33','$pin3','$telephone3','$email3', '$pan_card_no3','$voter_id_no3', '$occupation3','$qualification3','$identity_proof3','$dob_proof3','$address_proof3',
+'$name4','$designation4','$sex4','$dob4','$caste4', '$father_name4','$address41', '$address42', '$address43','$pin4','$telephone4','$email4', '$pan_card_no4','$voter_id_no4', '$occupation4','$qualification4','$identity_proof4','$dob_proof4','$address_proof4',
+'$introducer_id','$date_of_opening', '$staff_id',now(),'$remarks','$customer_status')";
+ 	}
+elseif($type=="gp"||$type=="jl"){
+if($type=="gp"){
+	$group_id="SHG-".getNExtVal("shg_id");
+	$st='s';
+}
+else{
+	$group_id="JLG-".getNExtVal("jlg_id");
+	$st='j';
+}
+$sql_statement="INSERT INTO customer_master (customer_id,type_of_customer,name1,sex1,address11,address12,address13, pin1, introducer_id, date_of_opening,operator_code,entry_time,customer_status) VALUES('$customer_id','$type','$name1','$sex1', '$address11','$address12','$address13','$pin1','$introducer_id','$date_of_opening', '$staff_id',now(),'$customer_status');INSERT INTO shg_info (customer_id,opening_date,shg_no,shg_type,leader_name, no_of_member,operator_code,entry_time,status,gp_type) values('$customer_id','$date_of_opening', '$group_id','$sex1','$leader',$no_of_member,'$staff_id',now(),'op','$st')";
+ }
+ 
+echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_affected_rows($result)<1)
+{
+ echo "<h4><font color=RED>FAILED TO INSERT DATA INTO THE DATABASE</font></h4>";
+}
+else{
+      if($menu=='shg'){$account=$group_id;
+ 	header("Location:../main/set_account.php?menu=cust&account_no=$account");
+	}
+     elseif($type=='ot'){
+	echo "<h4><font color=\"GREEN\">Customer Successfully Created AND<br> Customer Id is:$customer_id </font></h4>";
+	}
+      else{$account=$customer_id;
+      header("Location:../main/set_account.php?menu=cust&account_no=$account");
+	}
+ }
+
+}//insert for shg end
+}//else part end 
+echo "<br><br><br>";
+echo "</body>";
+echo "</html>";
+
+?>

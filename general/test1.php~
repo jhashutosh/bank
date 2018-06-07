@@ -1,0 +1,59 @@
+<?
+ include "../config/config.php";
+ $gl_mas_code=$_REQUEST['gl_mas_code'];
+ $gl_mas_desc=$_REQUEST['gl_mas_desc'];
+ $status=$_REQUEST['status'];
+ $op=$_REQUEST['op'];
+ if($op='c'){
+ ?>
+<html>
+<head>
+<title>Monojit</title>
+<link rel="stylesheet" type="text/css" href="../css/test.css">
+</head>
+<body bgcolor=SILVER onload="code.focus();">
+<H1><CENTER>GENERAL LADGER MASTER</CENTER></H1>
+<HR>
+<form action="gl_master_header.php" method=POST name=f1>
+
+<br>
+<form action="gl_header.php" method=POST name=f1>
+<table width=65% align=CENTER bgcolor=#FFE4E1>
+ <tr><TH colspan=2 bgcolor=Gold>General Ledger Master</th>
+ <tr><td>GL_SUB_HEADER :<td><? makeSelectFromDBWithCode("gl_sub_header_code","gl_sub_header_desc","gl_sub_header","status");?>
+ <input type=HIDDEN name=op value=1>
+<tr><td><td align=CENTER><input type=submit value=ok><input type=RESET value=Reset>
+</form>
+</body>
+</html>
+<?
+ }
+else
+{
+ $sql="INSERT INTO gl_master VALUES('$gl_mas_code',lower('$gl_mas_desc'),'$status')";
+ //echo $sql;
+ $result=dBConnect($sql);
+ if(pg_affected_rows($result)<1)
+  {
+   echo "<h1><blink>sorry row duplicated!!!!!!!!!!!!!!!!!!</h1>";
+  }
+ else{
+  echo "<h1><center>Inserted</h1><br>";
+  echo "<a href=\"test1.php\"><blink>Click here to next entry</a><br><hr>";
+  $sql="SELECT * FROM gl_master";
+  $result=dBConnect($sql);
+  if(pg_NumRows($result)!=0){
+ 		echo "<table align=center bgcolor=silver><tr><th>Code<th>Desc<th>Group";
+		for($j=0;$j<pg_NumRows($result);$j++){
+ 		$row=pg_fetch_array($result,$j);
+		$code=$row["gl_mas_code"];
+          	if($code==$gl_mas_code){$color="GREEN";}
+		else{$color="WHITE";}
+                echo "<tr bgcolor=$color><td>$code<td>".$row["gl_mas_desc"]."<td>".$row["gl_sub_header_code"]; 
+                 
+		}
+       }
+  }
+ }
+  
+?>

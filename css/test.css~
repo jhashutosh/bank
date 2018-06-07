@@ -1,0 +1,10 @@
+body { font-size:small; }
+td { font-size:small; }
+th { font-size:small; }
+input { font-size:small;}
+select { font-size:x-small;}
+
+A:link {text-decoration: none}
+A:visited {text-decoration: none}
+A:active {text-decoration: none}
+A:hover {font-size:12; font-weight:bold; color: red;

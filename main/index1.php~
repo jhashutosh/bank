@@ -1,0 +1,29 @@
+<? 
+include "config.php"; 
+
+deregisterCookies();
+
+$fail=$_REQUEST["af"];
+
+echo "<HTML>";
+echo "<TITLE>";
+echo "$SYSTEM_TITLE";
+echo "</TITLE>";
+echo "<FRAMESET ROWS=\"80,*\" FRAMEBORDER=NO BORDER=0 BORDERCOLOR=\"$FRAMEBORDERCOLOR\" FRAMESPACING=0>";
+echo "<FRAME SRC=\"design\top_e1.php\" target=\"display\"  marginheight=0 marginwidrh=0 scrolling=\"no\" noresize FRAMEBORDER=NO BORDER=0 BORDERCOLOR=\"$FRAMEBORDERCOLOR\" FRAMESPACING=0>";
+echo "<FRAMESET COLS=\"80,*\">";
+echo "<FRAME SRC=\"design/menu_e1.php\" target=\"display\" marginheight=0 marginwidrh=0 scrolling=\"no\" noresize FRAMEBORDER=NO BORDER=0 BODERCOLOR=\"$FRAMEBORDERCOLOR\" FRAMESPACING=0>";
+
+if($fail==1){
+	echo "<FRAME SRC=\"logIn/error_login.php\" NAME=\"display\">";
+} else {
+	echo "<FRAME SRC=\"logIn/login.php\" NAME=\"display\">";
+}
+echo "<NOFRAME>";
+echo "This application needs a frame capable browser. ";
+echo "</NOFRAME>";
+echo "</FRAMESET>";
+echo "</FRAMESET>";
+echo "</HTML>";
+
+?>

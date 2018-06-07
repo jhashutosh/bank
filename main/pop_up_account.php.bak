@@ -1,0 +1,31 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$account_no=trim(strtoupper($_REQUEST["account_no"]));
+$menu=$_REQUEST["menu"];
+if(!strcmp($menu,'sb')){header("Location: ../sb/sb_account_statement.php?menu=$menu&account_no=$account_no&op=1");}
+if(!strcmp($menu,'add')){header("Location: ../add/sb_account_statement.php?menu=$menu&account_no=$account_no&op=1");}
+if(!strcmp($menu,'fd')){header("Location: ../fd/fd_statement.php?menu=$menu&account_no=$account_no&op=1"); }
+if(!strcmp($menu,'rd')){header("Location: ../rd/rd_statement.php?menu=$menu&account_no=$account_no&op=1");}
+
+if(!strcmp($menu,'hsb')){header("Location: ../hsb/hsb_statement.php?menu=$menu&account_no=$account_no&op=1");}
+
+if(!strcmp($menu,'sh')){header("Location: ../share/share_statement.php?menu=$menu&account_no=$account_no&op=1");}
+if(!strcmp($menu,'ri')){header("Location: ../ri/ri_statement.php?menu=$menu&account_no=$account_no&op=1");}
+if(!strcmp($menu,'mis')){header("Location: ../mis/mis_statement.php?menu=$menu&account_no=$account_no&op=1"); }
+if(!strcmp($menu,'kcc')){header("Location: ../kcc/kcc_loan_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'sgl')){header("Location: ../shg/loan_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'pl')){header("Location: ../pl/pl_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'mt')){header("Location: ../mtloan/mt_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'kpl')){header("Location: ../kpl/kpl_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'bdl')){header("Location: ../bdl/bdl_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'ccl')){header("Location: ../ccl/ccl_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'sfl')){header("Location: ../sfl/sfl_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'ofl')){header("Location: ../ofl/ofl_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'spl')){header("Location: ../spl/spl_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'lad')){header("Location: ../lad/lad_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'jgl')){header("Location: ../jlg/loan_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'nf')){header("Location: ../nf/nf_statement.php?menu=$menu&account_no=$account_no&op=i");}
+if(!strcmp($menu,'ser')){header("Location: ../service/service_statement.php?menu=$menu&account_no=$account_no&op=i");}
+
+?>

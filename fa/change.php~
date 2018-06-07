@@ -1,0 +1,36 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+if($menu=='assets')
+{
+
+ header("Location: ../fa/fa_middleframeassets.php");
+}
+if($menu=='lia')
+{
+header("Location: ../fa/fa_middleframe.php");
+
+}
+
+if($menu=='pur')
+{
+header("Location: ../fa/fa_middleframepur.php");
+}
+
+if($menu=='sale')
+{
+header("Location: ../fa/fa_middleframesale.php");
+}
+
+if($menu=='income')
+{
+header("Location: ../fa/fa_middleframeincome.php");
+}
+
+if($menu=='expen')
+{
+header("Location: ../fa/fa_middleframeexpen.php");
+}
+
+
+?>

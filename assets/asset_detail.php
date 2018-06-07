@@ -1,0 +1,109 @@
+<?php
+include "../config/config.php";
+//$ass_type=$_REQUEST['ass_type'];
+	$asset_id=$_REQUEST['asset_id'];
+	
+	echo "<html>";
+	echo "<head>";
+	echo "<title> Description [".ucwords($asset_id)."]";
+	echo "</title>";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\">";
+	echo "<script language=\"JAVASCRIPT\">";
+	echo "function closeme() { close(); }";
+	echo "</script>";
+	echo "</head>";
+	
+	echo "<BODY bgcolor=\"WHITE\">";
+	echo "<h2>$SYSTEM_TITLE</h2><hr>";
+	$sql_statement="SELECT asset_type,gl_code,(current_value-round((dep_rate* current_value*(current_date-action_date))/36500)) as current_value1,initcap(asset_desc) as asset_desc,face_value, current_value,dep_method,dep_rate FROM asset_master WHERE asset_id=trim('$asset_id')";
+
+	//echo $sql_statement;
+	
+	echo "<table valign=\"top\" align=center bgcolor=write width=\"70%\">";
+	echo "<form name=\"f1\" method=\"POST\">";
+	echo "<tr><td bgcolor=\"Gray\" colspan=\"2\" align=\"center\"><font color=\"white\"> Description [".ucwords($asset_id)."]</font>";
+	
+//echo"<td bgcolor=\"Gray\" align=\"left\">";
+$result=dBConnect($sql_statement);
+
+if(pg_NumRows($result)==0) {
+//echo "<tr><th colspan=\"7\" bgcolor=WHITE>Record Not Found !!!!!<th>";
+	}	 
+else {
+$row=pg_fetch_array($result,($j));
+$color1=WHITE;
+$color=WHITE;
+	echo "<tr>";
+	echo "<th align=CENTER bgcolor=$color1>Description</th>";
+	echo "<th align=CENTER bgcolor=$color1>Value</th>";
+	echo "<tr>";
+	echo "<td align=CENTER bgcolor=$color1>Asset_Type</td>";
+	echo "<td align=CENTER bgcolor=$color>".$all_assets_array[$row['gl_code']]."</td>";
+	echo "<tr>";
+	echo "<td align=CENTER bgcolor=$color1>Asset_Description</td>";
+	echo "<td align=CENTER bgcolor=$color>".$row['asset_desc']."</td>";
+	echo "<tr>";
+	echo "<td align=CENTER bgcolor=$color1>Face_value</td>";
+	echo "<td align=CENTER bgcolor=$color>".amount2Rs($row['face_value'])."</td>";
+	echo "<tr>";
+	echo "<td align=CENTER bgcolor=$color1>Current_value</td>";
+	echo "<td align=CENTER bgcolor=$color>".amount2Rs($row['current_value1'])."</td>";
+	echo "<tr>";
+	echo "<td align=CENTER bgcolor=$color1>Depriaction Still</td>";
+	echo "<td align=CENTER bgcolor=$color>".amount2Rs($row['face_value']-$row['current_value1'])."</td>";
+	echo "<tr>";
+	echo "<td align=CENTER bgcolor=$color1>Depriaction current Year</td>";
+	echo "<td align=CENTER bgcolor=$color>".amount2Rs($row['current_value']-$row['current_value1'])."</td>";
+	echo "<tr>";
+	echo "<td align=CENTER bgcolor=$color1>Depriciation_Method</td>";
+	echo "<td align=CENTER bgcolor=$color>".$depreciation_method_array[$row['dep_method']]."</td>";
+	echo "<tr>";
+	echo "<td align=CENTER bgcolor=$color1>Rate_Of_Depriciation</td>";
+	echo "<td align=CENTER bgcolor=$color>".$row['dep_rate']."</td>";
+		
+	}
+
+//---------------------------------------------- LAND SHOW PART
+if(trim($row['asset_type'])=='ia'){
+	$sql_statement=";SELECT dag_no,mauja_name,jl_no,gp_name,size, registration_no,khatin_no FROM land_asset WHERE asset_id=trim('$asset_id')";
+
+	//echo $sql_statement;
+	echo "<table valign=\"top\" align=center bgcolor=write width=\"85%\">";
+
+	echo "<tr><th bgcolor=\"Gray\" colspan=\"7\" align=\"center\"><font color=\"white\"> Information asset in ".$all_assets_array[$row['gl_code']]."</font>";
+	
+
+$result=dBConnect($sql_statement);
+
+if(pg_NumRows($result)==0) {
+//echo "<tr><th colspan=\"10\" bgcolor=WHITE>Record Not Found !!!!!<th>";
+	}	 
+else {
+$row=pg_fetch_array($result,($j-1));
+$color1=WHITE;
+$color=WHITE;
+	echo "<tr>";
+	echo "<th align=CENTER bgcolor=$color1>Dag_No:</th>";
+	echo "<th align=CENTER bgcolor=$color1>Mouja:</th>";
+	echo "<th align=CENTER bgcolor=$color1>JL_No:</th>";
+	echo "<th align=CENTER bgcolor=$color1>GP_Name:</th>";
+	echo "<th align=CENTER bgcolor=$color1>Size:</th>";
+	echo "<th align=CENTER bgcolor=$color1>Registration_no:</th>";
+	echo "<th align=CENTER bgcolor=$color1>Khatiyan_no:</th>";
+	echo "<tr>";
+	echo "<td align=CENTER bgcolor=$color>".$row['dag_no']."</td>";
+	echo "<td align=CENTER bgcolor=$color>".$row['mauja_name']."</td>";
+	echo "<td align=CENTER bgcolor=$color>".$row['jl_no']."</td>";
+	echo "<td align=CENTER bgcolor=$color>".$row['gp_name']."</td>";
+	echo "<td align=CENTER bgcolor=$color>".getAcer($row['size'])." </td>";
+	echo "<td align=CENTER bgcolor=$color>".$row['registration_no']."</td>";
+	echo "<td align=CENTER bgcolor=$color>".$row['khatin_no']."</td>";
+
+		
+}
+}
+echo "<tr bgcolor=$color><td colspan=7 align=CENTER ><input type=\"BUTTON\" name=\"PRINT_BUTTON\" value=\"Print\" onclick=\"print()\">&nbsp <input type=\"BUTTON\" name=\"_BUTTON\" value=\"Close\" onclick=\"closeme()\">";
+
+	echo "</body>";
+	echo "</html>";
+?>

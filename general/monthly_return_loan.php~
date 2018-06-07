@@ -1,0 +1,137 @@
+<?
+include "../config/config.php";
+$staff_id==verifyAutho();
+$mdate=$_REQUEST['mdate'];
+if(empty($mdate)){$mdate=date('d.m.Y');}
+$sql_statement="SELECT monthly_return_loan('$mdate') As monthly";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+$name=pg_result($result,'monthly');
+echo "<html>";
+echo "<head>";
+echo "<title>$PROJECT_TITLE</title>";
+echo "<script src=\"../JS/calendar.js\"></script>";
+echo "<script language=\"JAVASCRIPT\">";
+echo "function closeme() { close(); }";
+echo "</script>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"\" onload=\"cd.focus();\">";
+echo "<font size=+2>$SYSTEM_TITLE</font><br>";
+echo "<i>Monthly Return Loan as on $name</i>";
+echo "<hr>";
+echo "<form METHOD=\"POST\" ACTION=\"monthly_return_loan.php\">";
+echo "<table align=center bgcolor=\"#90EE90\">";
+echo"<tr><td><b>Return Month as on :<td>";
+echo"<input type=TEXT size=12 name=\"mdate\" id=cd Value=\"$mdate\" onclick=\"this.value=''\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"Submit\"  value=\"Enter\">";
+echo "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"BUTTON\" name=\"CLOSE_BUTTON\" value=\"Close\" onclick=\"closeme()\"> ";
+echo " <input type=\"BUTTON\" name=\"PRINT_BUTTON\" value=\"Print\" onclick=\"print()\"> ";
+echo "</table></form>";
+echo "<hr>";
+echo "<center>";
+echo "<table width=\"100%\"><tr><td>";
+echo "<table border=\"1\" align=center>";
+echo "<tr><td bgcolor=\"#0000CD\" colspan=\"19\" align=\"center\"><b><font color=\"WHITE\">MONTHLY RETURN OF LOAN on $name</font>";
+echo "<tr bgcolor=#BA55D3>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Sl.No.</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Type of Loan</th>";
+echo "<th bgcolor=\"#9ACD32\" colspan=4>31 st march Closing Balance(Rs.)</th>";
+echo "<th bgcolor=\"#9ACD32\" colspan=2>Loan Issued during the month</th>";
+echo "<th bgcolor=\"#9ACD32\" colspan=4>Amount Repaid during the month</th>";
+echo "<th bgcolor=\"#9ACD32\" colspan=3>Due Loan outstanding at the end of the Month</th>";
+echo "<th bgcolor=\"#9ACD32\" colspan=3>Overdue Loan outstanding at the end of the Month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Total Outstanding(due & overdue (Principal+interest))</th>";
+echo "<tr>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Principal</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Due Int amount</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Overdue Int amount</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Total</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">No of Members</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Amount(Rs.)</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">No of members</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Principal(Rs.)</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Due interest(Rs.)</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Overdue Interest(Rs.)</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">No of members</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Principal(Rs.)</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Interest 7%(Rs.)</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">No of members</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Principal(Rs.)</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Interest 11%(Rs.)</th>";
+
+$sql_statement="SELECT * FROM monthly_return_loan";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+for($j=0,$i=1; $j<pg_NumRows($result); $j++,$i++){
+$row=pg_fetch_array($result,$j);
+echo "<tr>";
+echo "<th>$i";
+echo "<td><b>".$type_of_account1_array[$row[0]]."</td>";
+$r1+=$row[1];
+echo "<td align=right >".amount2Rs($row[1])."</td>";
+$r2+=$row[2];
+echo "<td align=right >".amount2Rs($row[2])."</td>";
+$r3+=$row[3];
+echo "<td align=right >".amount2Rs($row[3])."</td>";
+$r4+=$row[4];
+echo "<td align=right >".amount2Rs($row[4])."</td>";
+$r5+=$row[5];
+echo "<td align=right >".amount2Rs($row[5])."</td>";
+$r6+=$row[6];
+echo "<td align=right >".amount2Rs($row[6])."</td>";
+$r7+=$row[7];
+echo "<td align=right >".amount2Rs($row[7])."</td>";
+$r8+=$row[8];
+echo "<td align=right >".amount2Rs($row[8])."</td>";
+$r9+=$row[9];
+echo "<td align=right >".amount2Rs($row[9])."</td>";
+$r10+=$row[10];
+echo "<td align=right >".amount2Rs($row[10])."</td>";
+$r12+=$row[12];
+echo "<td align=right >".amount2Rs($row[12])."</td>";
+$r14+=$row[14];
+echo "<td align=right >".amount2Rs($row[14])."</td>";
+$r13+=$row[13];
+echo "<td align=right >".amount2Rs($row[13])."</td>";
+$r15+=$row[15];
+echo "<td align=right >".amount2Rs($row[15])."</td>";
+$r17+=$row[17];
+echo "<td align=right >".amount2Rs($row[17])."</td>";
+$r16+=$row[16];
+echo "<td align=right >".amount2Rs($row[16])."</td>";
+$r18+=$row[18];
+echo "<td align=right >".amount2Rs($row[18])."</td>";
+
+   }
+}
+//------------------------------Sum---------------------------------------
+echo "<tr>";
+echo "<th align=right bgcolor=aqua colspan=\"2\">Total:";
+echo "<th align=right bgcolor=aqua>".amount2Rs($r1);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r2);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r3);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r4);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r5);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r6);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r7);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r8);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r9);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r10);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r12);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r14);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r13);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r15);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r17);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r16);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r18);
+
+
+
+
+
+echo "</table>";
+echo "</body>";
+echo "</html>";
+?>

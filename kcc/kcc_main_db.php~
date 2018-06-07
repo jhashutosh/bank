@@ -1,0 +1,30 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$CONDITIONS=$_REQUEST['c'];
+$menu=$_REQUEST['menu'];
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+$sql_statement="select account_no,SUM(due_int) as d,SUM(overdue_int) as o,SUM(principal) as p from loan_cal_int  $CONDITIONS group by account_no";
+//echo $sql_statement; 
+$result=dBConnect($sql_statement);
+echo "<Table bgcolor=\"Black\" width=\"98%\" >";
+if(pg_NumRows($result)>0){
+for($j=1; $j<=pg_NumRows($result); $j++){
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+if(isOverDue($row['account_no'])){
+$color="#DC143C";
+}
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+
+echo "<td align=CENTER bgcolor=$color width =\"68\"><a href=\"#\">".$row['account_no']."</a></td>";
+$id=getCustomerId($row['account_no'],$menu);
+echo "<td align=CEnter bgcolor=$color width =\"200\">".getName('customer_id',$id,'name1','customer_master')."</td>";
+echo "<td align=right bgcolor=$color width=\"80\">".(float)$row['p']."</td>";
+echo "<td align=right bgcolor=$color width =\"100\">".$row['d']."</td>";
+echo "<td align=right bgcolor=$color width =\"100\">".$row['o']."</td>";
+echo "<td align=right bgcolor=$color width =\"80\">".($row['p']+$row['d']+$row['o'])."</td>";
+echo "<td align=CENTER bgcolor=$color><a href=\"#\">Issue</a>  ||  <a href=\"#\">Repay</a></td>";
+  }
+}
+?>

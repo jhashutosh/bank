@@ -1,0 +1,15 @@
+<?
+include "../config/config.php";
+$menu=$_REQUEST["menu"]; 
+$staff_id=verifyAutho();
+?>
+<html>
+<head>
+<title>yearly report</title>
+</head>
+<body bgcolor="silver">
+
+
+
+</body>
+</html>

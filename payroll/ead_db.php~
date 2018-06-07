@@ -1,0 +1,33 @@
+<?
+include "../config/config.php";
+echo "<HTML>";
+echo"<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo"</head>";
+echo "<BODY bgcolor=\"white\">";
+$sql_statement="select a.name,b.emp_id,substr(b.year_month,1,4) as year,replace(substr(b.year_month,5),'0','') as month,b.tot_month_working_days,b.tot_present_days,b.tot_absent_days from emp_attendance_dtls b,emp_master a where a.emp_id=b.emp_id order by 
+substr(b.year_month,1,4),replace(substr(b.year_month,5),'0','')";
+//echo $sql_statement;
+$TBGCOLOR="#262A2B";
+$TCOLOR="#262A2B";
+$FCOLOR="#CDCDCD";
+$FBCOLOR="#262A2B";
+echo"<table width='100%' align='center'>";
+$result=dBConnect($sql_statement);
+for($j=0;$j<pg_NumRows($result);$j++){
+$row=pg_fetch_array($result,$j);
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$fcolor=($fcolor==$FCOLOR)?$FBCOLOR:$FCOLOR;
+echo"<tr>";
+echo"<td width='10%' bgcolor='$color' align='center'><font color='$fcolor'>".$row['emp_id'];
+echo"<td width='12%' bgcolor='$color'><font color='$fcolor'>".ucwords($row['name']);
+echo"<td width='13%' align='center' bgcolor='$color'><font color='$fcolor'>".$row['year'].",".$month_array[$row['month']];
+echo"<td width='13%' align='center' bgcolor='$color'><font color='$fcolor'>".$row['tot_month_working_days'];
+echo"<td width='15%' align='center' bgcolor='$color'><font color='$fcolor'>".$row['tot_present_days'];
+echo"<td width='15%' align='center' bgcolor='$color'><font color='$fcolor'>".$row['tot_absent_days'];
+echo"</tr>";
+}
+echo"</table>";
+echo "</body>";
+echo "</HTML>";
+?>

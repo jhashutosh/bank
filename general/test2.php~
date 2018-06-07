@@ -1,0 +1,61 @@
+<?
+ include "../config/config.php";
+ $gl_header_code=$_REQUEST['gl_header_code'];
+ $gl_header_desc=$_REQUEST['gl_header_desc'];
+ $status=$_REQUEST['status'];
+ $op=$_REQUEST['op'];
+ if(empty($op)){
+ ?>
+<html>
+<head>
+<title>Monojit</title>
+<link rel="stylesheet" type="text/css" href="../css/test.css">
+</head>
+<body bgcolor=SILVER onload="code.focus();">
+<H1><CENTER>GENERAL SUB HEAD LADGER</CENTER></H1>
+<HR>
+<form action="gl_sub_header.php" method=POST name=f1>
+<br>
+<form action="gl_header.php" method=POST name=f1>
+<table width=65% align=CENTER bgcolor=#E0FFFF>
+ <tr><TH colspan=2 bgcolor=GREEN>General Ledger Header</th>
+ <tr><td>Code  :<td><input type=TEXT name=gl_header_code id=code <?echo $HIGHLIGHT;?> >
+ <tr><td>Particular  :<td><input type=TEXT name=gl_header_desc size=50 <?echo $HIGHLIGHT;?>>
+ <b>Gl_HEADER :<? makeSelectFromDBWithCode("gl_header_code","gl_header_desc","gl_header","status");?>
+ <input type=HIDDEN name=op value=1>
+ <tr><td><td align=CENTER><input type=submit value=ok><input type=RESET value=Reset>
+</form>
+</body>
+</html>
+<?
+ }
+else
+{
+ $sql="INSERT INTO gl_sub_header VALUES('$gl_header_code',lower('$gl_header_desc'),'$status')";
+  //echo  $sql;
+ $result=dBConnect($sql);
+
+ if(pg_affected_rows($result)<1)
+  {
+   echo "<h1><blink>sorry row duplicated!!!!!!!!!!!!!!!!!!</h1>";
+  }
+ else{
+  echo "<h1><center>Inserted</h1><br>";
+  echo "<a href=\"test2.php\"><blink>Click here to next entry</a><br><hr>";
+  $sql="SELECT * FROM gl_sub_header order by gl_sub_header_code DESC";
+  $result=dBConnect($sql);
+  if(pg_NumRows($result)!=0){
+ 		echo "<table align=center bgcolor=silver><tr><th>Code<th>Desc<th>GL_Header_code";
+		for($j=0;$j<pg_NumRows($result);$j++){
+ 		$row=pg_fetch_array($result,$j);
+		$code=$row["gl_sub_header_code"];
+          	if($code==$gl_header_code){$color="GREEN";}
+		else{$color="WHITE";}
+                echo "<tr bgcolor=$color><td>$code<td>".$row["gl_sub_header_desc"]."<td>".$row["gl_header_code"]; 
+                 
+		}
+       }
+  }
+ }
+  
+?>

@@ -1,0 +1,75 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$account_no=$_REQUEST["account_no"];
+$certificate_no=$_REQUEST["certificate_no"];
+$date_with_effect=$_REQUEST["date_with_effect"];
+$scheme=$_REQUEST["scheme"];
+$holder_sb_account_no=$_REQUEST["holder_sb_account_no"];
+$period=$_REQUEST["period"];
+$amount_deposit=$_REQUEST["amount_deposit"];
+$remarks=$_REQUEST["remarks"];
+$menu=$_REQUEST['menu'];
+$mamount=$_REQUEST['mamount'];
+//$opening_date=date('d.m.y'); // after running
+$opening_date=$date_with_effect; //for date entry purpose
+echo "<html>";
+echo "<head>";
+echo "<title>Entry Form - Fix Deposit";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$id=getCustomerId($account_no,$menu);
+$flag=getGeneralInfo_Customer($id);
+if($flag==1){
+echo "<hr>";
+if(empty($_REQUEST['op'])){
+echo "<form method=\"POST\" action=\"hsb_ledger_eadd.php?menu=$menu\">";
+echo "<table bgcolor=Orange align=center width=90%>";
+echo "<tr><th colspan=\"4\" bgcolor=GREEN>Varify Entry Form of New ".strtoupper($menu)."</th></tr>";
+echo "<tr><td align=\"left\">Account no:<td><input type=\"TEXT\" name=\"account_no\" size=\"10\" value=\"$account_no\" $HIGHLIGHT><br>";
+echo "<td align=\"left\">Date With Effect:<td><input type=\"TEXT\" name=\"date_with_effect\" size=\"12\" value=\"$date_with_effect\" readonly $HIGHLIGHT><br>";
+echo "<tr><td align=\"left\">Scheme:<td><input type=\"TEXT\" name=\"scheme\" size=\"25\" value=\"$scheme\" readonly $HIGHLIGHT>";
+echo "<tr><td align=\"left\">Amount deposit:<td><input type=\"TEXT\" name=\"amount_deposit\" size=\"15\" value=\"$amount_deposit\" $HIGHLIGHT><br>";
+echo "<td align=\"left\">Period:<td> <input type=\"TEXT\" name=\"period\" size=\"5\" value=\"$period\" readonly $HIGHLIGHT>&nbsp;Days";
+$scheme=getIndex($scheme_array,$scheme);
+compute_deposit($scheme,$amount_deposit,$period,$rate_of_interest,$total_interest,$maturity_amount,$opening_date,$menu);
+
+//compute_int($amount_deposit,$rate_of_interest,$period);
+//echo $int;
+$int1=round($maturity_amount-$amount_deposit*$period);
+
+echo "<tr><td align=\"left\">Rate of interest:<td><input type=\"TEXT\" name=\"rate_of_interest\" size=\"5\" value=\"$rate_of_interest\" $HIGHLIGHT readonly><a href=\"../main/dev_page.html\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes,top=100,left=150, width=1000,height=300'); return false;\">View Rate</a>";
+//echo "<td align=\"left\">Interest Amount:<td><input type=\"TEXT\" name=\"total_interest\" size=\"15\" value=\"$int1\" $HIGHLIGHT><br>";
+//echo "<tr><td align=\"left\">Maturity amount:<td><input type=\"TEXT\" name=\"maturity_amount\" size=\"15\" value=\"$maturity_amount\" $HIGHLIGHT><br>";
+$maturity_date=maturity_date($opening_date,$period,'d');
+echo "<td align=\"left\">Maturity date:<td><input type=\"TEXT\" name=\"maturity_date\" size=\"12\" value=\"$maturity_date\"  $HIGHLIGHT><br>";
+if ($_REQUEST['r1']=='y'){
+echo "<tr><td align=\"left\">Holder sb account no:<td><input type=\"TEXT\" name=\"holder_sb_account_no\" size=\"25\" value=\"$holder_sb_account_no\" readonly $HIGHLIGHT><br>";
+echo "<td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"<<<Conform>>>\">";
+}
+else{
+echo "<tr><td><td><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"<<<Conform>>>\">";
+	}
+}
+else{
+echo "<form method=\"POST\" action=\"hsb_ledger_eadd.php?menu=$menu&op=m\">";
+echo "<table bgcolor=Orange align=center width=90%>";
+echo "<tr><th colspan=\"4\" bgcolor=GREEN>Varify Monthly ".strtoupper($menu)." Deposits Form</th></tr>";
+echo "<tr><td align=\"left\">Account no:<td><input type=\"TEXT\" name=\"account_no\" size=\"10\" value=\"$account_no\" $HIGHLIGHT><br>";
+echo "<td align=\"left\">Date With Effect:<td><input type=\"TEXT\" name=\"date_with_effect\" size=\"12\" value=\"$date_with_effect\"  $HIGHLIGHT><br>";
+echo "<tr><td align=\"left\">Monthly Amount:<td><input type=\"TEXT\" name=\"mamount\" size=\"15\" value=\"$mamount\"  $HIGHLIGHT>";
+$due=$penalty>0?((100*$penalty)/($mamount*$PENALTY_PERCENTAGE)):0;
+$due=($due+1)*$mamount;
+echo "<tr><td align=\"left\">Due Amount:<td><input type=\"TEXT\" name=\"due\" size=\"15\" value=\"$due\"   $HIGHLIGHT>";
+
+echo "<td align=\"left\">Amount Deposit:<td><input type=\"TEXT\" name=\"amount_deposit\" size=\"15\" value=\"$amount_deposit\" id=\"amount\" readonly $HIGHLIGHT>";
+echo "<tr><td><td><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"<<<Conform>>>\">";
+}
+echo "</table>";
+}
+echo "</form>";
+echo "</body>";
+echo "</html>";
+?>

@@ -1,0 +1,14 @@
+USETEXTLINKS = 1
+
+STARTALLOPEN = 0
+
+ICONPATH = "../image/";
+foldersTree = gFld("20000 ASSETS ")
+  foldersTree.treeID = "Frameset"
+aux1 = insFld(foldersTree, gFld("21000 Fixed Assets"))
+  aux2 = insFld(foldersTree,gFld("21100 Immovable Assets"))
+     insDoc(aux2, gLnk("R", "11100 Share(Share Government)"))
+     insDoc(aux2, gLnk("R", "11200 Share(Individual)"))
+     insDoc(aux2, gLnk("R", "11300 Share(Self Helf Group)"))
+     insDoc(aux2, gLnk("R", "11400 Share(Others)"))
+     

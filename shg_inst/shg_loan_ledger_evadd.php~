@@ -1,0 +1,45 @@
+<?
+require "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST["menu"];
+$pay_term=$_REQUEST['pay_term'];
+$group_no=$_REQUEST['group_no'];
+//$loan_account=$_REQUEST['loan_acc'];
+//$appl_date=$_REQUEST['appl_date'];
+$appl_amount=$_REQUEST['applied_amount'];
+$loan_amount=$_REQUEST['loan_amount'];
+$loan_date=$_REQUEST['date_of_issue'];
+$rate_of_int=$_REQUEST['interest_rate'];
+$over_rate_of_int=$_REQUEST['overdue_interest_rate'];
+//$repay_time=$_REQUEST['repay_date'];
+$period=$_REQUEST['period'];
+$purpose=$_REQUEST['purpose'];
+
+if ($menu=='shg'){
+$c_id=getCustomerIdFromGoupId($group_no);
+}
+echo "<html>";
+echo "<head>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$sql_statement="INSERT INTO gl_ledger_hrd(tran_id,type,action_date,account_no,certificate_no,rate_of_interest,period,fy,remarks, operator_code,entry-time)VALUES('$t_id','MT','$loan_date','$loan_account',$rate_of_int,$period,'$repay_time',,$over_rate_of_int,$loan_amount,$appl_amount,'active','$staff_id',now(),'$group_no')";
+$sql_statement=$sql_statement.";INSERT INTO customer_account(customer_id,opening_date, account_no,account_type,operator_code,entry_time,status) values('$c_id','$loan_date','$loan_account','MT','$staff_id',now(),'op')";
+$sql_statement=$sql_statement.";INSERT INTO shg_loan_ledger(loan_account_no,action_date, balance_principal,status,operator_code,entry_time)VALUES('$loan_account','$loan_date',$loan_amount,'op','$staff_id',now())";
+$result=dBConnect($$sql_statement);
+if(pg_affected_rows($result)<1)
+{
+  echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+ 
+ }
+else
+ {
+  echo "<br><h5><font color=\"GREEN\">Data entered into database.</font></h5>";
+  //header("Location:shg_set_active_account.php?menu='ln'&account_no=$loan_account&g_id=$group_no");
+ }
+
+
+echo "<br>";
+footer();
+echo "</body>";
+echo "</html>";
+?>

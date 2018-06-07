@@ -1,0 +1,226 @@
+<?
+include "../config/config.php";
+$year=$_REQUEST['current_date'];
+$months=$_REQUEST['months'];
+$m=$months;
+$name=$months.','.$year;
+$months=getIndex($month_array,$months);
+$current_date=$year.'-'.$months.'-01';
+$year_month=trim($year)."-".trim($months);
+$end_date="date('$current_date')+INTERVAL '1 months'";
+$start_date="'".$current_date."'";
+if($months==1){
+$months=12;
+$year=$year-1;
+}
+else{
+$months=$months-1;
+$year=$year;
+}
+$p_year_month=trim($year)."-".trim($months);
+if(empty($year)){$year='yyyy';}
+if(empty($m)){$m='Select';}
+echo "<html>";
+echo "<head>";
+echo "<title>$PROJECT_TITLE</title>";
+echo "<script src=\"../JS/calendar.js\"></script>";
+echo "<script language=\"JAVASCRIPT\">";
+echo "function closeme() { close(); }";
+echo "</script>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"\" onload=\"cd.focus();\">";
+echo "<font size=+2>$SYSTEM_TITLE</font><br>";
+echo "<i>Monthly Return Deposits as on $name</i>";
+echo "<hr>";
+echo "<form METHOD=\"POST\" ACTION=\"monthly_return_shg.php\">";
+echo "<table align=center bgcolor=\"#90EE90\">";
+echo"<tr><td><b>Return Month as on :<td>";
+makeSelect($month_array,'months',$m);
+echo"&nbsp;-&nbsp;<input type=TEXT size=4 name=current_date id=cd Value=\"$year\" onclick=\"this.value=''\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"Submit\"  value=\"Enter\">";
+echo "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"BUTTON\" name=\"CLOSE_BUTTON\" value=\"Close\" onclick=\"closeme()\"> ";
+echo " <input type=\"BUTTON\" name=\"PRINT_BUTTON\" value=\"Print\" onclick=\"print()\"> ";
+echo "</table></form>";
+echo "<hr>";
+echo "<center>";
+//========================================SHG INFO ===========================================
+echo "<table border=\"1\" align=center>";
+echo "<tr><td bgcolor=\"#0000CD\" colspan=\"20\" align=\"center\"><b><font color=\"WHITE\">MONTHLY RETURN OF SELF HELP GROUP on $name</font>";
+echo "<tr><td bgcolor=\"#0000CD\" colspan=\"14\" align=\"center\"><b><font color=\"WHITE\"> SELF HELP GROUP Information on $name</font>";
+echo "<tr bgcolor=#BA55D3>";
+echo "<th bgcolor=\"#9ACD32\" Colspan=3>No of Group</th>";
+echo "<th bgcolor=\"#9ACD32\" Colspan=3>Type of Group</th>";
+echo "<th bgcolor=\"#9ACD32\" Colspan=7>Member</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Total<br>Member</th>";
+echo "<tr bgcolor=#BA55D3>";
+echo "<th bgcolor=\"#9ACD32\">Begining</th>";
+echo "<th bgcolor=\"#9ACD32\">During </th>";
+echo "<th bgcolor=\"#9ACD32\">End</th>";
+echo "<th bgcolor=\"#9ACD32\">Male</th>";
+echo "<th bgcolor=\"#9ACD32\">Female </th>";
+echo "<th bgcolor=\"#9ACD32\">Mixed</th>";
+echo "<th bgcolor=\"#9ACD32\">Male</th>";
+echo "<th bgcolor=\"#9ACD32\">Female</th>";
+echo "<th bgcolor=\"#9ACD32\">SC</th>";
+echo "<th bgcolor=\"#9ACD32\">ST</th>";
+echo "<th bgcolor=\"#9ACD32\">OBC</th>";
+echo "<th bgcolor=\"#9ACD32\">Minority</th>";
+echo "<th bgcolor=\"#9ACD32\">General</th>";
+echo "<tr>";
+getInfoSHG($start_date,&$no_g,&$no_m);
+echo "<td align=right>$no_g";
+echo "<td align=right>".getOpenInfoSHG($start_date,$end_date);
+getInfoSHG($end_date,&$no_g,&$no_m);
+echo "<td align=right>$no_g";
+echo "<td align=right>".getSHGType($end_date,'m');
+echo "<td align=right>".getSHGType($end_date,'f');
+echo "<td align=right>".getSHGType($end_date,'u');
+echo "<td align=right>".getSHGDetailInfo($end_date,"sex1='m'");
+echo "<td align=right>".getSHGDetailInfo($end_date,"sex1='f'");
+echo "<td align=right>".getSHGDetailInfo($end_date,"caste1='SC'");
+echo "<td align=right>".getSHGDetailInfo($end_date,"caste1='ST'");
+echo "<td align=right>".getSHGDetailInfo($end_date,"caste1='OBC'");
+echo "<td align=right>".getSHGDetailInfo($end_date,"caste1='min'");
+echo "<td align=right>".getSHGDetailInfo($end_date,"caste1='Gen'");
+echo "<td align=right>$no_m";
+echo "</table>";
+//===========================================FOR DEPOSIT=================================
+echo "<table align=\"CENTER\" border=\"1\" width=\"100%\">";
+echo "<tr><td bgcolor=\"#0000CD\" colspan=\"13\" align=\"center\"><b><font color=\"WHITE\"> SELF HELP GROUP Information on $name</font>";
+echo "<tr bgcolor=#BA55D3>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Sl.No.</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Type of deposit</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Begining of the Month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>End of Month</th>";
+echo "<th bgcolor=\"#9ACD32\"colspan=2>During the month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Decrease or increase</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>% of <br>Decrease/<br>increase</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Begining of the month no of A/C</th>";
+echo "<th colspan=2 bgcolor=\"#9ACD32\">During the Month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>End of the month no of A/C</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>No of A/C Transction Ledger</th>";
+echo "<tr>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Deposit</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Withdrawal</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">closed</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Open</th>";
+echo "<tr>";
+//=================SAVING FOR MEMBER & NON MEMBER ===========================================
+$p_sb=glBalance('14201',$p_year_month,'Cr');
+$sb=glBalance('14201',$year_month,'Cr');
+echo "<tr><th>1<th>Savings<th align=RIGHT>".$p_sb;
+echo "<th align=RIGHT>".$sb;
+getTransactionHistory('14201',$current_date,$s_val_d,$s_val_w,$sno);
+echo "<th align=RIGHT>$s_val_d";
+echo "<th align=RIGHT>$s_val_w";
+echo "<th align=RIGHT>".($s_val_d-$s_val_w);
+echo "<th align=RIGHT>".(int)(($s_val_d-$s_val_w)*100/$s_val_d);
+$s_st_ac=getAccountInfo($start_date,'14201');
+$s_ed_ac=getAccountInfo($end_date,'14201');
+$s_op_ac=getOpenAccountInfo($start_date,$end_date,'14201');
+$s_cl_ac=$s_ed_ac-($s_st_ac+$s_op_ac);
+echo "<th align=RIGHT>".$s_st_ac;
+echo "<th align=RIGHT>".$s_cl_ac;
+echo "<th align=RIGHT>$s_op_ac";
+echo "<th align=RIGHT>".$s_ed_ac;
+echo "<th align=RIGHT>$sno";
+//--------------------------------RD----------------------------------------------
+$p_rd=glBalance('14202',$p_year_month,'Cr');
+$rd=glBalance('14202',$year_month,'Cr');
+echo "<tr><th>2<th>RD<th align=RIGHT>".$p_rd;
+echo "<th align=RIGHT>".$rd;
+getTransactionHistory('14202',$current_date,$d_val_d,$d_val_w,$dno);
+echo "<th align=RIGHT>$d_val_d";
+echo "<th align=RIGHT>$d_val_w";
+echo "<th align=RIGHT>".($d_val_d-$d_val_w);
+echo "<th align=RIGHT>".(int)(($d_val_d-$d_val_w)*100/$d_val_d);
+$d_st_ac=getAccountInfo($start_date,'14202');
+$d_ed_ac=getAccountInfo($end_date,'14202');
+$d_op_ac=getOpenAccountInfo($start_date,$end_date,'14202');
+$d_cl_ac=$d_ed_ac-($d_st_ac+$d_op_ac);
+echo "<th align=RIGHT>".$d_st_ac;
+echo "<th align=RIGHT>".$d_cl_ac;
+echo "<th align=RIGHT>$d_op_ac";
+echo "<th align=RIGHT>".$d_ed_ac;
+echo "<th align=RIGHT>$dno";
+
+//==========================FD  =====================================================
+$p_fd=glBalance('14203',$p_year_month,'Cr');
+$fd=glBalance('14203',$year_month,'Cr');
+echo "<tr><th>3<th>FD<th align=RIGHT>".$p_fd;
+echo "<th align=RIGHT>".$fd;
+getTransactionHistory('14203',$current_date,$f_val_d,$f_val_w,$fno);
+echo "<th align=RIGHT>$f_val_d";
+echo "<th align=RIGHT>$f_val_w";
+echo "<th align=RIGHT>".($f_val_d-$f_val_w);
+echo "<th align=RIGHT>".(int)(($f_val_d-$f_val_w)*100/$f_val_d);
+$f_st_ac=getAccountInfo($start_date,'14203');
+$f_ed_ac=getAccountInfo($end_date,'14203');
+$f_op_ac=getOpenAccountInfo($start_date,$end_date,'14203');
+$f_cl_ac=$f_ed_ac-($f_st_ac+$f_op_ac);
+echo "<th align=RIGHT>".$f_st_ac;
+echo "<th align=RIGHT>".$f_cl_ac;
+echo "<th align=RIGHT>$f_op_ac";
+echo "<th align=RIGHT>".$f_ed_ac;
+echo "<th align=RIGHT>$fno";
+
+//==========================RI FOR ALL =====================================================
+$p_ri=glBalance('14204',$p_year_month,'Cr');
+$ri=glBalance('14204',$year_month,'Cr');
+echo "<tr><th>4<th>RI<th align=RIGHT>".$p_ri;
+echo "<th align=RIGHT>".$ri;
+getTransactionHistory('14204',$current_date,$r_val_d,$r_val_w,$rno);
+echo "<th align=RIGHT>$r_val_d";
+echo "<th align=RIGHT>$r_val_w";
+echo "<th align=RIGHT>".($r_val_d-$r_val_w);
+echo "<th align=RIGHT>".(int)(($r_val_d-$r_val_w)*100/$r_val_d);
+$r_st_ac=getAccountInfo($start_date,'14204');
+$r_ed_ac=getAccountInfo($end_date,'14204');
+$r_op_ac=getOpenAccountInfo($start_date,$end_date,'14204');
+$r_cl_ac=$r_ed_ac-($r_st_ac+$r_op_ac);
+echo "<th align=RIGHT>".$r_st_ac;
+echo "<th align=RIGHT>".$r_cl_ac;
+echo "<th align=RIGHT>$r_op_ac";
+echo "<th align=RIGHT>".$r_ed_ac;
+echo "<th align=RIGHT>$rno";
+
+//==========================MIS FOR ALL =====================================================
+$p_mis=glBalance('14206',$p_year_month,'Cr');
+$mis=glBalance('14206',$year_month,'Cr');
+echo "<tr><th>5<th>MIS<th align=RIGHT>".$p_mis;
+echo "<th align=RIGHT>".$mis;
+getTransactionHistory('14206',$current_date,$m_val_d,$m_val_w,$mno);
+echo "<th align=RIGHT>$m_val_d";
+echo "<th align=RIGHT>$m_val_w";
+echo "<th align=RIGHT>".($m_val_d-$m_val_w);
+echo "<th align=RIGHT>".(int)(($m_val_d-$m_val_w)*100/$m_val_d);
+$m_st_ac=getAccountInfo($start_date,'14206');
+$m_ed_ac=getAccountInfo($end_date,'14206');
+$m_op_ac=getOpenAccountInfo($start_date,$end_date,'14206');
+$m_cl_ac=$m_ed_ac-($m_st_ac+$m_op_ac);
+echo "<th align=RIGHT>".$m_st_ac;
+echo "<th align=RIGHT>".$m_cl_ac;
+echo "<th align=RIGHT>$m_op_ac";
+echo "<th align=RIGHT>".$m_ed_ac;
+echo "<th align=RIGHT>$mno";
+//====================================FINAL STATEMENT ========================================
+echo "<tr bgcolor=\"AQUA\"><th colspan=2>Total:";
+echo "<th align=RIGHT>".($p_sb+$p_rd+$p_fd+$p_ri+$p_mis);
+echo "<th align=RIGHT>".($sb+$rd+$fd+$ri+$mis);
+echo "<th align=RIGHT>".($s_val_d+$d_val_d+$f_val_d+$r_val_d+$m_val_d);
+echo "<th align=RIGHT>".($s_val_w+$d_val_w+$f_val_w+$r_val_w+$m_val_w);
+echo "<th align=RIGHT>";
+echo "<th align=RIGHT>";
+echo "<th align=RIGHT>".($s_st_ac+$d_st_ac+$f_st_ac+$r_st_ac+$m_st_ac);
+echo "<th align=RIGHT>".($s_cl_ac+$d_cl_ac+$f_cl_ac+$r_cl_ac+$m_cl_ac);
+echo "<th align=RIGHT>".($s_op_ac+$d_op_ac+$f_op_ac+$r_op_ac+$m_op_ac);
+echo "<th align=RIGHT>".($s_ed_ac+$d_ed_ac+$f_ed_ac+$r_ed_ac+$m_ed_ac);
+echo "<th align=RIGHT>".($sno+$dno+$fno+$rno+$mno);
+echo "</table>";
+
+
+echo "</body>";
+echo "</html>";
+?>

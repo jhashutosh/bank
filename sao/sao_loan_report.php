@@ -1,0 +1,68 @@
+<?php 
+include "../config/config.php";
+$menu=$_REQUEST["menu"]; 
+$staff_id=verifyAutho();
+?>
+<HTML>
+<head>
+<TITLE>Saving Deposit Reports</TITLE>
+<LINK href="../css/test.css" type="text/css" rel="STYLESHEET">
+</head>
+<BODY>
+<center>
+<font color="GREEN">
+<H1>SAO Loan Reports</H1>
+</font>
+</center>
+<HR>
+<table>
+<tr>
+<td>
+<ol>
+<li><A HREF="../sao/sao_loan_overdue_amount.php?menu=sao">Overdue List of SAO Loan according to Descending order on overdue Amount</A>
+<li><A HREF="../sao/duelist_report.php?state=d&menu=sao">Due List of SAO Loan(Descending) On Due Amount</A>
+<li><A HREF="../sao/practice.php?status=1">In-operate List of SAO Loan(Accending) on SAO A/c no</A>
+<li><A HREF="../sao/sao_loan_accending.php?menu=sao&state=ac">List of all SAO Loan according to accending order on A/c no.</A>
+<li><A HREF="../sao/sao_loan_accending.php?menu=sao&state=amount">List of all SAO Loan according to accending order on Amount</A>
+<li><A HREF="#">Crop-wise Loan Disbursment</A>
+<li><A HREF="#">Monthly Return</A>
+<li><A HREF="../sao/list_of_member.php?menu=sao">List of Members(Descending) on share value</A>
+<li><A HREF="../sao/duelist_report.php?state=yearlyreport&menu=sao">Yearly Report(Any Year) CCB & Farmer</A>
+<li><A HREF="../sao/duelist_report.php?state=dcbs&menu=sao">Demand Collection and balance statement</A>
+<li><A HREF="#">Sole Account Loan(SAO)Scheme</A>
+<li><A HREF="#">Profit & Loss in a particular year</A>
+<li><a href="#">5 years any customer history</A>
+<li><a href="#">Crop wise due list</A>
+<li><a href="../sao/duelist_report.php?state=dr&menu=sao">Daily SAO Loan Repayment List</A>
+<li><a href="../sao/duelist_report.php?state=di&menu=sao">Daily SAO Loan Issued List</A>
+<li><A HREF="#">Consolidated Yearly Report(Any year)</A>
+</ol>
+</td>
+<td>&nbsp;</td>
+<td>
+<ol start=18>
+<li><A HREF="#">Interest receivable SAO Loan current</A>
+<li><A HREF="#">Interest receivable SAO Loan Overdue</A>
+<li><A HREF="#">Interest on SAO Loan current</A>
+<li><A HREF="#">Interest on SAO Loan overdue</A>
+<li><A HREF="#">5 years Loss & Profit A/c of SAO</A>
+
+<li><a href="../sao/duelist_report.php?state=p&menu=sao">Personal statement</A>
+<li><a href="#">Insurance List of Farmer(Paid & Due)</A>
+<li><a href="#">Personal Ledger of shares</A>
+
+<li><a href="#">GP Wise Land List</A>
+
+
+<li><A HREF="#">GP wise Land List</A>
+<li><A HREF="#">Date wise list interest received from Farmer and CCB</A>
+<li><A HREF="../sao/sao_loan_ledger.php?menu=sao">SAO loan ledger statement</A>
+<li><A HREF="../sao/sao_customer_list.php?menu=sao">sao customer list</A>
+<li><A HREF="../sao/sao_customer_list.php?menu=sao">sao opening balance checklist</A>
+
+</ol>
+</td>
+</TABLE>
+<hr>
+</BODY>
+</HTML>

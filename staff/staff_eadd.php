@@ -1,0 +1,53 @@
+<?php
+include "../config/config.php";
+$staff_id=verifyAutho();
+$id=$_REQUEST["user_id"];
+$name=strtolower($_REQUEST["name"]);
+$add=strtolower($_REQUEST['add']);
+$ph=$_REQUEST['ph'];
+$sex=getIndex($sex_array,$_REQUEST['sex']);
+$qualification=getIndex($customer_qualification_array,$_REQUEST['qualify']);
+$designation=getIndex($designation_orga_array,$_REQUEST['designation']);
+$password=md5($_REQUEST["pass"]);
+$repassword=md5($_REQUEST["repassword"]);
+$doj=$_REQUEST['doj'];
+$sal=$_REQUEST['sal'];
+$role=getIndex($role_of_array,$_REQUEST["role"]);
+$boss=$_REQUEST["boss"];
+
+echo "<html>";
+echo "<head>";
+echo "<title>Entry Form - Table: Staff";
+echo "</title>";
+echo "</head>";
+echo "<body>";
+echo "<h1>Entry Form - Table: Staff";
+echo "</h1>";
+echo "<h3>Your submission has been accepted.";
+echo "</h3>";
+echo "<hr>";
+if($password==$repassword){
+if($_REQUEST['op']='i'){
+// Modification required to suite data type
+$sql_statement="INSERT INTO staff(id,name,address,sex,contact_no,qualification,designation, date_of_join,password,password_txn,role,boss,last_login)  VALUES ('$id', '$name', '$add','$sex','$ph','$qualification','$designation','$doj','$password','$password', '$role', '$boss',now())";
+}
+else{
+$sql_statement="UPDATE staff SET name='$name',address='$add',sex='$sex',contact_no='$ph', qualification='$qualification',designation='$designation',date_of_join='$doj',password= '$password',role='$role',boss='$boss',last_login=now() WHERE id='$id'";
+}
+echo $sql_statement; 
+$result=dBConnect($sql_statement);
+if(pg_affected_rows($result)<1) {
+	echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+} else {
+	//echo "<br><h5><font color=\"GREEN\">Data entered into database.</font></h5>";
+	header("Location:staff_tabular.php");
+ }
+}
+else
+{
+ echo "<font color=red size=\"4\"><b>Password not Valid...carefully Enter the Password</font>";
+}
+echo "</body>";
+echo "</html>";
+
+?>

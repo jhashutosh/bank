@@ -1,0 +1,11 @@
+	.report { border-collapse:collapse;}
+
+        .report th { background:white url(header_bkg1.png) repeat-x scroll bottom left; color:#0a0a0a; padding:7px 15px; text-align:left;height:60px;}
+	.report td { background:#CCCCCC  url(row_bkg1.png) repeat-x scroll center left; color:#000; padding:7px 15px; }
+        .report tr.odd td { background:#fff url(row_bkg1.png) repeat-x scroll center left; }
+        	.report caption{background-color:#505050;height:40px;color:#ffffff;font-size:1.4em;}
+        
+        
+        .thead { border-collapse:collapse;}
+        .thead th { background:white url(header_bkg1.png) repeat-x scroll center left; color:#0a0a0a; padding:7px 15px; text-align:center;}
+	.thead caption{background-color:#505050;height:40px;color:#ffffff;font-size:1.4em;}

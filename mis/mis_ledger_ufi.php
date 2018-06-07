@@ -1,0 +1,53 @@
+<?php
+include "../config/config.php";
+$staff_id=verifyAutho();
+$account_no=$_SESSION["current_account_no"];
+$menu=$_REQUEST['menu'];
+//isPermissible($menu);
+echo "<html>";
+echo "<head>";
+echo "<title>Update Form - MIS Deposit";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$id=getCustomerId($account_no,$menu);
+$flag=getGeneralInfo_Customer($id);
+if($flag==1){
+echo "<hr>";
+/*$sql_statement="select account_no from pl_deposit where certificate_no='$account_no' and status='r'";
+$result=pg_Exec($db,$sql_statement);
+//echo $sql_statement;
+//echo "pg_rows:".pg_numRows($result);
+if(pg_numRows($result)==0){
+*/
+$sql_statement="select * from deposit_info where account_no='$account_no' and  withdrawal_date  is null AND action_date<=current_date";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) {
+  echo "<h1><font color=RED align=CENTER><b>Your Account no is Wrong or You don't have any RI !!!!!!!!!</b></h1></font>";
+ }
+else{
+echo "<form method=\"POST\" action=\"mis_ledger_uf.php?menu=$menu\">";
+echo "<table align=\"center\" bgcolor=\"black\" width=\"70%\">";
+echo "<tr><th colspan=\"4\" bgcolor=\"#ADFF2F\"><font size=+3>MIS Withdrawal</font>";
+echo "<tr><td align=\"left\" bgcolor=\"#ADD8E6\">Account no:<td bgcolor=\"#ADD8E6\"><input type=\"TEXT\" name=\"account_no\" size=\"10\" value=\"$account_no\" readonly $HIGHLIGHT><br>";
+echo "<td align=\"left\" bgcolor=\"#ADD8E6\">Transaction Date:<td bgcolor=\"#ADD8E6\"><input type=\"TEXT\" name=\"action_date\" size=\"12\" value=\"".date('d.m.Y')."\" $HIGHLIGHT><br>";
+echo"<tr><td bgcolor=\"#ADD8E6\">Withdrawal:<td bgcolor=\"#ADD8E6\"><select name=\"operation\" ><option value=\"i\">Monthly Interest</option><option value=\"p\">Principal</option></select></td>";
+echo "<td colspan=\"2\"  bgcolor=\"#ADD8E6\">Transfer to Your SB A/C : <INPUT NAME=\"t_status\"  TYPE=\"radio\" VALUE=\"y\" $HIGHLIGHT >Yes &nbsp;&nbsp;<INPUT NAME=\"t_status\"  TYPE=\"radio\" VALUE=\"n\" CHECKED $HIGHLIGHT >No";
+echo "<tr><td align=\"right\" colspan=\"4\" bgcolor=\"#ADD8E6\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"   Go    \">";
+echo "</table>";
+echo "</form>";
+}
+/*}
+else{
+echo "<h1>You can't withdrawal RD A/C No.:<b>$account_no</h1>";
+echo "Becouse you have a pledge a/c bearing with <b>".pg_result($result,'account_no');
+}
+footer();
+*/
+}
+echo "</body>";
+echo "</html>";
+
+?>

@@ -1,0 +1,15 @@
+<?php
+include "../config/config.php"; 
+//$staff_id=varifyAutho();
+echo "<HTML>";
+echo "<HEAD>";
+echo "<LINK href=\"../css/test.css\" type=text/css rel=STYLESHEET>";
+echo "<TITLE>$PROJECT_TITLE</TITLE>";
+echo "</HEAD>";
+echo "<BODY  VLINK=WHITE LINK=WHITE  ALINK=WHITE ALIGN=\"CENTER\">";
+
+
+echo "</BODY>";
+echo "</HTML>";
+
+?>

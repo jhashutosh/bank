@@ -1,0 +1,24 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$id=$_REQUEST['land_id'];
+$desc=$_REQUEST['land_desc'];
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<hr>";
+echo "<form method=\"POST\" action=\"land_ledger_eadd.php?op=i\">";
+echo "<table bgcolor=AQUA align=center width=50%>";
+$id=countRows('land_identification_mas');
+echo "<tr><TH colspan=2 bgcolor=BLUE><font color=WHITE size=+2 align=\"center\"><b>KCC-LAND-ENTRY-FORM";
+echo "<tr><td align=\"left\">Land Id:<td><input type=\"TEXT\" name=\"id\" size=\"10\" value=\"$id\" $HIGHLIGHT><td>";
+echo "<tr><td align=\"left\">Land Description:<td><input type=\"TEXT\" name=\"land_desc\" size=\"15\" value=\"$desc\" $HIGHLIGHT>";
+echo "<tr><tr><td><td><td><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Enter\">";
+echo "</table>";
+echo "</form>";
+echo "</body>";
+echo "</html>";
+?>

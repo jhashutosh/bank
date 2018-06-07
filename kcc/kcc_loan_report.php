@@ -1,0 +1,68 @@
+<?php 
+include "../config/config.php";
+$menu=$_REQUEST["menu"]; 
+$staff_id=verifyAutho();
+?>
+<HTML>
+<head>
+<TITLE>Saving Deposit Reports</TITLE>
+<LINK href="../css/test.css" type="text/css" rel="STYLESHEET">
+</head>
+<BODY>
+<center>
+<font color="GREEN">
+<H1>KCC Loan Reports</H1>
+</font>
+</center>
+<HR>
+<table>
+<tr>
+<td>
+<ol>
+<li><A HREF="../kcc/kcc_loan_overdue_amount.php?menu=kcc">Overdue List of KCC Loan according to Descending order on overdue Amount</A>
+<li><A HREF="../kcc/duelist_report.php?state=d&menu=kcc">Due List of KCC Loan(Descending) On Due Amount</A>
+<li><A HREF="../kcc/practice.php?status=1">In-operate List of KCC Loan(Accending) on KCC A/c no</A>
+<li><A HREF="../kcc/kcc_loan_accending.php?menu=kcc&state=ac">List of all KCC Loan according to accending order on A/c no.</A>
+<li><A HREF="../kcc/kcc_loan_accending.php?menu=kcc&state=amount">List of all KCC Loan according to accending order on Amount</A>
+<li><A HREF="#">Crop-wise Loan Disbursment</A>
+<li><A HREF="#">Monthly Return</A>
+<li><A HREF="../kcc/list_of_member.php?menu=kcc">List of Members(Descending) on share value</A>
+<li><A HREF="../kcc/duelist_report.php?state=yearlyreport&menu=kcc">Yearly Report(Any Year) CCB & Farmer</A>
+<li><A HREF="../kcc/duelist_report.php?state=dcbs&menu=kcc">Demand Collection and balance statement</A>
+<li><A HREF="#">Kishan credit Card(KCC)Scheme</A>
+<li><A HREF="#">Profit & Loss in a particular year</A>
+<li><a href="#">5 years any customer history</A>
+<li><a href="#">Crop wise due list</A>
+<li><a href="../kcc/duelist_report.php?state=dr&menu=kcc">Daily KCC Loan Repayment List</A>
+<li><a href="../kcc/duelist_report.php?state=di&menu=kcc">Daily KCC Loan Issued List</A>
+<li><A HREF="#">Consolidated Yearly Report(Any year)</A>
+</ol>
+</td>
+<td>&nbsp;</td>
+<td>
+<ol start=18>
+<li><A HREF="#">Interest receivable KCC Loan current</A>
+<li><A HREF="#">Interest receivable KCC Loan Overdue</A>
+<li><A HREF="#">Interest on KCC Loan current</A>
+<li><A HREF="#">Interest on KCC Loan overdue</A>
+<li><A HREF="#">5 years Loss & Profit A/c of KCC</A>
+
+<li><a href="../kcc/duelist_report.php?state=p&menu=kcc">Personal statement</A>
+<li><a href="#">Insurance List of Farmer(Paid & Due)</A>
+<li><a href="#">Personal Ledger of shares</A>
+
+<li><a href="#">GP Wise Land List</A>
+
+
+<li><A HREF="#">GP wise Land List</A>
+<li><A HREF="#">Date wise list interest received from Farmer and CCB</A>
+<li><A HREF="../kcc/kcc_loan_ledger.php?menu=kcc">KCC loan ledger statement</A>
+<li><A HREF="../kcc/kcc_customer_list.php?menu=kcc">Kcc customer list</A>
+<li><A HREF="../kcc/kcc_customer_list.php?menu=kcc">Kcc opening balance checklist</A>
+
+</ol>
+</td>
+</TABLE>
+<hr>
+</BODY>
+</HTML>

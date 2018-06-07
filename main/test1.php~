@@ -1,0 +1,83 @@
+<?
+include "../config/config.php";
+
+$menu=$_REQUEST['menu'];
+isPermissible($menu);
+$staff_id=verifyAutho();
+$op=$_REQUEST['op'];
+$id=$_REQUEST['id'];
+
+
+
+$start_date=$_REQUEST["start_date"];
+$end_date=$_REQUEST["end_date"];
+$id=$_REQUEST['crop_id'];
+$ddate=$_REQUEST['due_date'];
+$idrate=$_REQUEST['int_due_rate'];
+$iorate=$_REQUEST['int_overdue_rate'];
+$land=$_REQUEST['min_land_area'];
+$share=$_REQUEST['min_share_qty'];
+$limit=$_REQUEST['credit_limit'];
+$type=$_REQUEST['loan_type'];
+
+if ($menu=='kcc'){$name='Fixed Deposit';}
+if ($menu=='pl'){$name='Fixed Deposit';}
+if ($menu=='mt'){$name='Fixed Deposit';}
+
+
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"st_dt.focus();\">";
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+
+$sql_statement="SELECT * FROM loan_policy";
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>Not found!!!</h4>";
+} else {
+echo "<table valign=\"top\" width=\"100%\">";
+echo "<tr><td bgcolor=\"green\" colspan=\"17\" align=\"center\"><font color=\"white\">Statement</font>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color>Loan Type</th>";
+echo "<th bgcolor=$color>Starting Date</th>";
+echo "<th bgcolor=$color>Ending Daten</th>";
+if($op=='kcc'){
+echo "<th bgcolor=$color>Crop Id</th>";
+echo "<th bgcolor=$color>Land</th>";
+echo "<th bgcolor=$color>Share</th>";
+echo "<th bgcolor=$color>Credit Limit</th>";
+}
+echo "<th bgcolor=$color>Due interest Rate</th>";
+echo "<th bgcolor=$color>Overdue interest Rate</th>";
+echo "<th bgcolor=$color>Loan Repayment date</th>";
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+echo "<td align=right bgcolor=$color>".$row['loan_type']."</td>";
+echo "<td align=right bgcolor=$color>".$row['start_date']."</td>";
+echo "<td align=right bgcolor=$color>".$row['end_date']."</td>";
+if($op=='kcc'){
+echo "<td align=right bgcolor=$color>".$row['crop_id']."</td>";
+echo "<td align=right bgcolor=$color>".$row['min_land_area']."</td>";
+echo "<td align=right bgcolor=$color>".$row['min_share_qty']."</td>";
+echo "<td align=right bgcolor=$color>".$row['credit_limit']."</td>";
+}
+echo "<td align=right bgcolor=$color>".$row['int_due_rate']."</td>";
+echo "<td align=right bgcolor=$color>".$row['int_overdue_rate']."</td>";
+echo "<td align=right bgcolor=$color>".$row['due_date']."</td>";
+}
+echo "</table>";
+}
+
+footer();
+
+echo "</body>";
+echo "</html>";
+?>

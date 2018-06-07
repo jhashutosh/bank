@@ -1,0 +1,60 @@
+drop view customer_sb CASCADE;--1
+drop view customer_fd CASCADE;--2
+drop view customer_rd CASCADE;--3
+drop view customer_ri CASCADE;--4
+drop view customer_mis CASCADE;--5
+drop view customer_shg_sb CASCADE;--6
+drop view customer_shg_fd CASCADE;--7
+drop view customer_shg_rd CASCADE;--8
+drop view customer_shg_ri CASCADE;--9
+drop view customer_shg_mis CASCADE;--10
+drop view customer_member_sb CASCADE;--11
+drop view customer_nonmember_sb CASCADE;--12
+--------------------------------------1-------------------------------------------------------
+CREATE view customer_sb as SELECT customer_master.customer_id,type_of_customer,name1,sex1, dob1,caste1, father_name1,address11,address12,address13,pin1,telephone1,email1,pan_card_no1,voter_id_no1,  occupation1,qualification1,no_of_member,monthly_amount,leader_name,opening_date,account_no, account_type,operation_mode FROM customer_master,customer_account where customer_master.customer_id=customer_account.customer_id AND account_type='sb' AND customer_account.status='op';
+
+------------------------------------------2----------------------------------------------------
+CREATE view customer_fd as SELECT customer_master.customer_id,type_of_customer,name1,sex1,dob1,caste1, father_name1,address11,address12,address13,pin1,telephone1,email1,pan_card_no1,voter_id_no1,  occupation1,qualification1,no_of_member,monthly_amount,leader_name,opening_date,account_no, account_type,operation_mode FROM customer_master,customer_account where customer_master.customer_id=customer_account.customer_id AND account_type='fd' AND customer_account.status='op';
+-------------------------------------------3---------------------------------------------------
+CREATE view customer_rd as SELECT customer_master.customer_id,type_of_customer,name1,sex1,dob1,caste1, father_name1,address11,address12,address13,pin1,telephone1,email1,pan_card_no1,voter_id_no1,  occupation1,qualification1,no_of_member,monthly_amount,leader_name,opening_date,account_no, account_type,operation_mode FROM customer_master,customer_account where customer_master.customer_id=customer_account.customer_id AND account_type='rd' AND customer_account.status='op';
+--------------------------------------------4---------------------------------------------------
+CREATE view customer_ri as SELECT customer_master.customer_id,type_of_customer,name1,sex1,dob1,caste1, father_name1,address11,address12,address13,pin1,telephone1,email1,pan_card_no1,voter_id_no1,  occupation1,qualification1,no_of_member,monthly_amount,leader_name,opening_date,account_no, account_type,operation_mode FROM customer_master,customer_account where customer_master.customer_id=customer_account.customer_id AND account_type='ri' AND customer_account.status='op';
+-------------------------------------------5----------------------------------------------------
+CREATE view customer_mis as SELECT customer_master.customer_id,type_of_customer,name1,sex1,dob1,caste1, father_name1,address11,address12,address13,pin1,telephone1,email1,pan_card_no1,voter_id_no1,  occupation1,qualification1,no_of_member,monthly_amount,leader_name,opening_date,account_no, account_type,operation_mode FROM customer_master,customer_account where customer_master.customer_id=customer_account.customer_id AND account_type='mis' AND customer_account.status='op';
+-------------------------------------------6----------------------------------------------------
+CREATE view customer_shg_sb as SELECT cm.customer_id,cm.type_of_customer,cs.name1,cs.sex1,cs.dob1,cs.caste1, cs.address11, cs.address12,cs.address13,cs.pin1,cs.telephone1,cs.email1,cs.pan_card_no1,cs.no_of_member, cs.monthly_amount,cs.leader_name,cs.opening_date,cs.account_type,cs.account_no FROM customer_master cm,customer_account ca,customer_sb cs where cm.customer_id=ca.customer_id AND ca.account_type='shg' AND cm.customer_id=cs.customer_id;
+-------------------------------------------7----------------------------------------------------
+CREATE view customer_shg_fd as SELECT cm.customer_id,cm.type_of_customer,cs.name1,cs.sex1,cs.dob1,cs.caste1, cs.address11, cs.address12,cs.address13,cs.pin1,cs.telephone1,cs.email1,cs.pan_card_no1,cs.no_of_member, cs.monthly_amount,cs.leader_name,cs.opening_date,cs.account_type,cs.account_no FROM customer_master cm,customer_account ca,customer_fd cs where cm.customer_id=ca.customer_id AND ca.account_type='shg' AND cm.customer_id=cs.customer_id;
+-------------------------------------------8-----------------------------------------------------
+CREATE view customer_shg_ri as SELECT cm.customer_id,cm.type_of_customer,cs.name1,cs.sex1,cs.dob1,cs.caste1, cs.address11, cs.address12,cs.address13,cs.pin1,cs.telephone1,cs.email1,cs.pan_card_no1,cs.no_of_member, cs.monthly_amount,cs.leader_name,cs.opening_date,cs.account_type,cs.account_no FROM customer_master cm,customer_account ca,customer_ri cs where cm.customer_id=ca.customer_id AND ca.account_type='shg' AND cm.customer_id=cs.customer_id;
+-------------------------------------------9-----------------------------------------------------
+CREATE view customer_shg_mis as SELECT cm.customer_id,cm.type_of_customer,cs.name1,cs.sex1,cs.dob1,cs.caste1, cs.address11, cs.address12,cs.address13,cs.pin1,cs.telephone1,cs.email1,cs.pan_card_no1,cs.no_of_member, cs.monthly_amount,cs.leader_name,cs.opening_date,cs.account_type,cs.account_no FROM customer_master cm,customer_account ca,customer_mis cs where cm.customer_id=ca.customer_id AND ca.account_type='shg' AND cm.customer_id=cs.customer_id;
+--------------------------------------------10---------------------------------------------------
+CREATE view customer_shg_rd as SELECT cm.customer_id,cm.type_of_customer,cs.name1,cs.sex1,cs.dob1,cs.caste1, cs.address11, cs.address12,cs.address13,cs.pin1,cs.telephone1,cs.email1,cs.pan_card_no1,cs.no_of_member, cs.monthly_amount,cs.leader_name,cs.opening_date,cs.account_type,cs.account_no FROM customer_master cm,customer_account ca,customer_rd cs where cm.customer_id=ca.customer_id AND ca.account_type='shg' AND cm.customer_id=cs.customer_id;
+-- -- --------------------------------------11---------------------------------------------------
+CREATE view customer_member_sb as SELECT cm.customer_id,cm.type_of_customer,cs.name1,cs.sex1,cs.dob1,cs.caste1, cs.address11, cs.address12,cs.address13,cs.pin1,cs.telephone1,cs.email1,cs.pan_card_no1,cs.no_of_member, cs.monthly_amount,cs.leader_name,cs.opening_date,cs.account_type,cs.account_no FROM customer_master cm,customer_account ca,customer_sb cs where (cs.account_no NOT IN (SELECT account_no FROM customer_shg_sb)) AND (cm.customer_id=ca.customer_id AND ca.account_type='m' AND cm.customer_id=cs.customer_id);
+--------------------------------------------12---------------------------------------------------
+CREATE view customer_nonmember_sb as SELECT * FROM customer_sb where account_no NOT IN (SELECT account_no FROM customer_shg_sb UNION SELECT account_no FROM customer_member_sb);
+--------------------------------------------13--------------------------------------------------
+CREATE view customer_member as SELECT cm.customer_id,cm.type_of_customer,cm.name1,cm.sex1,cm.dob1,cm.caste1, cm.address11, cm.address12,cm.address13,cm.pin1,cm.telephone1,cm.email1,cm.pan_card_no1,cm.no_of_member, cm.monthly_amount,cm.leader_name,cm.date_of_opening,ca.opening_date as membership_opening_date,ca.account_type,ca.account_no FROM customer_master cm,customer_account ca where cm.customer_id=ca.customer_id AND ca.account_type='m';
+
+-----------------------------------------------------------------------------------------------
+
+CREATE TABLE sb_cheque_clearing
+(
+ tran_id varchar(20) primary key,
+ account_no varchar(20),
+ action_date date,
+ cheque_no varchar(15),
+ bank_name varchar(50),
+ branch varchar(50),
+ cheque_date date,
+ amount numeric(12,2),
+ status varchar(10),
+ entry_time timestamp
+);
+------------------------------------------------------------------------------------------------
+create sequence c_id start 1055;
+------------------------------------------------------------------------------------------------
+CREATE view customer_closing_sb as SELECT customer_master.customer_id,type_of_customer,name1,sex1, dob1,caste1, father_name1,address11,address12,address13,pin1,telephone1,email1,pan_card_no1,voter_id_no1,  occupation1,qualification1,no_of_member,monthly_amount,leader_name,opening_date,account_no, account_type,operation_mode,closing_date FROM customer_master,customer_account where customer_master.customer_id=customer_account.customer_id AND account_type='sb' AND customer_account.status='cl';
+

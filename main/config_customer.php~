@@ -1,0 +1,319 @@
+<?
+global $HOST,$DATABASE,$DATESTYLE;
+$customer_qualification_array = array (
+		"ill" => "Illeterate",
+		"ble" => "Below Eight",
+		"ep" => "Eight Pass",
+		"sec" => "Secondary",
+		"hs" => "Higher Secondary",
+		"gra"=> "Graduate",
+		"pg" => "Post Graduate"
+);
+
+$customer_occupation_array=array(
+		"far"=> "Farmar",
+ 		"bus"=> "Business",
+		"ser"=> "Service",
+		"pro"=> "Profession",
+                "hwf"=> "Housewife",
+		"othr"=>"Other"
+);
+$relation_array=array(
+		"fa"=>"Father",
+		"mo"=>"Mother",
+		"si"=>"Sister",
+		"br"=>"Brother",
+		"sn"=>"Son",
+		"dr"=>"Daughter",
+		"hb"=>"Husband",
+		"wf"=>"Wife",
+		"or"=>"Other"
+		);
+$designation_orga_array=array(
+		"pr"=>"President",
+		"vp"=>"Vice-President",
+		"ch"=>"Chairman",
+		"se"=>"Secretary",
+		"as"=>"Assitant Secretary",
+		"js"=>"Joint Secretary",
+		"ac"=>"Accountant",
+		"tr"=>"Treasurer",
+		"pc"=>"Principal",
+		"hm"=>"Head Master",
+		"mg"=>"Manager",
+		"st"=>"Staff",
+		"op"=>"Operator",
+		"ot"=>"Other"
+		);
+function makeSelectSubmit($element_array,$element,$default){
+
+	echo "<SELECT name=\"".$element."\" id=\"select_id\"  onchange=\"onSubmits(this.form);\">";
+	
+	if(!empty($default)){
+		echo "<option>".$default;
+	}
+	
+	while(list($key,$val)=each($element_array)){
+		if($val!=$default){
+			echo "<option>".$val;
+		}
+	}
+	echo "</select>";
+}
+
+function getId($type)
+{
+ global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+ if($type=="cust"){
+ $sql_statement="select 'C-'||(cast(substr(customer_id,3) as int)+1) as id from customer_master ORDER BY entry_time DESC LIMIT 1";
+ }
+ elseif($type=="land")
+{
+ $sql_statement="SELECT 'L-'||(cast(substr(land_id,3) as int)+1) as id from land_info_t ORDER BY entry_time DESC LIMIT 1";
+ }
+ else{
+  //echo "type $type";
+  $len=strlen($type)+2;
+  $code=strtoupper($type)."-";
+  $sql_statement="select '$code'||(cast(substr(account_no,$len) as int)+1) as id from customer_account where account_type='$type' ORDER BY entry_time DESC LIMIT 1";
+     }
+ //echo  $sql_statement;
+ $result=pg_Exec($db,$sql_statement);
+ if(pg_NumRows($result)==0) {
+   if($type=="cust"){ $id="C-1";}
+   if($type=="sb"){ $id="SB-1";} 
+   if($type=="fd"){ $id="FD-1";} 
+   if($type=="ri"){ $id="RI-1";} 
+   if($type=="rd"){ $id="RD-1";} 
+   if($type=="mis"){ $id="MIS-1";} 
+   if($type=="shg"){ $id="SHG-1";} 
+   if($type=="m"){ $id="M-1";} 
+   if($type=="land"){$id="L-1";}
+
+ }
+ else {
+    $id=pg_result($result,"id");
+    }
+    return $id;
+}
+//-----------------------------------------------------------------------------------------//
+function getGroupId($id){
+global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+$sql_statement="SELECT account_no from customer_account where customer_id='$id' And account_type='shg'";
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+echo "sorry";
+}
+else{
+   $g_id=pg_result($result,'account_no');
+ }
+return $g_id;
+}
+//--------------------------------------------------------------------------------------------
+function getCustomerIdFromGoupId($id){
+global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+$sql_statement="SELECT customer_id from customer_account where account_no='$id' And account_type='shg'";
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+echo "sorry";
+}
+else{
+   $g_id=pg_result($result,'customer_id');
+ }
+return $g_id;
+}
+//-------------------------------------------------------------------------------------------//
+function getMemberId($id){
+global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+$sql_statement="SELECT account_no from customer_account where customer_id='$id' And account_type='m'";
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+//echo "sorry";
+}
+else{
+   $g_id=pg_result($result,'account_no');
+ }
+return $g_id;
+}
+//--------------------------------------------------------------------------------------------//
+function getCustomerId($id){
+global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+ $id=strtoupper($id);
+  $sql_statement="SELECT customer_id from customer_account where account_no='$id'";
+ //echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+$c_id=null;
+}
+else{
+   $c_id=pg_result($result,'customer_id');
+ }
+return $c_id;
+}
+//-------------------------------------------------------------------------------------------//
+function getCustomerIdFromVoterId($id){
+global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+ //$id=strtoupper($id);
+//echo "id is :$id";
+ $sql_statement="SELECT customer_id from customer_master where voter_id_no1 ='$id' or voter_id_no2='$id' or voter_id_no3='$id'";
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+$c_id=null;
+}
+else{
+   $c_id=pg_result($result,'customer_id');
+ }
+return $c_id;
+}
+//----------------------------------------------------------------------------------
+function getReportingBoss()
+{
+ global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+ $sql_statement="SELECT id,name from staff";
+ $result=pg_Exec($db,$sql_statement);
+ echo "<select name=\"boss\">";
+ if(pg_NumRows($result)==0) {
+ echo "<option>Null</option>";
+}
+else{
+      for($j=1; $j<=pg_NumRows($result); $j++) {
+      $row=pg_fetch_array($result,($j-1)); 
+      echo "<option value=\"".$row['id']."\">".$row['name']."</option>";
+    }
+}
+echo "</select>";
+}
+//-----------------------------------------------------------------------------------
+function makeSelectFromDB($table,$feild,$name)
+{
+ global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+ $sql_statement="SELECT $feild from $table";
+ //echo  $sql_statement;
+ $result=pg_Exec($db,$sql_statement);
+ echo "<select name=\"$name\">";
+ if(pg_NumRows($result)==0) {
+ echo "<option>Null</option>";
+}
+else{
+      for($j=1; $j<=pg_NumRows($result); $j++) {
+      $row=pg_fetch_array($result,($j-1)); 
+      echo "<option>".$row[$feild]."</option>";
+    }
+}
+echo "</select>";
+}
+//-----------------------------------------------------------------------------------
+function checkUserId($id){
+global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+ $sql_statement="SELECT * from staff where id='$id'";
+ //echo $sql_statement;
+ $result=pg_Exec($db,$sql_statement);
+ if(pg_NumRows($result)>0)
+  {
+   echo "<font color=Red>****Id Already Exist choose another one!!!!</font>";
+   $id=null;
+  }
+ else{
+ $id=$id;
+ }
+ return $id;
+
+}
+
+
+//-------------------------------------------------------------------------------
+function getSHGMember($c_id){
+global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+ $sql_statement="SELECT no_of_member from customer_master where customer_id='$c_id'";
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+echo "sorry";
+}
+else{
+   $g_id=pg_result($result,'no_of_member');
+ }
+return $g_id;
+}
+//--------------------------------------------------------------------------------------------
+function global_sb_current_balance($status)
+{
+ global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+ if($status=="shg"){$status="customer_shg_sb";}
+ if($status=="mem"){$status="customer_member_sb";}
+ if($status=="non"){$status="customer_nonmember_sb";}
+  $sql_statement="SELECT SUM(balance) AS balance FROM current_balance_t WHERE account_no IN (SELECT account_no FROM $status)";
+ $result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+  $balance=0;
+}
+else{
+     $balance=pg_result($result,'balance');
+ }
+settype($balance,"int");
+return $balance;
+}
+//-----------------------------------------------------------------------------------------
+function isActive_sb_account($account_no)
+{
+ global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+ $sql_statement="SELECT status from customer_account where account_no='$account_no'";
+ $result=pg_Exec($db,$sql_statement);
+ if(pg_NumRows($result)!=0) {
+ $status=pg_result($result,'status');
+ }
+ return $status;
+}
+//---------------------------------------------------------------------------------------------
+function getNextVal($id)
+{
+ global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+ $sql_statement="SELECT nextval('$id') as id";
+ $result=pg_Exec($db,$sql_statement);
+ if(pg_NumRows($result)!=0) {
+ $id=pg_result($result,'id');
+ }
+ return $id;
+}
+
+
+
+
+
+
+
+
+
+
+
+?>

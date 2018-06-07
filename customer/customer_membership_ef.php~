@@ -1,0 +1,52 @@
+<?
+include "../config/config.php";
+$customer_id=$_REQUEST['id'];
+$type=$_REQUEST['type'];
+$status="Membership";
+//$m_id=getId($type);
+echo "<HTML>";
+echo "<script src=\"../JS/calendar.js\">";
+echo "</script>";
+echo "<script src=\"../JS/validation.js\">";
+echo "</script>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "<BODY bgcolor=\"red\" onload=\"no_of_share.focus();\">";
+
+$flag=getGeneralInfo_Customer($id);
+if($flag==1){
+echo "<hr>";
+echo "<table width=\"100%\" bgcolor=#66CDAA>";
+echo "<tr><th colspan=\"4\" bgcolor=green><b><font color=White>Membership Form</font></b></th>";
+echo "<form name=\"f1\" method=\"POST\" action=\"customer_membership_eadd.php\">";
+echo "<tr><td>Customer No. : <td><input type=\"TEXT\" name=\"id\" size=10 value=\"$customer_id\" readonly $HIGHLIGHT>";
+echo "<td>Opening Date:<td><input type=\"TEXT\" name=\"op_dt\" size=\"10\" value=\"".date('d/m/Y')."\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"date1\" value=\"...\" onclick=\"showCalendar(f1.op_dt,'dd/mm/yyyy','Choose Date')\">";
+//echo "<td>Membership No. : <td><input type=\"TEXT\" name=\"ac_no\" size=10 value=\"$m_id\" readonly $HIGHLIGHT>";
+echo "<tr><td>Status of Customer: <td><input type=\"RADIO\" name=\"type\" size=50 value=\"G\">Govt.";
+echo "&nbsp;<input type=\"RADIO\" name=\"type\"  value=\"I\" CHECKED>Individual";
+echo "&nbsp;<input type=\"RADIO\" name=\"type\"  value=\"S\">SHG";
+echo "&nbsp;<input type=\"RADIO\" name=\"type\"  value=\"O\">Other";
+//echo "<td>Opening Date:<td><input type=\"TEXT\" name=\"op_dt\" size=\"10\" value=\"".date('d/m/Y')."\" $HIGHLIGHT>";
+//echo "&nbsp;<input type=\"button\" name=\"date1\" value=\"...\" onclick=\"showCalendar(f1.op_dt,'dd/mm/yyyy','Choose Date')\">";
+echo "<tr><td>No.of Share :<td><input type=text size=10 name=\"no_of_share\" id=\"no_of_share\" $HIGHLIGHT>";
+echo "<td>Per Share :<td> Rs. &nbsp; <input type=text size=10 name=val_of_share value=10 $HIGHLIGHT>";
+echo "<tr><td>Admission Fees: <td><input type=\"TEXT\" name=\"adm\" size=10 value=\"5\" $HIGHLIGHT>";
+echo "<td colspan=1 >Nomination :<td colspan=1 align=\"LEFT\"><input type=RADIO value=yes name=r1 onClick=enable_txt(this.value)>Yes&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "<input type=RADIO value=no name=r1 CHECKED onClick=enable_txt(this.value)>No";
+echo "<tr><td>Name of Nominee:<td><input type=TEXT name=n_name size=15 disabled $HIGHLIGHT>";
+echo "<td>Address:<td><input type=TEXT name=n_add size=35 disabled $HIGHLIGHT>";
+echo "<tr><td>Age:<td><input type=TEXT name=n_age size=7 disabled $HIGHLIGHT>";
+echo "<td>Relation:<td>";
+makeSelectDisabled($relation_array,'relation');
+echo "<tr><td>If Nominee is minor:<td>";
+echo "<input type=RADIO value=yes name=r2 onClick=enable_button(this.value);> Yes&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "<input type=RADIO value=no name=r2 CHECKED onClick=enable_button(this.value);>No";
+echo "<tr><td>Date of Birth:<td><input type=\"TEXT\" name=\"ndob\" size=\"10\" value=\"\" disabled $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"b1\" value=\"...\" onclick=\"showCalendar(f1.ndob,'dd/mm/yyyy','Choose Date')\" disabled>";
+echo "<td><td><input type=submit value=Submit>&nbsp;";
+echo "</form>";
+echo "</table>";
+}
+echo "</body>";
+echo "</HTML>";
+?>

@@ -1,0 +1,17 @@
+<!-- <li><A HREF="daily_report.php">Daily Scroll Report</A> -->
+<!-- <li><A HREF="sb_current_balance_tabular.php">Current balance</A>  -->
+<!-- <li><A HREF="pre_sb_current_balance_tabular.php">Previous Current balance</A> ->
+<li><A HREF="sb_provisional_interest_tabular.php">Interest Payable On Saving Deposit</A>
+<li><A HREF="sb_current_balance_tabular.php?status=mem&current_date=<?date('d/m/y')?>">code:14101-->Savings Deposit(Individual Members)</A>
+<li><A HREF="shg_current_balance_tabular.php">code:14201-->Savings Deposit(SHG)</A>
+<li><A HREF="nrgs_current_balance_tabular.php">code:14201-->Savings Deposit(NRGS)</A>
+<li><A HREF="sb_current_balance_tabular.php?status=non">code:14301-->Savings Deposit(Non Members)</A>
+
+<li><A HREF=>code:16101-->Interest Payable on Savings Deposit(Member)</A>
+<li><A HREF=>code:16201-->Interest Payable on Savings Deposit(SHG)</A>
+<li><A HREF=>code:16301-->Interest Payable on Savings Deposit(Non Members)</A>
+<li><A HREF=>code:62101-->Interest on Savings Deposit(Members)</A>
+<li><A HREF=>code:62201-->Interest on Savings Deposit(SHG)</A>
+<li><A HREF=>code:62301-->Interest on Savings Deposit(Non Members)</A>
+<li><A HREF=><font color=red>code:28202-->Savings A/c(SCB/CCB)</A>
+<li><A HREF=><font color=red>code:28302-->Savings A/c(Others Bank)</A>

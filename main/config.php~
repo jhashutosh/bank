@@ -1,0 +1,1937 @@
+<?
+include "organization.php"; 
+include "config_customer.php";
+$HOST="192.168.1.1";
+$DATABASE="joypur";
+$DATESTYLE="SET DATESTYLE to 'German'";      // 15.10.1970
+// $DATESTYLE="SET DATESTYLE to 'European'";   // 1970-10-15
+
+// $SYSTEM_TITLE=" Ltd.";
+//$ORG_CODE="1.51";
+$VERSION_INFO="2.0";
+$PROJECT_TITLE="<Font Color=RED><b>Banking System Solutions</b></FONT>";
+$ORGANISATION_TITLE="Developed by Netware";
+
+// $ORGANISATION_ADDRESS1="Hooghly";
+$ORGANISATION_ADDRESS2="West Bengal";
+$ORGANISATION_ADDRESS3="INDIA";
+
+// Interface color definition
+// Green
+$FRAMEBORDERCOLOR="#448844";
+$FRAMECOLOR="#448844";
+//INDIGO
+//$FRAMEBORDERCOLOR="INDIGO";
+//$FRAMECOLOR="INDIGO";
+// Sky Blue
+//$FRAMEBORDERCOLOR="#2D678E";
+//$FRAMECOLOR="#2D678E";
+//$FRAMECOLOR="G";
+
+// Golden yellow
+ //$FRAMEBORDERCOLOR="#F9A107";
+ //$FRAMECOLOR="#F9A107";
+
+
+// Table color definition
+$TBGCOLOR="#FFFFFF";
+$TCOLOR="#CCDDCC";
+
+// -------------------------------------
+// This project specific
+$VILL_DEFAULT="Dhatrigram";
+$POST_DEFAULT="Dhatrigram";
+$POLICESTATION_DEFAULT="Kalna";
+// $DISTRIC_DEFAULT="Hooghly";
+// $PIN_DEFAULT="712146";
+$STATE_DEFAULT="West Bengal";
+$COUNTRY_DEFAULT="India";
+$DOB_DEFAULT="01.01.1900";
+$DATE_OF_MATURITY_DEFAULT="31.12.3000";
+$MAX_LIMIT_DEFAULT=99999999.99;
+$MIN_LIMIT_DEFAULT=00000000.00;
+$WITHDRAWALS_DEFAULT=0.00;
+$DEPOSITS_DEFAULT=0.00;
+$BALANCE_DEFAULT=0.00;
+
+$CREDIT_LIMIT_AMAN_DEFAULT=0.00;
+$CREDIT_LIMIT_POTATO_DEFAULT=0.00;
+$CREDIT_LIMIT_BORO_DEFAULT=0.00;
+$RATE_OF_INTEREST_ON_LOAN_DEFAULT=4.50;
+$RATE_OF_INTEREST_ON_DEFAULT_LOAN_DEFAULT=5.50;
+$DATE_OF_CLOSING_DEFAULT=$DATE_OF_MATURITY_DEFAULT;
+$MONTHLY_REPAYMENT_DUE_DATE_DEFAULT=7; // within a week
+
+$AMOUNT_OF_LOAN_DEFAULT=0.00;
+$REPAYMENT_AMOUNT_FIXED_PRINCIPAL_DEFAULT=0.00;
+$REPAYMENT_AMOUNT_FIXED_INTEREST_DEFAULT=0.00;
+$RECOVERY_AMOUNT_PRINCIPAL_DEFAULT=0.00;
+$RECOVERY_AMOUNT_INTEREST_DEFAULT=0.00;
+$RECOVERY_ADDITIONAL_INTEREST_DEFAULT=0.00;
+$RECOVERY_LEGAL_EXPENSES_DEFAULT=0.00;
+$BALANCE_PRINCIPAL_DEFAULT=0.00;
+$BALANCE_INTEREST_DEFAULT=0.00;
+$BANK_CHARGE_DEFAULT=25;
+
+function deregisterCookies(){
+	setcookie("staff_id");   // 1. Presently who is working
+	setcookie("login_time"); // 2. What is his/her login time
+	setcookie("current_account_no"); // present active a/c no
+	setcookie("current_account_type"); // present active a/c type 
+	setcookie("current_loan_account_no"); // present active customer loan a/c no
+}
+
+function isValidEmailAddress($email_address){
+	if(ereg("^.+@.+\\..+$",$email_address)){return 1;} else {return 0;}
+}
+
+function nextValue($sequence_name){
+	global $HOST, $DATABASE;
+	$db=pg_Connect("host=$HOST dbname= $DATABASE");
+	
+	$sql_statement="SELECT nextval('$sequence_name')";
+
+	$result=pg_Exec($db,$sql_statement);
+
+	if(pg_NumRows($result)==0) {
+		echo "<strong>System Error!!!</strong>";
+	} else {
+		for ($i=1; $i<=pg_NumRows($result);$i++) {
+			$row=pg_fetch_array($result,($i-1));
+			return $row[0];
+		}
+	}
+}
+	
+//-------------------------------------------------------
+// Integer to by spelling, started  here
+
+  function convrtstrl($n) { 
+
+	$flag=0;
+	$text="";
+
+	$m=(integer)($n/10);
+	$remainder=$n % 10;
+
+	$range="";
+
+	switch ($m) {
+		case 9:
+			$range=" Ninety ";
+			break;
+		case 8:
+			$range=" Eighty ";
+			break;
+			case 7:
+		$range=" Seventy ";
+		break;
+		case 6:
+			$range=" Sixty ";
+			break;
+		case 5:
+			$range=" Fifty ";
+			break;
+		case 4:
+			$range=" Forty ";
+			break;
+		case 3:
+			$range=" Thirty ";
+			break;
+		case 2:
+			$range=" Twenty ";
+			break;
+		case 1:
+			$flag=1; // flag to detect 11 to 19
+			switch ($remainder) {
+				case 9:
+					$text=" Nineteen ";
+					break;
+				case 8:
+					$text=" Eighteen ";
+					break;
+				case 7:
+					$text=" Seventeen ";
+					break;
+				case 6:
+					$text=" Sixteen ";
+					break;
+				case 5:
+					$text=" Fifteen ";
+					break;
+				case 4:
+					$text=" Fourteen ";
+					break;
+				case 3:
+					$text=" Thirteen ";
+					break;
+				case 2:
+					$text=" Twelve ";
+					break;
+				case 1:
+					$text=" Eleven ";
+					break;
+				case 0:
+					$text=" Ten ";
+					break;
+				}			
+			break;
+		case 0:
+			break;
+
+		}
+
+	if($flag==0) {
+		switch ($remainder) {
+			case 9:
+				$text=" Nine ";
+				break;
+			case 8:
+				$text=" Eight ";
+				break;
+			case 7:
+				$text=" Seven ";
+				break;
+			case 6:
+				$text=" Six ";
+				break;
+			case 5:
+				$text=" Five ";
+				break;
+			case 4:
+				$text=" Four ";
+				break;
+			case 3:
+				$text=" Three ";
+				break;
+			case 2:
+				$text=" Two ";
+				break;
+			case 1:
+				$text=" One ";
+				break;
+			}
+	}			
+	$text=$range.$text;
+	return $text;
+	}  // end of convrtstrl()
+
+function money_int2string($n) {
+
+// This function is written to convert any number to string. Maximum limit is 99 crore 99 lack 99 thousand 9 hundred 
+// 99. Minimum is 0 (Zero). Any negative number will give zero which is wrong.
+
+
+if($n<=0) {
+	return "Zero";
+	} else {
+		if($n>=1000000000) {
+		return "Unable to convert it! ";
+		}
+	}
+
+$text="";
+$remainder=$n;
+
+while ($n>99) {
+	$m=floor(log10((float)$n));
+
+	switch ($m) {
+		case 8:
+		case 7:
+			$range=" Crore ";
+			$d=7;
+			break;
+		case 6:
+		case 5:
+			$range=" Lakh ";
+			$d=5;
+			break;
+		case 4:
+		case 3:
+			$range=" Thousand ";
+			$d=3;
+			break;
+		case 2:
+			$range=" Hundred ";
+			$d=2;
+			break;
+
+		}	
+
+	$divisor=(integer)pow((float)10,(float)$d);
+	$dividend=(integer)($n/$divisor);
+	$remainder=$n % $divisor;
+
+	//echo "<br>",$m," ", $dividend, "  ",$remainder;
+
+
+	$text=$text.convrtstrl($dividend).$range;
+	$n=$remainder;
+	}
+$text=$text.convrtstrl($remainder);
+return $text;
+}
+
+function money2string($m) {
+	$part=split("\.",$m,2);
+	//echo "$part[0]| $part[1]|";
+	$text=money_int2string((integer)$part[0]); 
+
+	if((integer)$part[1]>0){
+		$text=$text." and ".money_int2string((integer)$part[1])." paise "; 
+	} 
+	return $text;
+}
+//---------------------End of integer to spelling----------
+
+$role_array = array(
+	"ub" => "update banks", // Can only update all bank accounts
+	"ob" => "open bank a/c", // Can open a new bank account
+	"md" => "modify a/c info", // Modify a/c informations
+	"of" => "officer", // Officer, can do most
+	"al" => "all");    // can do everything, if permits
+$role_of_array=array(
+		"normal"=>"Normal",
+		"adminstrator"=>"Administrator"
+		);
+
+function verifyAutho(){ // verify authorisation
+	$staff_id=$_REQUEST["staff_id"];
+	//echo "staff_id= ".$staff_id;
+	if(empty($staff_id)){
+	  if( strcmp($SERVER_PROTOCOL,"HTTP/1.0") ){
+			header("Cache-control: no-cache, must-revalidate"); // 1.1
+		} 
+		else {
+			header("Pragma: no-cache"); // 1.0
+		}
+		header("Location: index1.php");
+	} 
+	return $staff_id;	
+}
+
+function isPermissible($menu){ // whether operation is permisible
+	$staff_id=$_REQUEST["staff_id"];
+	$active_account_type=$_REQUEST['current_account_type'];
+
+	if(empty($staff_id)){
+	  if( strcmp($SERVER_PROTOCOL,"HTTP/1.0") ){
+			header("Cache-control: no-cache, must-revalidate"); // 1.1
+		} else {
+			header("Pragma: no-cache"); // 1.0
+		}
+		header("Location: index1.php");
+	} 
+
+	if(!strcmp($menu,$active_account_type)){
+		return true;
+	} else {
+		header("Location: action_not_permitted.php");
+		return false;
+	}
+
+	return true;	
+}
+
+function isAdministrator($id){ // $id=$staff_id 
+  // to verify whether the staff is admin or not
+	
+	global $HOST,$DATABASE,$DATESTYLE;
+
+	$db=pg_Connect("host=".$HOST." dbname=".$DATABASE);
+	$result=pg_Exec($db,$DATESTYLE);
+
+	// verify the role 
+	$result=pg_Exec($db,"SELECT role FROM staff WHERE id='".$id."'");
+	if(pg_NumRows($result)==0){
+		return false; // false
+	} else {
+		$role=pg_result($result,'role');
+		return ereg("admin",$role);
+	}
+}
+
+$type_of_account1_array = array (
+		"sb" => "Saving",
+		//"ca" => "Current",
+		"rd" => "Recurring Deposit",
+		"fd" => "Fixed Deposit",
+		"ri" => "Reinvestment",
+		"mis"=> "MIS",
+		"mln" => "MT-Loan",
+		"pl"=>"Pledge",
+		"kcc"=>"Kishan Credit Card"
+);
+
+
+$type_of_group_array = array (
+		"m" => "Male",
+		"f" => "Female",
+		"u" => "Mixed");
+		
+$search_by_array=array(
+ 		"voter_card"=>"Voter Card",
+		"name"=>"Name",
+                "account"=>"Account No"
+		);
+$type_of_account2_array = array (
+                "bl" => " ",
+		"so" => "Sole Account",
+		"jn" => "Joint Account",
+		"or" => "Organisational",
+		"gp" => "Group Account",
+		//"ot" => "Other"
+		);
+		
+$account_operation_array = array (
+		"si" => "Single operation",
+		"jo" => "Joint operation",
+		"es" => "Either/Survivor");
+
+$sex_array = array (
+		"m" => "Male",
+		"f" => "Female");
+
+$customer_type_array = array (
+		"m" => "Member",
+		"nm" => "Non-Member",
+		"shg" => "SHG");
+	
+$identity_proof_array = array (
+	"vo" => "Voter card",
+	"pa" => "Passport",
+	"pn" => "PAN card",
+	"dl" => "Driving license",
+	"id" => "Govt. id card");
+	
+$address_proof_array = array (
+	"ra" => "Ration card",
+	"pa" => "Passport",
+	"dl" => "Driving license",
+	"id" => "Govt. id card",
+	"eb" => "Electric bill",
+	"tb" => "Telephone bill",
+	"ot" => "other");
+	
+$dob_proof_array = array (
+	"sc" => "School leaving certificate",
+	"pa" => "Passport",
+	"dl" => "Driving license",
+	"bc" => "Birth certificate");
+
+$bank_withdrawal_particulars_array = array (
+	"cash" => "cash",
+	"cheque" => "cheque",
+	"int." => "interest",
+	"other" => "others");
+		
+$member_type_array = array (
+	"mem" => "Member",
+	"non-mem" => "Non-Member",
+	"shg" => "SHG");
+$farmer_type_array = array (
+		"o" => "Own land",
+		"b" => "Bhag chashi",
+		);
+$land_array = array (
+		"i" => "Irrigated land",
+		"n" => "Non irrigated land",
+		);
+
+function makeSelect($element_array,$element,$default){
+
+	echo "<SELECT name=\"".$element."\">";
+	
+	if(!empty($default)){
+		echo "<option>".$default;
+	}
+	
+	while(list($key,$val)=each($element_array)){
+		if($val!=$default){
+			echo "<option>".$val;
+		}
+	}
+	echo "</select>";
+}
+
+function makeSelectDisabled($element_array,$element,$default){
+
+	echo "<SELECT name=\"".$element."\" disabled>";
+	
+	if(!empty($default)){
+		echo "<option>".$default;
+	}
+	
+	while(list($key,$val)=each($element_array)){
+		if($val!=$default){
+			echo "<option>".$val;
+		}
+	}
+	echo "</select>";
+}
+
+function getIndex($element_array,$element){
+
+	while(list($key,$val)=each($element_array)){
+		if(!strcmp($element,$val)) { return $key; }
+	}
+}
+
+function sb_current_balance($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT balance FROM sb_ledger WHERE account_no='$account_no' ORDER BY entry_time DESC";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=(float)$row["balance"];
+			return $balance;
+		}
+	}
+}
+
+function current_balance($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT balance FROM accountledger_other WHERE account_no='$account_no' ORDER BY entry_time DESC";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=(float)$row["balance"];
+			return $balance;
+		}
+	}
+}
+
+function isexists($element_array,$element){
+	while(list($key,$val)=each($element_array)){
+		if(!strcmp($element,$key)) { return 1; }
+	}
+	return 0;
+}
+
+
+
+// ----------------------------------
+$fd_type_array = array (
+		"s" => "Short Term",
+		"m" => "Mid Term",
+		"l" => "Long Term");
+
+$withdrawn_type_array = array (
+		"" => "Active",
+		"p" => "Premature",
+		"m" => "Mature");
+		
+$fd_compute_type_array = array (
+		"si" => "Simple Interest",
+		"coqr" => "Compound quart. rests",
+		"cy" => "Cumulative Yearly");
+		
+$scheme_array = array (
+		"fd" => "Fixed Deposit",
+		"sf" => "Special Fixed Deposit",
+		"sc" => "Senior Citizen Deposit",
+		"ri" => "Reinvestment");
+		
+
+//$fd_period_array	
+function fd_period_select(){	
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT * FROM fd_interest_rate";
+	//$sql_statement="SELECT * FROM fd_interest_rate ORDER BY id";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return;
+	} else {
+		echo "<SELECT name=\"period\">";
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			//$balance=(float)$row["balance"];
+			echo "<OPTION>".$row['period'];
+			//return $balance;
+		}
+		echo "</SELECT>";
+	}
+}
+
+
+// Now compute interest, maturity value etc.
+// This function is under development and can only compute 
+// cummelative interest. 
+function compute_fd($scheme,$amount_deposit,$period,&$rate_of_interest,&$total_interest,&$maturity_amount,$opening_date){
+	global $HOST,$DATABASE,$DATESTYLE;
+
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	$result=pg_Exec($db,$DATESTYLE);
+	$sql_statement="SELECT * from fd_interest_rate where id =
+(select id from fd_interest_rate where period=
+(select max(period) from fd_interest_rate where period<=$period) AND year_witheffect=
+(select max(year_witheffect) from fd_interest_rate where year_witheffect<='$opening_date'
+ and period=(select max(period) from fd_interest_rate where period<=$period)))";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		// return ;
+		$rate_of_interest=0;
+	} else {
+		
+			$row=pg_fetch_array($result,($j-1));
+			$rate_of_interest=(float)$row["rate"];
+		
+	 //echo "here is the rate".$rate_of_interest;
+		switch($scheme){
+			case "Special Fixed Deposit":  
+				// Now Special fixed deposit is getting 2% 
+				// more interest than normal FD
+				$rate_of_interest=$rate_of_interest+2;
+				break;
+			case "Senior Citizen Deposit":
+				// Now senior citizen deposit is getting 1% 
+				// more interest than normal FD
+				$rate_of_interest=$rate_of_interest+0.50;
+				break;
+			case "Fixed Deposit":
+				break;
+		}
+	}
+	
+
+
+  	// Simple Interest 
+	function compute_simple($principal,$rate,$time){
+		//echo "time is" .$time;// - is in year
+		$n=$time;
+		//settype($n,"float");
+	  	$i=$rate/100.00;
+  		//echo "Prin is:".$principal;
+                 
+		$amount=($principal*$i*$n)/365;
+		//echo "Amount". $amount;
+		return $amount;
+	}
+	
+        // Cumulative (yearly)
+	function compute_cumulative($principal,$rate,$time){
+		// $time - is in year
+		
+		$n=$time;        // in full year
+	  	$i=$rate/100.00; // per rupee, etc
+		$amount=$principal*pow((1+$i),$n);
+
+		return $amount;
+	}
+	
+	$maturity_amount=$amount_deposit+compute_simple($amount_deposit,$rate_of_interest,$period);
+
+	$total_interest=$maturity_amount-$amount_deposit;
+	$maturity_amount=sprintf("%-12.0f",$maturity_amount);
+	$total_interest=sprintf("%-12.0f",$total_interest);
+	return;
+}
+
+function maturity_date($opening_date,$period){
+	global $HOST,$DATABASE,$DATESTYLE;
+
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	//echo "here".$opening_date;
+        //$op_date=int($period*30)." 0:0:0";
+        //echo "op_date".$op_date;
+	$sql_statement="SELECT (date '$opening_date' + interval '$period month') AS maturity_date";
+        //echo "sql".$sql_statement;
+	$result=pg_Exec($db,$sql_statement);
+	//$op_month=
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return  '01/01/1970';
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$maturity_date=$row['maturity_date'];
+			$maturity_date=ereg_replace("\.","/",$maturity_date);
+			$maturity_date=substr($maturity_date,0,10);
+		  return $maturity_date;	
+		}
+	}
+}
+function maturity_date_year($opening_date,$period){
+	global $HOST,$DATABASE,$DATESTYLE;
+
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	//echo "here".$opening_date;
+        //$op_date=int($period*30)." 0:0:0";
+        //echo "op_date".$op_date;
+	$sql_statement="SELECT (date '$opening_date' + interval '$period year') AS maturity_date";
+        //echo "sql".$sql_statement;
+	$result=pg_Exec($db,$sql_statement);
+	//$op_month=
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return  '01/01/1970';
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$maturity_date=$row['maturity_date'];
+			$maturity_date=ereg_replace("\.","/",$maturity_date);
+			$maturity_date=substr($maturity_date,0,10);
+		  return $maturity_date;	
+		}
+	}
+}
+function fd_maturity_date($opening_date,$period){
+	global $HOST,$DATABASE,$DATESTYLE;
+
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	//echo "here".$opening_date;
+        //$op_date=int($period*30)." 0:0:0";
+        //echo "op_date".$op_date;
+	$sql_statement="SELECT (date '$opening_date' + interval '$period day') AS maturity_date";
+        //echo "sql".$sql_statement;
+	$result=pg_Exec($db,$sql_statement);
+	//$op_month=
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return  '01/01/1970';
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$maturity_date=$row['maturity_date'];
+			$maturity_date=ereg_replace("\.","/",$maturity_date);
+			$maturity_date=substr($maturity_date,0,10);
+		  return $maturity_date;	
+		}
+	}
+}
+
+// Recurring Deposit (RD) --------
+//------------------------------------------------
+$due_date_type_array = array (
+		"7d" => "within 7th",
+		"15d" => "within 15th",
+		"ld" => "within 30th");
+
+$particulars_type_array = array (
+		"ma" =>  "Monthly Amount",
+		"p" => "Penalty",
+		"o" => "Others");
+
+$rd_compute_type_array = array (
+		"si" => "Not implemented");
+		
+//$rd_period_array	
+function rd_period_select(){	
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT period FROM rd_interest_rate";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return;
+	} else {
+		echo "<SELECT name=\"period\">";
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			//$balance=(float)$row["balance"];
+			echo "<OPTION>".$row['period'];
+			//return $balance;
+		}
+		echo "</SELECT>";
+	}
+}
+
+// Now compute interest, maturity value etc.
+// This function is under development.
+
+function compute_rd($amount_deposit,$period,&$rate_of_interest,&$total_interest,&$maturity_amount,$opening_date){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	
+	// Customization required for WHERE CLAUSE
+	$sql_statement="SELECT * from rd_interest_rate where id =
+(select id from rd_interest_rate where period=
+(select max(period) from rd_interest_rate where period<=$period) AND year_witheffect=
+(select max(year_witheffect) from rd_interest_rate where year_witheffect<='$opening_date'
+ and period=(select max(period) from rd_interest_rate where period<=$period)))";
+	//echo $sql_statement;
+	$result=pg_Exec($db,$sql_statement);
+	//echo "no of row is ".pg_NumRows($result);
+	if(pg_NumRows($result)==0) {
+	$rate_of_interest=0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$rate_of_interest=(float)$row["rate"];
+
+			//$maturity_rate=(float)$row["maturity_rate"];
+		}
+	}
+
+	$n=$period/3;
+	$i=$rate_of_interest/400;
+	//echo "<br>i=".$i;
+	$j=1-pow(($i+1),-1/3);
+	//echo "<br>j=".$j;
+	$k=$amount_deposit*((pow((1+$i),$n))-1);
+	//echo "<br>k=".$k;
+	$maturity_amount=$k/$j;
+	$total_interest=$maturity_amount-($amount_deposit*$period);
+	$maturity_amount=sprintf("%-12.0f",$maturity_amount);
+	$total_interest=sprintf("%-12.0f",$total_interest);
+	return;
+}
+
+//----------------------------------------------------------
+
+$designation_type_array = array (
+	"Member" => "Member",
+	"Leader" => "Leader",
+	"Sub-Leader" => "Sub-Leader");
+
+$caste_array = array (
+	"SC" => "SC",
+	"ST" => "ST",
+	"OBC" => "OBC",
+	"Gen" => "General");
+
+function rd_current_balance($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT balance FROM rd_ledger WHERE account_no='$account_no' ORDER BY entry_time DESC";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		$balance=(float)pg_result($result,'balance');
+		return $balance;
+	}
+}
+
+function rd_maturity_amount($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT maturity_amount FROM rd_info WHERE account_no='$account_no'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		$balance=(float)pg_result($result,'maturity_amount');
+		return $balance;
+	}
+}
+
+function fd_deposit_amount($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT amount_deposit FROM fd_ledger WHERE account_no='$account_no'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		$balance=(float)pg_result($result,'amount_deposit');
+		return $balance;
+	}
+}
+
+function fd_maturity_amount($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT maturity_amount FROM fd_ledger WHERE account_no='$account_no'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		$balance=(float)pg_result($result,'maturity_amount');
+		return $balance;
+	}
+}
+
+function ri_deposit_amount($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT amount_deposit FROM ri_ledger WHERE account_no='$account_no'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		$balance=(float)pg_result($result,'amount_deposit');
+		return $balance;
+	}
+}
+
+function ri_maturity_amount($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT maturity_amount FROM ri_ledger WHERE account_no='$account_no'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		$balance=(float)pg_result($result,'maturity_amount');
+		return $balance;
+	}
+}
+//--------------------------------------------------------------
+
+
+function shg_sb_total_balance($group_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$balance=0.0;
+	$c_id=getCustomerIdFromGoupId($group_no);
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT account_no FROM customer_shg_sb WHERE customer_id='$c_id' AND account_type='sb'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=$balance+(float)sb_current_balance($row['account_no']);
+		}
+		return $balance;
+	}
+}
+
+function shg_fd_total_deposit($group_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$balance=0.0;
+	$c_id=getCustomerIdFromGoupId($group_no);
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT account_no FROM customer_shg_fd WHERE customer_id='$c_id' AND account_type='fd'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=$balance+(float)fd_deposit_amount($row['account_no']);
+		}
+		return $balance;
+	}
+}
+function shg_fd_total_maturity_amount($group_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$balance=0.0;
+	$c_id=getCustomerIdFromGoupId($group_no);
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT account_no FROM customer_shg_fd WHERE customer_id='$c_id' AND account_type='fd'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=$balance+(float)fd_maturity_amount($row['account_no']);
+		}
+		return $balance;
+	}
+}
+
+function shg_rd_total_balance($group_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$balance=0.0;
+	$c_id=getCustomerIdFromGoupId($group_no);
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT account_no FROM customer_shg_rd WHERE customer_id='$c_id' AND account_type='rd'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=$balance+(float)rd_current_balance($row['account_no']);
+		}
+		return $balance;
+	}
+}
+function shg_rd_total_maturity_amount($group_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$balance=0.0;
+	$c_id=getCustomerIdFromGoupId($group_no);
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+	$sql_statement="SELECT account_no FROM customer_shg_rd WHERE customer_id='$c_id' AND account_type='rd'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=$balance+(float)rd_maturity_amount($row['account_no']);
+		}
+		return $balance;
+	}
+}
+
+function shg_ri_total_deposit_amount($group_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$balance=0.0;
+	$c_id=getCustomerIdFromGoupId($group_no);
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT account_no FROM customer_shg_ri WHERE customer_id='$c_id' AND account_type='ri'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=$balance+(float)ri_deposit_amount($row['account_no']);
+		}
+		return $balance;
+	}
+}
+function shg_ri_total_maturity_amount($group_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$balance=0.0;
+	$c_id=getCustomerIdFromGoupId($group_no);
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT account_no FROM customer_shg_ri WHERE customer_id='$c_id' AND account_type='ri'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=$balance+(float)ri_maturity_amount($row['account_no']);
+		}
+		return $balance;
+	}
+}
+
+//-----------------------------------------------------------
+//$ri_period_array	
+function ri_period_select(){	
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT * FROM ri_interest_rate";
+	//$sql_statement="SELECT * FROM fd_interest_rate ORDER BY id";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return;
+	} else {
+		echo "<SELECT name=\"period\">";
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			//$balance=(float)$row["balance"];
+			echo "<OPTION>".$row['period'];
+			//return $balance;
+		}
+		echo "</SELECT>";
+	}
+}
+
+function compute_ri($scheme,$amount_deposit,$period,&$rate_of_interest,&$total_interest,&$maturity_amount,$opening_date){
+	global $HOST,$DATABASE,$DATESTYLE;
+	//echo "Scheme is $scheme";
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	
+	// Customization required for WHERE CLAUSE
+	$sql_statement="SELECT * from ri_interest_rate where id =
+(select id from ri_interest_rate where period=
+(select max(period) from ri_interest_rate where period<=$period) AND year_witheffect=
+(select max(year_witheffect) from ri_interest_rate where year_witheffect<='$opening_date'
+ and period=(select max(period) from ri_interest_rate where period<=$period)))";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		// return ;
+		$rate_of_interest=0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$rate_of_interest=(float)$row["rate"];
+		}
+		switch($scheme){
+			case "Special Fixed Deposit":  
+				// Now Special fixed deposit is getting 2% 
+				// more interest than normal RI
+				$rate_of_interest=$rate_of_interest+2;
+				break;
+			case "Senior Citizen Deposit":
+				// Now senior citizen deposit is getting 0.50% 
+				// more interest than normal RI
+				$rate_of_interest=$rate_of_interest+0.50;
+				break;
+			case "Fixed Deposit":
+				break;
+		               }
+              }
+
+	// compute period
+	//settype($period,"double");
+	$t=$period/12;
+	// compound on quarterly rests (Like Canara Bank - Kamadhenu FD)
+	function compute_coqr($principal,$rate,$time){
+		// $time - is in year
+		
+		$n=$time*4.00;   // No. of quarters
+	        $i=$rate/400.00; // per quarter per 1 rupee, etc
+		$amount=$principal*pow((1+$i),$n);
+
+		return $amount;
+	}
+	
+	$maturity_amount=compute_coqr($amount_deposit,$rate_of_interest,$t);
+
+	$total_interest=$maturity_amount-$amount_deposit;
+	$maturity_amount=sprintf("%-12.0f",$maturity_amount);
+	$total_interest=sprintf("%-12.0f",$total_interest);
+	return;
+}
+function installment($rate,$principal){
+	$month_installment=$rate*$principal/1200;
+	return $month_installment;
+	}
+
+function mis_current_balance($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT balances FROM mis_ledger WHERE account_no='$account_no' ORDER BY entry_time DESC";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=(float)$row["balances"];
+			return $balance;
+		}
+	}
+}
+//--------------------------------------------------------------------
+// CI REPORT RELATED FUNCTION 
+//----------------------------------------------------------------------
+function generate_ci_report($starting_date,$ending_date){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT gantar_sb('$starting_date','$ending_date');SELECT gantar_fd('$starting_date','$ending_date');SELECT gantar_rd('$starting_date','$ending_date');SELECT gantar_ri('$starting_date','$ending_date');SELECT shg_sb('$starting_date','$ending_date'); SELECT shg_fd('$starting_date','$ending_date');SELECT shg_rd('$starting_date','$ending_date');SELECT shg_ri('$starting_date','$ending_date')";
+//	$SEL";;
+//	$SEL";;
+//	$SEL";;
+//	$SEL";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		echo "<h4>Not found!!!</h4>";
+	//	return 0.0;
+	} else {
+		echo "<h4></h4>";		
+	}
+	}
+
+function sb1(&$no_ac_st,&$st_amt,&$amt_rec_mon,&$amt_wdrawal,&$no_ac_cl,&$no_ac_op,&$tot_no_of_ac,&$tot_bal){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	$sql_statement="select * from sb_month_rpt";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0){
+	return 0.0;
+	} else {
+	for($j=1;$j<=pg_NumRows($result);$j++) {
+		$row=pg_fetch_array($result,($j-1));
+		$no_ac_st=$row["no_of_account_starting"];
+		$st_amt=$row["total_start_amt"];
+		$amt_rec_mon=$row["amt_recv_in_month"];
+		$amt_wdrawal=$row["amt_withdrawl_month"];
+		$no_ac_cl=$row["no_of_ac_closed"];
+		$no_ac_op=$row["no_of_ac_opend"];
+		$tot_no_of_ac=$row["no_of_bal_account"];
+		$tot_bal=$row["total_balance_amount"];
+		}
+	}
+}
+function fd1(&$no_of_ac_st1,&$tot_st_amt1,&$amt_rec_in_mon1,&$amt_wdraw1,&$no_ac_cl1,&$no_ac_op1,&$tot_bal1){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	$sql_statement="select * from fd_month_rpt";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0){
+	return 0.0;
+	} else {
+	for($j=1;$j<=pg_NumRows($result);$j++) {
+		$row=pg_fetch_array($result,($j-1));
+		$no_of_ac_st1=(float)$row["no_of_account_starting"];
+		$tot_st_amt1=(float)$row["total_start_amt"];
+		$amt_rec_in_mon1=(float)$row["amt_recv_in_month"];
+		$amt_wdraw1=(float)$row["amt_withdrawl_in_month"];
+		$no_ac_cl1=(float)$row["no_of_ac_closed"];
+		$no_ac_op1=(float)$row["no_of_ac_opend"];
+		//$no_bal_account1=(float)$row["no_of_bal_account"];
+		$tot_bal1=(float)$row["total_balance_amount"];
+		}
+	}
+}
+function rd1(&$no_of_ac_st2,&$tot_st_amt2,&$amt_rec_in_mon2,&$amt_wdraw2,&$no_ac_cl2,&$no_ac_op2,&$tot_bal2){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	$sql_statement="select * from rd_month_rpt";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0){
+	return 0.0;
+	} else {
+	for($j=1;$j<=pg_NumRows($result);$j++) {
+		$row=pg_fetch_array($result,($j-1));
+		$no_of_ac_st2=(float)$row["no_of_account_starting"];
+		$tot_st_amt2=(float)$row["total_start_amt"];
+		$amt_rec_in_mon2=(float)$row["amt_recv_in_month"];
+		$amt_wdraw2=(float)$row["amt_withdrawl_in_month"];
+		$no_ac_cl2=(float)$row["no_of_ac_closed"];
+		$no_ac_op2=(float)$row["no_of_ac_opend"];
+		//$no_bal_account2=(float)$row["no_of_bal_account"];
+		$tot_bal2=(float)$row["total_balance_amount"];
+		}
+	}
+}
+function ri1(&$no_of_ac_st3,&$tot_st_amt3,&$amt_rec_in_mon3,&$amt_wdraw3,&$no_ac_cl3,&$no_ac_op3,&$tot_bal3){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	$sql_statement="select * from ri_month_rpt";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0){
+	return 0.0;
+	} else {
+	for($j=1;$j<=pg_NumRows($result);$j++) {
+		$row=pg_fetch_array($result,($j-1));
+		$no_of_ac_st3=(float)$row["no_of_account_starting"];
+		$tot_st_amt3=(float)$row["total_start_amt"];
+		$amt_rec_in_mon3=(float)$row["amt_recv_in_month"];
+		$amt_wdraw3=(float)$row["amt_withdrawl_in_month"];
+		$no_ac_cl3=(float)$row["no_of_ac_closed"];
+		$no_ac_op3=(float)$row["no_of_ac_opend"];
+		//$no_bal_account3=(float)$row["no_of_bal_account"];
+		$tot_bal3=(float)$row["total_balance_amount"];
+		}
+	}
+}
+function shg1(&$no_of_ac,&$tot_amt_st,&$amnt_rec_in_mon,&$bal_amt){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	$sql_statement="select * from shg_month_rpt";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0){
+	return 0.0;
+	} else {
+	for($j=1;$j<=pg_NumRows($result);$j++) {
+		$row=pg_fetch_array($result,($j-1));
+		$no_of_ac=(float)$row["no_of_account"];
+		$tot_amt_st=(float)$row["total_amount_strt"];
+		$amnt_rec_in_mon=(float)$row["amt_recv_in_month"];
+		$bal_amt=(float)$row["bal_amount"];
+		}
+	}
+}
+    
+function getaccount_code($no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT type_of_account2,membership_no FROM account_sb WHERE account_no='$no'";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return ;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$status=$row["type_of_account2"];
+			$mem_no=$row["membership_no"];
+		}
+	}
+$mem_no=trim($mem_no);
+if($status=="shg"){
+$temp=0;
+}
+
+if(empty($mem_no) && $status!="sgh"){
+$temp=1;
+}
+
+if(!empty($mem_no) && $status!="sgh"){
+$temp=2;
+}
+return $temp;
+}
+
+function get_code_value($id)
+{
+switch($id)
+{
+case 0:
+$ac_code="14202";
+break;
+
+case 1:
+$ac_code="14301";
+break;
+
+case 2:
+$ac_code="14101";
+break;
+}
+return $ac_code;
+}
+//------------------------------------------------------------------
+// New KCC related function
+//------------------------------------------------------------------
+$crop_type_array = array (
+		"aman" => "Aman",
+		"amanr" => "Aman rain",
+		"aushirre" => "Aush irreg",
+		"aushr" => "Aush rain",
+		"hybridirre" => "Hybrid irreg",
+		"hybridr" => "Hybrid rain",
+		"juteirre" => "Jute irreg",
+		"juter" => "Jute rain",
+		"potatoirre" => "Potato irreg",
+		"potator" => "Potato rain",
+		"boroirre" => "Boro irreg",
+		"boror" => "Boro rain",
+		"wheatirre" => "Wheat irreg",
+		"wheatr" => "Wheat rain",
+		"otherirre" => "Other irreg",
+		"otherr" => "Other rain");
+
+$loan_status_array = array (
+					"due" => "Due",
+					"paid"=>	"Paid",
+					"odue"=>	"Over due",
+					"npa" =>	"NPA");
+
+function credit_lim_amount($account_no,$crop_type){
+
+global $HOST,$DATABASE,$DATESTYLE;
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+$sql_statement="select * from kcc_account where account_no='$account_no'";// where action_date='$action_date'";
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0){
+	return 0.0;
+} else{
+		for($j=1; $j<=pg_NumRows($result); $j++){
+			$row=pg_fetch_array($result,($j-1));
+		$cr_limit_amn=(float)$row['credit_limit_aman'];
+		$cr_limit_aus=(float)$row['credit_limit_aush'];
+		$cr_limit_hyb=(float)$row['credit_limit_hybrid'];
+		$cr_limit_jut=(float)$row['credit_limit_jute'];
+		$cr_limit_pot=(float)$row['credit_limit_potato'];
+		$cr_limit_bor=(float)$row['credit_limit_boro'];
+		$cr_limit_wht=(float)$row['credit_limit_wheat'];
+		$cr_limit_oth=(float)$row['credit_limit_other'];
+			}
+    switch($crop_type){
+			case "Aman":
+			 $cr_lim=$cr_limit_amn;
+			break;
+			case "Aush":
+			$cr_lim= $cr_limit_aus;
+			break;
+			case "Hybrid":
+			$cr_lim= $cr_limit_hyb;
+			break;
+			case "Jute":
+			$cr_lim= $cr_limit_jut;
+			break;
+			case "Potato":
+			$cr_lim= $cr_limit_pot;
+			break;
+			case "Boro":
+			$cr_lim= $cr_limit_bor;
+			break;
+			case "Wheat":
+			$cr_lim= $cr_limit_wht;
+			break;
+			case "Other":
+			$cr_lim= $cr_limit_oth;
+			break;
+		
+
+		
+		}
+		//echo $cr_lim;
+			return $cr_lim;
+
+	}
+}
+//cash account current balance
+function cash_current_balance($account_code_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT balance_amount FROM cash_book_tm WHERE account_code_no='$account_code_no' ORDER BY entry_time DESC";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=(float)$row["balance_amount"];
+			return $balance;
+		}
+	}
+}
+function kcc_balance1($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT balance_principal AS balance_amount FROM kcc_ledger_t WHERE account_no='$account_no' ORDER BY entry_time DESC";
+//echo $sql_statement;
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=(float)$row["balance_amount"];
+			echo "<br>Balance=$balance";
+			return $balance;
+		}
+	}
+}
+
+function cred_limit_id($size_of_land){
+
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT id,size_of_land  FROM credit_limit_t ";
+echo $sql_statement;
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$lim=(float)$row["size_of_land"];
+			if($size_of_land<$lim){
+			$idno=$row["id"];
+			return $idno;
+			}else{
+			$j=$j+1;
+		}
+	}		//		$idno=$idno+1;
+					echo $idno;
+					return $idno;
+		}
+	
+}
+function size_of_land_select($account_no){
+
+global $HOST,$DATABASE,$DATESTYLE;
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+$sql_statement="select total_size_of_land from membership_t where kcc_account_no='$account_no'";
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0){
+//	return 0.0;
+} else{
+		for($j=1; $j<=pg_NumRows($result); $j++){
+			$row=pg_fetch_array($result,($j-1));
+		$total_size_of_land=(float)$row['total_size_of_land'];
+		return $total_size_of_land;
+		}
+	}
+}
+
+
+function range_of_land(){
+
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT distinct size_of_land FROM credit_limit_t ";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+		
+		echo "<SELECT name=\"range_of_land\">";
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			echo "<OPTION>".$row['size_of_land'];
+			//return $balance;
+		}
+		echo "</SELECT>";
+	}
+}
+//kcc_credit limit function required for jotsyram
+ 
+function kcc_credit_limit($crop_type,$land_size){
+
+global $HOST,$DATABASE,$DATESTYLE;
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+$sql_statement="select * from credit_limit_t where size_of_land=$land_size and crop_type='$crop_type'";
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0){
+//	return 0.0;
+} else{
+		for($j=1; $j<=pg_NumRows($result); $j++){
+			$row=pg_fetch_array($result,($j-1));
+		$cr_limit=(float)$row['credit_limit'];
+		return $cr_limit;
+		}
+	}
+}
+
+function select_crop_type(){	
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT crop_type FROM credit_limit_t where current_date between loan_issue_start and loan_issue_end";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return;
+	} else {
+		echo "<SELECT name=\"crop_type\">";
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			echo "<OPTION>".$row['crop_type'];
+		}
+		echo "</SELECT>";
+	}
+}
+
+function select_account_no(){
+global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT account_no FROM account_sb where status IS NULL";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return;
+	} else {
+		echo "<SELECT name=\"account_no\">";
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			echo "<OPTION>".$row['account_no'];
+		}
+		echo "</SELECT>";
+	}
+}
+function select_interest_rate(){	
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+
+	$sql_statement="SELECT distinct rate_of_interest FROM fd_ledger order by rate_of_interest";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return;
+	} else {
+		echo "<SELECT name=\"rate\">";
+		echo "<OPTION> </OPTION>";
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			echo "<OPTION>".$row['rate_of_interest'];
+		}
+		echo "</SELECT>";
+	}
+}
+
+function select_ri_interest_rate(){	
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+	$sql_statement="SELECT distinct rate_of_interest FROM ri_info order by rate_of_interest";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return;
+	} else {
+		echo "<SELECT name=\"rate\">";
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			echo "<OPTION>".$row['rate_of_interest'];
+		}
+		echo "</SELECT>";
+	}
+}
+//function for member select
+function select_member(){	
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+	$sql_statement="SELECT membership_no FROM membership_t ";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return;
+	} else {
+		echo "<SELECT name=\"membership_no\">";
+		for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			echo "<OPTION>".$row['membership_no'];
+		}
+		echo "</SELECT>";
+	}
+}
+
+ 
+function pl_balance1($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+$sql_statement="SELECT balance_principal AS balance_amount FROM pl_ledger_t WHERE account_no='$account_no' ORDER BY entry_time DESC";
+
+$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} else {
+for($j=1; $j<=pg_NumRows($result); $j++) {
+			$row=pg_fetch_array($result,($j-1));
+			$balance=(float)$row["balance_amount"];
+			echo "<br>Balance=$balance";
+			return $balance;
+		}
+	}
+}
+function loan_issue($group_no)
+{
+global $HOST,$DATABASE,$DATESTYLE;
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+$sql_statement="select SUM(principal_amount) from shg_loan_info where group_no='$group_no' and status=NULL";
+$result=pg_Exec($db,$sql_statement);
+$amount=pg_Result($result,"sum");
+if($amount==null)
+ {
+  $amount=0;
+ }
+return $amount;
+} 
+
+function loan_total_balance($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+	$sql_statement="SELECT * FROM loan_balance('$account_no')";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} 
+	else {
+		$amount=pg_result($result,"loan_balance");
+        	}
+ return $amount;
+}
+function loan_cuurent_balance($account_no){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+	$sql_statement="SELECT  balance_principal FROM shg_loan_ledger WHERE loan_account_no='$account_no' AND action_date=(SELECT MAX(action_date) FROM shg_loan_ledger where loan_account_no='$account_no')";
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+		//echo "<h4>Not found!!!</h4>";
+		return 0.0;
+	} 
+	else {
+		$amount=pg_result($result,"balance_principal");
+        	}
+ return $amount;
+}
+//------------------------------------for Customer -----------------------------------------//
+function getGeneralInfo_Customer($id){
+global $HOST,$DATABASE,$DATESTYLE;
+ $db=pg_pConnect("host=$HOST dbname=$DATABASE");
+ $result=pg_Exec($db,$DATESTYLE);
+$sql_statement="SELECT * FROM customer_master WHERE customer_id='$id'";
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+$flag=0;
+echo "<h1><b><center><blink><font color=\"red\">This is Not valid Customer Id !!!</b></h1>";
+} else {
+echo "<table width=\"100%\" valign=\"top\">";
+echo "<th bgcolor=\"red\" colspan=\"3\" align=\"center\"><font color=\"white\">General Information</font>";
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$row=pg_fetch_array($result,($j-1));
+echo "<tr><td>Customer Id: <b>".$row['customer_id']."</B><td>Date of Opening: <b>".$row['date_of_opening']."</b><br>";
+$member_id=getMemberId($id);
+$type_of_customer=trim($row['type_of_customer']);
+$customer_type=getCustomerType($type_of_customer);
+if($member_id==null){
+echo "<tr><td valign=\"top\">Type of customer: <b>".$customer_type;
+   }
+else{
+    echo "<tr><td>Membership No.: <b><a href=\"land_info_statment.php?id=$id&membership_no=$member_id\">".$member_id."</a></B>";
+    echo "<td valign=\"top\">Type of customer: <b>".$customer_type;
+   }
+if ($type_of_customer=="so")
+    {
+      echo "<br><tr><td>Shri/Smt. <b>".ucwords($row['name1'])."</b>";
+
+      echo "[<a href=\"large_signature.php?A=".$row['customer_id']."\">photo & sig.</a>] ";
+
+	 echo "<br><tr><td>Father/Hus. <b>".ucwords($row['father_name1'])."</b>";
+
+      echo  "<br>".ucwords($row['address11']).",".ucwords($row['address12'])."<br>".ucwords($row['address13']).", PIN ".$row['pin1'];
+      echo "<br>Voter Card No. :".$row['voter_id_no1'];
+      echo "<br>Pan Card No. :".$row['pan_card_no1'];
+    }
+
+else 
+  {
+   if($type_of_customer=="jn" ||$type_of_customer=="or"){
+      if($type_of_customer=="jn")
+  	 {
+  	 echo "<br><tr><td>Shri/Smt. <b>".ucwords($row['name1'])."</b>";
+
+   	 echo "[<a href=\"large_signature.php?A=".$row['customer_id']."\">photo & sig.</a>] ";
+	 echo "<br><tr><td>Father/Hus. <b>".ucwords($row['father_name1'])."</b>";
+
+   	 echo  "<br>".ucwords($row['address11']).",".ucwords($row['address12'])."<br>".ucwords($row['address13']).", PIN ".$row['pin1'];
+   	 echo "<br>Voter Card No. :".$row['voter_id_no1'];
+	}
+    if($type_of_customer=="or"){
+	 echo "<br><tr><td>Organisation: <b>".ucwords($row['name1'])."</b>";
+
+   	 echo  "<br>".ucwords($row['address11']).",".ucwords($row['address12'])."<br>".ucwords($row['address13']).", PIN ".$row['pin1'];
+        }
+   	 echo "<br>Pan Card No. :".$row['pan_card_no1'];
+ //--------------for second name holder-----------
+   	 echo "<td>Shri/Smt. <b>".ucwords($row['name2'])."</b>";
+   	 echo "[<a href=\"large_signature.php?A=".$row['customer_id']."\">photo & sig.</a>] ";
+   	 echo  "<br>".ucwords($row['address21']).",".ucwords($row['address22'])."<br>".ucwords($row['address23']).", PIN ".$row['pin2'];
+    	 echo "<br>Voter Card No. :".$row['voter_id_no2'];
+   	 echo "<br>Pan Card No. :".$row['pan_card_no2'];
+//------------for third name holeder -------------------
+ if(!empty($row['name3']))
+  {
+   echo "<td>Shri/Smt. <b>".ucwords($row['name3'])."</b>";
+   echo "[<a href=\"large_signature.php?A=".$row['customer_id']."\">photo & sig.</a>] ";
+   echo  "<br>".ucwords($row['address31']).",".ucwords($row['address32'])."<br>".ucwords($row['address33']).", PIN ".$row['pin3'];
+   echo "<br>Voter Card No. :".$row['voter_id_no3'];
+   echo "<br>Pan Card No. :".$row['pan_card_no3'];
+   }
+ }
+ if($type_of_customer=="gp"){
+	echo "<tr><td>Group Name: <b>".ucwords($row['name1'])."</b>";
+	echo  "<br>".ucwords($row['address11']).",".ucwords($row['address12'])."<br>".ucwords($row['address13']).", PIN ".$row['pin1'];
+   	echo "<br>Leader :<b>".ucwords($row['leader_name']);
+   	echo "</b><br>No. of Member:".$row['no_of_member'];
+	$group_id=getGroupId($id);
+	echo "<td>Group No.: <b>".$group_id."</b>";
+       }
+    }
+ }
+echo "</table>";
+$flag=1;
+}
+return $flag;
+}
+//-----------------------------------------------------------------------------------
+function getCustomerType($id){
+//echo "type of customer id:$id";
+switch($id){
+case "so":
+$customer_type= "Sole Account";
+//echo "type of customer:$customer_type";
+break;
+case "jn":
+$customer_type="Joint Account";
+break;
+case "or":
+$customer_type="Organisational";
+break;
+case "gp":
+$customer_type="Group Account";
+break;
+}
+
+return $customer_type;
+}
+//------------------------------------------------------------------------------------------
+function getCustomerMode($id){
+//echo "type of customer id:$id";
+switch($id){
+case "si":
+$customer_mode= "Single operation";
+//echo "type of customer:$customer_type";
+break;
+case "jo":
+$customer_mode="Joint operation";
+break;
+case "es":
+$customer_mode="Either/Survivor";
+break;
+
+}
+
+return $customer_mode;
+}
+//--------------------------------------------------------------------------------------------
+function current_balance_share($membership_id,&$no_of_share,&$value_of_share){
+	global $HOST,$DATABASE,$DATESTYLE;
+	$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+	$result=pg_Exec($db,$DATESTYLE);
+	// Customization required for WHERE CLAUSE
+	$sql_statement="SELECT * FROM share_ledger WHERE member_id='$membership_id' order by entry_time DESC LIMIT 1";
+	//echo $sql_statement;
+	$result=pg_Exec($db,$sql_statement);
+	if(pg_NumRows($result)==0) {
+                $no_of_share=0;
+		$value_of_share=0;
+		return 0.0;
+	} 
+	else {
+		$no_of_share=pg_result($result,"no_of_share_balance");
+		$value_of_share=pg_result($result,"value_of_balance");
+        	}
+}
+
+//----------------------------------------------------------------------------
+include "config_loan.php";
+include "config1.php";
+include "pl_config.php";
+?>

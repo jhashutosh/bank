@@ -1,0 +1,49 @@
+<?
+include "../config/config.php";
+//$menu=$_REQUEST['menu'];
+//isPermissible($menu);
+echo "<html>";
+echo "<head>";
+echo "<title>Monthly Return Deposit";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+
+echo "<body>";
+echo "<H1>MONTHLY RETURN OF DEPOSIT</H1>";
+echo "<form METHOD=\"POST\" ACTION=\"monthly_return.php\">";
+echo "<center>";
+echo "<table width=\"80\"><tr><td>";
+
+/*echo "<p align=\"center\">";
+echo "<FONT color=blue><i><B>MONTHLY RETURN OF DEPOSIT</B></i></font><br>";
+echo "<FONT size=\"+1\" color=orenge><B>JOYPUR S.K.U.S.Ltd.</B></FONT><BR>";
+echo "Joypur,Burdwan<br>";
+echo "Regd. No.40, Dated:12.02.1949<br>";
+echo "</p>";*/
+echo "<table border=\"1\" align=center>";
+echo "<tr><td bgcolor=\"#0000CD\" colspan=\"20\" align=\"center\"><b><font color=\"WHITE\">MONTHLY RETURN OF DEPOSIT</font>";
+echo "<tr bgcolor=#BA55D3>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Sl.No.</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Type of deposit</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Begining of the Month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>End of Month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Received During the month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Withdrawn During the month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Decrease or increase</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>% of Decrease/increase</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>cash in Hand</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>cash in Bank</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>% of deposit in CCB</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Begining of the month no of A/C</th>";
+echo "<th colspan=2 bgcolor=\"#9ACD32\">During the Month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>End of the month no of A/C</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>No of A/C Transction</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>No of A/C Transction Ledger</th>";
+echo "<tr>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">closed</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Open</th>";
+echo "</table>";
+echo "</body>";
+echo "</html>";
+?>

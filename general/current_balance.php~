@@ -1,0 +1,28 @@
+<?
+include "config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$current_date=$_REQUEST["current_date"];
+//if(empty($current_date) ) { $current_date=date("d/m/Y"); }
+echo "<html>";
+echo "<head>";
+echo "<title>Saving Bank Current Balance";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$sql_statement="SELECT current_balance('$current_date') as balance";
+//echo $sql_statement;
+//echo"<h1><center><font color=blue>Current Balance :</font><font Color=RED><b>Rs. $balance</b></font></center></h1>";
+//echo "<hr>";
+echo "<table align=CENTER width=100%>";
+echo "<tr bgcolor=red><th colspan=>Current Balance as on $current_date";
+echo "<tr bgcolor=GREEN><th>Particulars<th>Balance(Rs)";
+echo "<tr bgcolor=$TBGCOLOR><td><a href=\"sb_current_balance_tabular.php?current_date=$current_date&status=mem&balance=$member_balance\">Individual Member(Excluding SHG)</a><td align=right><b>$member_balance";
+echo "<tr bgcolor=$TCOLOR><td><a href=\"sb_current_balance_tabular.php?current_date=$current_date&status=non&balance=$non_balance\">Individual Non-Member(Excluding SHG)</a><td align=right><b>$non_balance";
+echo "<tr bgcolor=$TBGCOLOR><td><a href=\"sb_current_balance_tabular.php?current_date=$current_date&status=shg&balance=$shg_balance\">SHG <td align=right><b>$shg_balance";
+echo "<tr bgcolor=cyan><td align=CENTER><a href=\"sb_current_balance_tabular.php?current_date=$current_date&status=all&balance=$balance\">Total:<td align=RIGHT><b>$balance";
+echo "</table>";
+echo "</body>";
+echo "</html>";
+
+?>

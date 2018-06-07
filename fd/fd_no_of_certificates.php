@@ -1,0 +1,99 @@
+<?php
+include "../config/config.php";
+$staff_id=verifyAutho();
+
+$menu=$_REQUEST["menu"];
+$rate=$_REQUEST["rate"];
+
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<font color=\"blue\"><b>$SYSTEM_TITLE</font>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "<font color=\"green\">$date1</font></center><br>";
+echo "<body bgcolor=\"silver\">";
+$title=trim($menu);
+
+echo "<hr>";
+
+echo "<form method=\"POST\" action=\"fd_no_of_certificates.php\">";
+echo "<tr><td align=\"left\">select interest rate:<td>";
+//select_interest_rate();
+
+echo " <input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Submit\">";
+
+echo "<br><hr>";
+echo "<h1>Interest rate Is ".$rate."%</h1>";
+
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+
+$sql_statement="select * from customer_fd";
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+
+if(pg_NumRows($result)==0) {
+echo "<h4>Not found!!!</h4>";
+} else {
+echo "<table border=\"1\" width=\"80%\">";
+
+echo "<tr><td bgcolor=\"green\" colspan=\"11\" align=\"center\"><font color=\"white\">FD interest rate wise certificate list</font>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color>Account No</th>";
+echo "<th bgcolor=$color>Certificate No</th>";
+echo "<th bgcolor=$color width=\"275\" >Name</th>";
+echo "<th bgcolor=$color colspan=\"1\">Opening Date</th>";
+echo "<th bgcolor=$color colspan=\"1\">Maturity Date</th>";
+echo "<th bgcolor=$color colspan=\"1\">Withdrawal Date</th>";
+echo "<th bgcolor=$color colspan=\"1\">Deposit Amount</th>";
+echo "<th bgcolor=$color colspan=\"1\">Maturity Amount</th>";
+echo "<th bgcolor=$color colspan=\"1\">Status</th>";
+$i=0;
+for($j=1; $j<=pg_NumRows($result); $j++) 
+{
+$i++;
+	$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+	$row=pg_fetch_array($result,($j-1));
+	echo "<tr>";
+	echo "<td align=right bgcolor=$color>".$row['account_no']."</a></td>";
+	echo "<td align=right bgcolor=$color>".$row['certificate_no']."</a></td>";
+	echo "<td align=right bgcolor=$color>".$row['name1']."</a></td>";
+
+	echo "<td align=right bgcolor=$color>".$row['opening_date']."</td>";
+	echo "<td align=right bgcolor=$color>".$row['maturity_date']."</td>";
+	echo "<td align=right bgcolor=$color>".$row['withdrawal_date']."</a></td>";
+	echo "<td align=right bgcolor=$color>".$row['principal']."</a></td>";
+	echo "<td align=right bgcolor=$color>".$row['maturity_amount']."</a></td>";
+	echo "<td align=right bgcolor=$color>".$row['withdrawn_type']."</a></td>";
+	$total_principal=$total_principal+$row['principal'];
+	$total_maturity_amount=$total_maturity_amount+$row['maturity_amount'];
+}
+echo "<tr>";
+$color="cyan";
+echo "<td align=center bgcolor=$color><B>Total $i</B></td>";
+echo "<td align=right bgcolor=$color><B></B></td>";
+echo "<td align=right bgcolor=$color><B></B></td>";
+echo "<td align=right bgcolor=$color><B></B></td>";
+echo "<td align=right bgcolor=$color><B></B></td>";
+echo "<td align=right bgcolor=$color><B></B></td>";
+//echo "<td align=right bgcolor=$color><B></B></td>";
+//echo "<td align=right bgcolor=$color><B></B></td>";
+echo "<td align=right bgcolor=$color><B>".$total_principal."</B></td>";
+echo "<td align=right bgcolor=$color><B>".$total_maturity_amount."</B></td>";
+echo "<td align=right bgcolor=$color><B></B></td>";
+echo "</table>";
+}
+
+echo "<br>";
+
+footer();
+
+echo "</body>";
+echo "</html>";
+?>

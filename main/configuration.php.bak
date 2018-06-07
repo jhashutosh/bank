@@ -1,0 +1,197 @@
+<?php
+
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$op=$_REQUEST['op'];
+//echo "op=$op";  
+if ($menu=='fd'|| $menu=='hsb'){$period='Days';}
+if ($menu=='ri'){$period='Months';}
+if ($menu=='rd' || $menu=='mis'){$period='Years';}
+                                                   
+?>
+<HTML>
+<HEAD>
+<TITLE>Configuration</TITLE>
+<link rel="stylesheet" type="text/css" href="../css/test.css">
+<font size=+2><b>Advance options</font><br>
+<I>Banking parameters configuration and information updation</I>
+<HR>
+<BODY>
+<TABLE>
+<?php
+if($op=='s'){ 
+?>
+<TR>
+<TD>
+<B>Staff/User</B>
+
+<ul type=disc>
+<li><A HREF="../staff/staff_ef.php">New staff entry</A> - to enter new staff.
+<li><A HREF="../staff/staff_ufi.php">Update staff</A> - to change staff's information/password.
+<li><A HREF="../staff/staff_tabular.php">View staff</A> - to view staff's information. Modification and remove operations can also be done.
+</ul>
+<?php
+}
+?>
+<?php
+if($op=='d'){ 
+?>
+<TR>
+<TD>
+<B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Saving Bank</font></B>
+<ul type=disc>
+<li><A HREF="interest_rate_ef.php?menu=sb">New interest rate</A> - to enter new interest rate.
+<li><A HREF="interest_rate_ufi.php?menu=sb">Update interest rate</A> - to change interest rate.
+<li><A HREF="interest_rate_tabular.php?menu=sb">View interest rate</A> - to view interest rate.
+<?php
+$current_date=date('d.m.Y');
+$des1='01.10.'.date('Y');
+$des2='01.04.'.date('Y');
+if((strtotime($des1)-strtotime($current_date))==0||(strtotime($des2)-strtotime($current_date))==0){
+?>
+<li><A HREF="../sb/sb_calculate_interest.php?menu=sb">Compute interest</A> - compute and post interest.
+<?php
+}
+?>
+</ul>
+<TD>
+<B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fixed Deposit</B>
+<ul type=disc>
+<li><A HREF="interest_rate_ef.php?menu=fd">New interest rate</A> - to enter new interest rate.
+<li><A HREF="interest_rate_ufi.php?menu=fd">Update interest rate</A> - to change interest rate.
+<li><A HREF="interest_rate_tabular.php?menu=fd">View interest rate</A> - to view interest rate.
+</ul>
+
+
+<TD>
+<B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HSB Deposit</B>
+<ul type=disc>
+<li><A HREF="interest_rate_ef.php?menu=hsb">New interest rate</A> - to enter new interest rate.
+<li><A HREF="interest_rate_ufi.php?menu=hsb">Update interest rate</A> - to change interest rate.
+<li><A HREF="interest_rate_tabular.php?menu=hsb">View interest rate</A> - to view interest rate.
+</ul>
+
+
+<TR>
+<TD>
+<B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recurring Deposit</B>
+<ul type=disc>
+<li><A HREF="interest_rate_ef.php?menu=rd">New interest rate</A> - to enter new interest rate.
+<li><A HREF="interest_rate_ufi.php?menu=rd">Update interest rate</A> - to change interest rate.
+<li><A HREF="interest_rate_tabular.php?menu=rd">View interest rate</A> - to view interest rate.
+</ul>
+
+<TD>
+<B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Re-investment</B>
+<ul type=disc>
+<li><A HREF="interest_rate_ef.php?menu=ri">New interest rate</A> - to enter new interest rate.
+<li><A HREF="interest_rate_ufi.php?menu=ri">Update interest rate</A> - to change interest rate.
+<li><A HREF="interest_rate_tabular.php?menu=ri">View interest rate</A> - to view interest rate.
+</ul>
+
+<TD colspan=2 align=center>
+<B>MIS</B>
+<ul type=disc>
+<li><A HREF="interest_rate_ef.php?menu=mis">New interest rate</A> - to enter new interest rate.
+<li><A HREF="interest_rate_ufi.php?menu=mis">Update interest rate</A> - to change interest rate.
+<li><A HREF="interest_rate_tabular.php?menu=mis">View interest rate</A> - to view interest rate.
+</ul>
+<?php}
+ if($op=='ln'){
+?>
+<table align=center>
+<tr>
+<th colspan=3 align=center><font color=#808000 size=4>
+Kishan Credit Card</font></th>
+<tr>
+<th align=center>
+<font color=#BA55D3 size=2><U>Entry Master</U></font>
+<th align=center>
+<font color=#BA55D3 size=2><U>View</U></font>
+<!--<th align=center>
+<font color=#BA55D3 size=2><U>Update</u></font>-->
+<TR><TD>
+<ul type=disc>
+<li><A HREF="crop_master_ef.php">Crop Entry</A> - to enter new Crop.
+<TD>
+<ul type=disc>
+<li><A HREF="general_master_view.php?op=c">Crop View</A> - to enter new Crop. 
+<!--<TD>
+<ul type=disc>
+<li><A HREF="general_master_view.php?op=c">Update</A> - to enter new Crop. -->
+
+<TR><TD>
+<ul type=disc>
+<li><A HREF="policy_master.php?menu=kcc">Scale of Finance Entry</A> - To Enter Scale of Finance Entry.
+<TD>
+<ul type=disc>
+<li><A HREF="policy_view.php?op=kcc">Scale of Finance View</A> - To Enter Scale of Finance View. 
+<!--<TD>
+<ul type=disc>
+<li><A HREF="policy_view.php?op=kcc">Update</A> - to enter new Crop. -->
+</table>
+<hr>
+
+
+
+
+<?php
+}
+
+
+if($op=='l'){
+?>
+<table>
+<tr>
+<tdcolspan=3><font color=#808000 size=4><b>Land Mark Information</b></font></td>
+<ul type=disc>
+<li><A HREF="land_master_ef.php">Entry</A> - to enter new Land Mark.
+<li><A HREF="general_master_view.php?op=l">View</A> - to view the Land Mark Information. 
+<li><A HREF="general_master_view.php?op=l">Update</A> - to Update Land Mark. 
+</table>
+<hr>
+
+<table>
+<tr>
+<td colspan=3 ><font color=#808000 size=4><b>
+Panchayat Information</b></font></td>
+<TR><TD>
+<ul type=disc>
+<li><A HREF="panchayat_ledger_ef.php">Entry</A> - to enter new Panchayat Information.
+<li><A HREF="general_master_view.php?op=p">View</A> - to view the Panchayat Information.
+<li><A HREF="general_master_view.php?op=p">Update</A> - to Update Panchayat Information.
+</table>
+<hr>
+<table>
+<tr>
+<td colspan=3 ><font color=#808000 size=4>
+<b>Mini Information</b></font></td>
+<TR><TD>
+<ul type=disc>
+<li><A HREF="mini_master_ef.php">Entry</A> - to enter new Mini Information.
+<li><A HREF="general_master_view.php?op=m">View</A> - to view the Mini Information.
+<li><A HREF="general_master_view.php?op=m">Update</A> - to Update Mini Information.
+</table>
+
+
+<?php
+}
+
+
+
+
+
+
+?>
+
+</TABLE>
+</BODY>
+</HTML>

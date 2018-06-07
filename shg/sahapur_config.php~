@@ -1,0 +1,22 @@
+<?
+function isSHG($id){
+$sql_statement="SELECT * FROM shg_info where customer_id='$id'";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0) {
+   return true;
+ }
+else{
+return false;
+}
+}
+function isopenSHG($id){
+$sql_statement="SELECT * FROM shg_info where customer_id='$id' AND status='op'";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0) {
+   return true;
+ }
+else{
+return false;
+}
+}
+?>

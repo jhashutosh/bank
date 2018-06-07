@@ -1,0 +1,96 @@
+<?
+//fd_date wise matured list
+include "config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$operator_code=$staff_id;
+$starting_date=$_REQUEST["starting_date"];
+$ending_date=$_REQUEST["ending_date"];
+
+if( empty($starting_date) ) { $starting_date=date("d/m/Y",time()-604800); }
+if( empty($ending_date) ) { $ending_date=date("d/m/Y"); }
+echo "<html>";
+echo "<head>";
+echo "<title>Share Summary Details";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "Report-1<br>";
+echo "Date-".date("d/m/Y");
+echo "<h1> Share Summary Details  ";
+echo "</h1>";
+echo "<hr>";
+echo "<form method=\"POST\" action=\"share_summary.php\">";
+echo "Share Summary Details Between <input type=\"TEXT\" name=\"starting_date\" size=\"15\" value=\"$starting_date\">";
+echo "And <input type=\"TEXT\" name=\"ending_date\" size=\"15\" value=\"$ending_date\">";
+echo "<input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Submit\">";
+echo "<hr>";
+
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+
+$sql_statement="SELECT * FROM share_summery WHERE action_date BETWEEN '$starting_date' AND '$ending_date' ORDER BY action_date DESC";
+$result=pg_Exec($db,$sql_statement);
+
+if(pg_NumRows($result)==0) {
+echo "<h4><font color=\"red\">Share Summary</font></h4>";
+} 
+else 
+{
+	echo "<table  border=\"1\" width=\"80%\">";
+
+echo "<tr><td bgcolor=\"green\" colspan=\"7\" align=\"center\"><font color=\"white\">Share Summary list Date Between $starting_date And $ending_date</font>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color>Action Date</th>";
+echo "<th bgcolor=$color>No Of Issue</th>";
+echo "<th bgcolor=$color>Value Of Issue</th>";
+echo "<th bgcolor=$color>No Of Withdrawal</th>";
+echo "<th bgcolor=$color>Value Of Withdrawal</th>";
+echo "<th bgcolor=$color>No Of Balance</th>";
+echo "<th bgcolor=$color>Value Of Balance</th>";
+for($j=1; $j<=pg_NumRows($result); $j++) 
+{
+	$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+	$row=pg_fetch_array($result,($j-1));
+	echo "<tr>";
+	
+	echo "<td align=right bgcolor=$color>".$row['action_date']."</td>";
+
+echo "<td align=right bgcolor=$color>".$row['no_issue']."</td>";
+
+echo "<td align=right bgcolor=$color>".$row['val_issue']."</td>";
+echo "<td align=right bgcolor=$color>".$row['no_withdral']."</td>";
+echo "<td align=right bgcolor=$color>".$row['val_withdral']."</td>";
+
+echo "<td align=right bgcolor=$color>".$row['no_bal']."</td>";
+echo "<td align=right bgcolor=$color>".$row['val_bal']."</td>";
+
+	$total_issue=$total_issue+$row['val_issue'];
+        $total_no_of_issue=$total_no_of_issue+$row['no_issue'];
+
+	$total_withdrawal=$total_withdrawal+$row['val_withdral'];
+	$total_balance=$total_balance+$row['val_bal'];
+}
+echo "<tr>";
+$color="cyan";
+echo "<td align=center bgcolor=$color><B>Total</B></td>";
+echo "<td align=right bgcolor=$color><B> $total_no_of_issue</B></td>";
+echo "<td align=right bgcolor=$color><B>".$total_issue."</B></td>";
+echo "<td align=right bgcolor=$color><B></B></td>";
+echo "<td align=right bgcolor=$color><B>".$total_withdrawal."</B></td>";
+echo "<td align=right bgcolor=$color><B></B></td>";
+echo "<td align=right bgcolor=$color><B>".$total_balance."</B></td>";
+echo "</table>";
+
+
+}
+echo "<br>";
+
+footer();
+
+echo "</body>";
+echo "</html>";
+?>

@@ -1,0 +1,66 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$group_no=$_REQUEST['group_no'];
+$pay_term=$_REQUEST['pay_term'];
+$loan_limit=$_REQUEST['loan_limit'];
+$appl_amount=$_REQUEST['applied_amount'];
+$loan_amount=$_REQUEST['loan_amount'];
+$loan_date=$_REQUEST['date_of_issue'];
+$rate_of_int=$_REQUEST['interest_rate'];
+$over_rate_of_int=$_REQUEST['overdue_interest_rate'];
+$repay_date=$_REQUEST['repay_date'];
+$purpose=$_REQUEST['purpose'];
+$months=getIndex($payment_term_array,$pay_term);
+//echo "monthly term=$months";
+//echo $loan_amount." > ".$loan_limit;
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$c_id=getCustomerIdFromGroupId($group_no);
+$flag1=getGeneralInfo_Customer($c_id);
+if($flag1==1){
+echo "<hr>";
+if($loan_amount>$loan_limit)
+{
+//echo "<body bgcolor=\"silver\">";
+echo "<h2><b><center><Blink><Font color=Blue>Sorry You Can't Issue the Amount Which is Higher Than loan Limit....... !!!</h2></b></center>";
+//echo "<h2><center><b>You Will come after :$loan_el_date</h2></center></b>";
+echo "<a href=\"../main/nextaccount.php?menu=shg\">BACK</a>";
+}
+else
+{  
+
+echo "<form method=\"POST\" action=\"shg_loan_ledger_evadd.php\">";
+echo "<table bgcolor=PINK align=center width=80%>";
+echo "<tr bgcolor=black><TH colspan=5 bgcolor=BLUE><font color=WHITE size=+3><b>MT-Loan Issue Conformation Form";
+//echo "<tr><td align=\"left\">Loan Account No:<td><input type=\"TEXT\" name=\"loan_acc\" size=\"15\" value=\"$loan_account\" readonly>";
+echo "<tr><td align=\"left\">Group No:<td><input type=\"TEXT\" name=\"group_no\" size=\"15\" value=\"$group_no\" readonly $HIGHLIGHT><br>";
+echo "<td><td align=\"left\">Loan Issued Date:<td><input type=\"TEXT\" name=\"date_of_issue\" size=\"15\" value=\"$loan_date\" readonly $HIGHLIGHT>";
+echo "<tr><td align=\"left\">Payment Terms:<td><input type=\"TEXT\" name=\"pay_term\" size=\"15\" value=\"$pay_term\" readonly $HIGHLIGHT>";
+$repay_time=maturity_date_year($loan_date,$repay_date);
+echo "<td><td align=\"left\">Loan Repayment Date :<td><input type=\"TEXT\" name=\"repay_date\" size=\"15\" value=\"$repay_time\" readonly $HIGHLIGHT>";
+echo "<tr><td align=\"left\">Interest Rate:<td><input type=\"TEXT\" name=\"interest_rate\" size=\"10\" value=\"$rate_of_int\" $HIGHLIGHT><td>";
+echo "<td align=\"left\">Overdue Interest Rate:<td><input type=\"TEXT\" name=\"overdue_interest_rate\" size=\"10\" value=\"$over_rate_of_int\" $HIGHLIGHT>";
+echo "<tr><td align=\"left\">Applied Amount:<td><input type=\"TEXT\" name=\"applied_amount\" size=\"15\" value=\"$appl_amount\" $HIGHLIGHT><br>";
+echo "<td><td align=\"left\">Issued Amount:<td><input type=\"TEXT\" name=\"loan_amount\" size=\"15\" value=\"$loan_amount\" readonly $HIGHLIGHT>";
+$months*=$repay_date;
+$emi=EMI_calculation($loan_amount,$rate_of_int,$months);
+$total_interest=sprintf("%-12.2f",($emi*$months)-$loan_amount);
+echo "<tr><td align=\"left\">$pay_term Payment:<td><input type=\"TEXT\" name=\"emi\" size=\"15\" value=\"$emi\" $HIGHLIGHT><br>";
+echo "<td><td align=\"left\">Interest Receivable:<td><input type=\"TEXT\" name=\"int_receivable\" size=\"15\" value=\"$total_interest\" readonly $HIGHLIGHT>";
+echo "<tr><td align=\"left\">Loan Repayment Period :<td><input type=\"TEXT\" name=\"period\" size=\"15\" value=\"$repay_date\" $HIGHLIGHT><td><font color=RED size=-1>Year&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>";
+echo "<td align=\"left\">Purpose :<td><input type=\"TEXT\" name=\"purpose\" size=\"15\" value=\"$purpose\" readonly><br>";
+echo "<tr><td><td><td><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Submit\">";
+//echo "  <input type=\"RESET\" name=\"RESET_BUTTON\" value=\"Reset\"><br>";
+echo "</table>";
+echo "</form>";
+ }
+}
+
+echo "</body>";
+echo "</html>";
+?>

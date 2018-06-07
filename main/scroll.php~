@@ -1,0 +1,28 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$current_date=$_REQUEST["current_date"];
+if(empty($current_date) ) { $current_date=date("d/m/Y"); }
+if($menu=='sb'){$myView='sb_detail_view';}
+if($menu=='fd'){$myView='fd_detail_view';}
+if($menu=='rd'){$myView='rd_detail_view';}
+if($menu=='ri'){$myView='ri_detail_view';}
+if($menu=='mis'){$myView='mis_detail_view';}
+if($menu=='all'){$myView='deposit_detail_view';}
+echo "<html>";
+echo "<head>";
+echo "<script src=\"../JS/calendar.js\">";
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"cd.focus();\">";
+echo "<hr>";
+echo "<form name=\"f1\" action=\"scroll.php?menu=$menu\" method=\"POST\">";
+echo "<table align=center bgcolor=\"BLUE\"><tr><td  align=\"center\"><b>Current Balance as on :<td><input type=TEXT size=12 name=current_date id=cd value= $current_date $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.current_date,'dd/mm/yyyy','Choose Date')\">";
+echo "&nbsp;<input type=\"Submit\"  value=\"Enter\">";
+echo "</table></form>";
+echo "<hr>";
+$sql_statement="SELECT * FROM $myView action_date='$current_date'";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){}
+?>

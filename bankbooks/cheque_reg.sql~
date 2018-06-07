@@ -1,0 +1,59 @@
+DROP TRIGGER update_after_clearing ON sb_cheque_clearing;
+DROP FUNCTION update_cheque_clearing();
+alter table sb_cheque_clearing add column operator_code varchar(25);
+ALTER TABLE gl_ledger_hrd DROP COLUMN source ;
+ALTER TABLE gl_ledger_hrd DROP COLUMN tran_sou;
+ALTER TABLE gl_ledger_hrd DROP COLUMN accountno;
+ALTER TABLE gl_ledger_hrd ADD COLUMN cheque_no varchar(15);
+ALTER TABLE gl_ledger_hrd ADD COLUMN cheque_dt varchar(15);
+DROP VIEW ccb_sb_detail_view;
+CREATE VIEW ccb_sb_detail_view AS
+ SELECT h.tran_id, h.action_date,h.cheque_no,d.account_no, d.gl_mas_code,
+        CASE
+            WHEN d.dr_cr = 'Dr'::bpchar THEN d.amount
+            ELSE 0::numeric
+        END AS deposits,
+        CASE
+            WHEN d.dr_cr = 'Cr'::bpchar THEN d.amount
+            ELSE 0::numeric
+        END AS withdrawals, abs(mas_sb_balance(d.account_no, h.tran_id, h.action_date)) AS balance, d.particulars, h.operator_code, h.entry_time
+   FROM gl_ledger_hrd h, gl_ledger_dtl d
+  WHERE h.tran_id::text = d.tran_id::text AND  (d.gl_mas_code::text = '28202'::text OR d.gl_mas_code::text = '28302'::text) AND h."type"::text = 'csb'::text;
+----------------------------------------------------------------------------------------------
+DROP TABLE sb_cheque_clearing;
+DROP TABLE cheque_reg;
+
+CREATE TABLE cheque_reg (
+    tran_id character varying(20), --1/200910
+    account_no character varying(20), --SB-15
+    action_date date, --20.09.2010
+    cheque_no character varying(15), --123456
+    bank_name character varying(50),--SBI
+    branch character varying(50), --Kalna
+    cheque_date date, --15.09.2010
+    amount numeric(12,2),--15000
+    forward_account varchar(15),--CCB[10010]
+    clearing_dt date,--21.09.2010
+    bank_charge_paid numeric(5) DEFAULT 0,--30
+    bank_charge_rcv numeric(5) DEFAULT 0,--200
+    status character varying(10),--clearing/cleared/bounce
+    entry_time timestamp without time zone,
+    remarks character varying(90),
+    operator_code character varying(25)
+);
+------------------------------------------------------------------------------------------------
+DROP VIEW sb_ledger;
+CREATE VIEW sb_ledger AS
+SELECT h.tran_id, h.action_date,h.certificate_no,h.cheque_no,h.remarks,d.account_no, d.gl_mas_code,
+        CASE
+            WHEN d.dr_cr = 'Cr'::bpchar THEN d.amount
+            ELSE 0::numeric
+        END AS deposits,
+        CASE
+            WHEN d.dr_cr = 'Dr'::bpchar THEN d.amount
+            ELSE 0::numeric
+        END AS withdrawals, mas_sb_balance(d.account_no, h.tran_id, h.action_date) AS balance, d.particulars, h.operator_code, h.entry_time
+   FROM gl_ledger_hrd h, gl_ledger_dtl d
+  WHERE h.tran_id::text = d.tran_id::text AND (d.gl_mas_code::text = '14101'::text OR d.gl_mas_code::text = '14201'::text OR d.gl_mas_code::text = '14301'::text OR d.gl_mas_code::text = '14401'::text);
+
+

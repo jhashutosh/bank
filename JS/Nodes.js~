@@ -1,0 +1,448 @@
+USETEXTLINKS = 1
+// Configures whether the tree is fully open upon loading of the page, or whether
+// only the root node is visible.
+STARTALLOPEN = 0
+// Specify if the images are in a subdirectory;
+ICONPATH = "../image/";
+foldersTree = gFld("<i>Esociety</i>", "../main/myzone.php?menu=system")
+  foldersTree.treeID = "Frameset"
+  
+//------------------------------------myzone-----------------------------------------------------------
+
+aux1 = insFld(foldersTree, gFld("Documentations", "../main/myzone.php?menu=myzone"))
+		insDoc(aux1, gLnk("R", "WHY NETWARE", "../document/facility.html"))
+		insDoc(aux1, gLnk("R", "Manual", "../document/manual.html"))
+		insDoc(aux1, gLnk("R", "Audit Computer Enviroment", "../manual/audit_com_env.html"))
+		insDoc(aux1, gLnk("R", "Audit Rating & Classification", "../manual/audit_rat_class.html"))
+
+//--------------------------------------SET UP---------------------------------------------------------
+aux1 = insFld(foldersTree, gFld("Setup", "../main/myzone.php?menu=myzone"))
+         //aux2 = insFld(aux1, gFld("Setup", "../main/myzone.php?menu=myzone"))
+		insDoc(aux1, gLnk("R", "Staff", "../main/configuration.php?menu=myzone&op=s"))
+		insDoc(aux1, gLnk("R", "Entry Permission", "../main/permission.php?menu=myzone"))
+		insDoc(aux1, gLnk("R", "Entry Report", "../main/entry_report.php?menu=myzone"))
+		//insDoc(aux1, gLnk("R", "Entry Chart", "../main/entry_report1.php?menu=myzone"))
+		insDoc(aux1, gLnk("R", "Opening", "../main/opening_balance.php?menu=myzone"))
+		insDoc(aux1, gLnk("R", "NPA Form", "../main/npa.php"))
+	  aux2 = insFld(aux1, gFld("MIS Reports", "../main/myzone.php"))
+		insDoc(aux2, gLnk("R", "Risk Weighted Assets", "../main/asst_hdr_ldr.php"))
+	  aux3 = insFld(aux2, gFld("RATIO", "../main/myzone.php"))
+		insDoc(aux3, gLnk("R", "Ratio Master", "../main/ratio_mas.php"))
+      		insDoc(aux3, gLnk("R", "Ratio Specification", "../main/ratio_spcfctn.php"))
+                insDoc(aux3, gLnk("R", "Ratio Specification Derived", "../main/ratio_spc_drvd.php"))
+//----------this folder will be under setup folder--------------
+	aux2 = insFld(aux1, gFld("Retail", "../main/myzone.php"))
+		insDoc(aux2, gLnk("R", "Opening Material", "../retail/opening_material_group.php?menu=myzone"))
+		insDoc(aux2, gLnk("R", "Opening Gl Code", "../retail/opening_gl_code.php?menu=myzone"))
+          aux2 = insFld(aux1, gFld("Deposit", "../main/myzone.php"))
+                insDoc(aux2, gLnk("R", "Category Master", "../main/cat_mas.php"))
+      		insDoc(aux2, gLnk("R", "Interest Rate Master", "../main/configuration.php?menu=myzone&op=d"))
+                insDoc(aux2, gLnk("R", "Remarks Master", "../main/remark.php?menu=myzone&op=d"))
+                insDoc(aux2, gLnk("R", "Dividend", "../main/dividend.php?menu=myzone&op=d"))
+                insDoc(aux2, gLnk("R", "Direct Withdraw", "../main/withdraw.php?menu=myzone&op=d"))
+                
+       //add for payroll
+                
+            aux2 = insFld(aux1, gFld("Salary & PF ", "../main/myzone.php"))
+                insDoc(aux2, gLnk("R", "Salary Parameter Setting", "../payroll/sal_param.php"))
+		insDoc(aux2, gLnk("R", "PF Investment Master", "../payroll/pf_invst.php"))
+
+
+	   aux2 = insFld(aux1, gFld("Mini", "../main/myzone.php"))
+		insDoc(aux2, gLnk("R", "Operator Commission Master", "../mini/commission_rate_ef.php"))
+		insDoc(aux2, gLnk("R", "Crop Rate Master", "../mini/crop_master_tan.php"))
+		insDoc(aux2, gLnk("R", "GLCode Creation", "../mini/mini_gl_mas_cd_link.php"))
+		insDoc(aux2, gLnk("R", "Sundry Expenses", "../mini/sundry_expenses.php"))
+
+
+       //add sas
+
+	       // insDoc(aux1, gLnk("R", "Fixed Asset", "../main/configuration.php?menu=myzone&op=fa"))
+	      //insDoc(aux1, gLnk("R", "Deposit", "../main/configuration.php?menu=myzone&op=d"))
+		insDoc(aux1, gLnk("R", "Loan", "../main/configuration.php?menu=myzone&op=ln"))
+		insDoc(aux1, gLnk("R", "Land", "../main/configuration.php?menu=myzone&op=l"))
+      		insDoc(aux1, gLnk("T", "Log Off", "../index.php"))
+
+//-================================================================================================
+aux1 = insFld(foldersTree, gFld("Employee Salary Structure", "../payroll/main.php"))
+       insDoc(aux1, gLnk("R", "Provident Fund Loan", "../payroll/pf_main.php"))
+       aux2 = insFld(aux1, gFld("Adhoc Grant", "../main/myzone.php?menu=rsh"))
+                insDoc(aux2, gLnk("R", "Master", "../payroll/ad_mas.php"))
+      		insDoc(aux2, gLnk("R", "Disbursement", "../payroll/ad_dtl.php"))
+       //insDoc(aux1, gLnk("R", "Service Bond Loan", "../payroll/stf_pf_loan_dtl.php?op=pr"))
+        insDoc(aux2, gLnk("R", "Report", "../payroll/ad_report1.php"))
+        insDoc(aux1, gLnk("R", "Holiday Master", "../payroll/hme.php?op=pr"))
+      // insDoc(aux1, gLnk("R", "Master Creation", "../payroll/mas_creation.php?op=pr"))	
+      // insDoc(aux1, gLnk("R", "Attendence & Leave Details", "../payroll/details.php?op=pr"))
+        insDoc(aux1, gLnk("R", "Attendence Details", "../payroll/ead.php?op=pr"))
+       // insDoc(aux1, gLnk("R", "Overtime Payment", "../payroll/ot.php?op=pr"))
+        insDoc(aux1, gLnk("R", "Report", "../payroll/report.php"))	
+        insDoc(aux1, gLnk("R", "User Manual", "../payroll/manual.html"))  
+//---------------------Customer Module....................................
+aux1 = insFld(foldersTree, gFld("Customer", "../main/myzone.php?menu=cust"))
+     insDoc(aux1, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=cust"))
+     insDoc(aux1, gLnk("R", "Statement", "../customer/customer_statement.php?menu=cust"))
+     insDoc(aux1, gLnk("R", "New", "../customer/customer_account_ef.php?menu=cust"))
+     insDoc(aux1, gLnk("R", "Modify", "../customer/customer_account_ef.php?menu=cust&up=p"))
+     insDoc(aux1, gLnk("R", "Report", "../customer/customer_report.php?menu=cust"))
+
+//======================================SHARE MODULE=========================================
+aux2 = insFld(foldersTree, gFld("Share", "../share/share_main.php?menu=sh"))
+//aux2 = insFld(aux1, gFld("Share", "../main/nextaccount.php?menu=sh"))
+	insDoc(aux2, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=sh"))
+        insDoc(aux2, gLnk("R", "Issue", "../share/share_ledger_ef.php?menu=sh&issue=1"))
+	insDoc(aux2, gLnk("R", "BuyBack", "../share/share_ledger_ef.php?menu=sh&buyback=1"))
+	insDoc(aux2, gLnk("R", "Statement", "../share/share_statement.php?menu=sh"))
+	//insDoc(aux2, gLnk("R", "Main", "../share/share_main.php?menu=sh"))
+	insDoc(aux2, gLnk("R", "Report", "../share/share_report.php?menu=sh"))
+        insDoc(aux2, gLnk("R", "Closing", "../share/sh_ledger_wf.php?menu=sh&close=1"))
+    aux2 = insFld(foldersTree, gFld("Deposit", "../main/myzone.php?menu=deposit"))
+
+// Saving Module .................................
+	aux3 = insFld(aux2, gFld("Saving", "../main/nextaccount.php?menu=sb"))
+
+      	insDoc(aux3, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=sb"))
+      	insDoc(aux3, gLnk("R", "Deposits", "../sb/sb_ledger_ef.php?menu=sb&deposit=1"))
+      	insDoc(aux3, gLnk("R", "Withdrawal", "../sb/sb_ledger_ef.php?menu=sb&withdrawal=1"))
+	insDoc(aux3, gLnk("R", "Checking", "../sb/tran_dtl.php?menu=sb"))
+	insDoc(aux3, gLnk("R", "Statement", "../sb/sb_account_statement.php?menu=sb"))
+      	insDoc(aux3, gLnk("R", "Scroll", "../general/scroll.php?menu=sb"))
+      	//insDoc(aux3, gLnk("R", "Summary","../sb/sb_summary.php?menu=sb"))
+      	insDoc(aux3, gLnk("R", "Report", "../sb/sb_report.php?menu=sb"))
+      	insDoc(aux3, gLnk("R", "Closing", "../sb/sb_ledger_cef.php?menu=sb"))
+//---------------------Fixed Deposit Module .........................
+aux3 = insFld(aux2, gFld("FD", "../main/nextaccount.php?menu=fd"))
+      insDoc(aux3, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=fd"))
+      insDoc(aux3, gLnk("R", "Deposit", "../fd/fd_ledger_ef.php?menu=fd"))
+      insDoc(aux3, gLnk("R", "Withdrawal", "../fd/fd_ledger_wf.php?menu=fd"))
+	insDoc(aux3, gLnk("R", "Renewal", "../fd/renew.php?menu=fd"))
+      insDoc(aux3, gLnk("R", "Statement", "../fd/fd_statement.php?menu=fd"))
+      //insDoc(aux3, gLnk("R", "ReIssue", "../main/dev_page.html"))
+      insDoc(aux3, gLnk("R", "Scroll", "../general/scroll.php?menu=fd"))
+      //insDoc(aux3, gLnk("R", "Summary", "../main/dev_page.html"))
+      insDoc(aux3, gLnk("R", "Report", "../fd/fd_report.php?menu=fd"))
+      insDoc(aux3, gLnk("R", "Renewal", "../fd/bk_investment.php?menu=fd"))
+//-------------------------ReInvestment Deposit Module.......................
+aux3 = insFld(aux2, gFld("RI", "../main/nextaccount.php?menu=ri"))
+      insDoc(aux3, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=ri"))
+      insDoc(aux3, gLnk("R", "Deposit", "../ri/ri_ledger_ef.php?menu=ri"))
+      insDoc(aux3, gLnk("R", "Withdrawal", "../ri/ri_ledger_wf.php?menu=ri"))
+	insDoc(aux3, gLnk("R", "Renewal", "../ri/renew.php?menu=ri"))
+      insDoc(aux3, gLnk("R", "Statement", "../ri/ri_statement.php?menu=ri"))
+      //insDoc(aux3, gLnk("R", "ReIssue", "../main/dev_page.html"))
+      insDoc(aux3, gLnk("R", "Scroll", "../general/scroll.php?menu=ri"))
+      //insDoc(aux3, gLnk("R", "Summary", "../main/dev_page.html"))
+      insDoc(aux3, gLnk("R", "Report", "../ri/ri_report.php?menu=ri"))
+//-----------------------Recurring Deposit ...................................  
+aux3 =	insFld(aux2, gFld("RD", "../main/nextaccount.php?menu=rd"))
+	insDoc(aux3, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=rd"))
+      	insDoc(aux3, gLnk("R", "Deposit", "../rd/rd_ledger_ef.php?menu=rd"))
+      	insDoc(aux3, gLnk("R", "Withdrawal", "../rd/rd_ledger_wf.php?menu=rd"))
+      	insDoc(aux3, gLnk("R", "Statement", "../rd/rd_statement.php?menu=rd"))
+	insDoc(aux3, gLnk("R", "Scroll", "../general/scroll.php?menu=rd"))
+      	//insDoc(aux3, gLnk("R", "Summary", "../main/dev_page.html"))
+      	insDoc(aux3, gLnk("R", "Report", "../rd/rd_report.php?menu=rd"))
+//------------------------HSB Module ........................................... 
+
+/*aux3 =	insFld(aux2, gFld("HSB", "../main/nextaccount.php?menu=hsb"))
+	insDoc(aux3, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=hsb"))
+      	insDoc(aux3, gLnk("R", "Deposit", "../hsb/hsb_ledger_ef.php?menu=hsb"))
+      	insDoc(aux3, gLnk("R", "Withdrawal", "../hsb/hsb_ledger_wf.php?menu=hsb"))
+      	insDoc(aux3, gLnk("R", "Statement", "../hsb/hsb_statement.php?menu=hsb"))
+	insDoc(aux3, gLnk("R", "Scroll", "../general/scroll.php?menu=hsb"))
+      	insDoc(aux3, gLnk("R", "Summary", "../main/dev_page.html"))
+      	insDoc(aux3, gLnk("R", "Report", "../hsb/hsb_report.php?menu=hsb"))*/
+//------------------------MIS Module ........................................... 
+/*aux3 = insFld(aux2, gFld("MIS", "../main/nextaccount.php?menu=mis"))
+      insDoc(aux3, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=mis"))
+      insDoc(aux3, gLnk("R", "Deposit", "../mis/mis_ledger_ef.php?menu=mis"))
+      insDoc(aux3, gLnk("R", "Withdrawal", "../mis/mis_ledger_ufi.php?menu=mis"))
+      insDoc(aux3, gLnk("R", "Statement", "../mis/mis_statement.php?menu=mis"))
+      insDoc(aux3, gLnk("R", "Scroll", "../general/scroll.php?menu=mis"))
+      //insDoc(aux3, gLnk("R", "Summary", "../general/summary_report.php?menu=mis"))
+      insDoc(aux3, gLnk("R", "Report", "../mis/mis_report.php?menu=mis"))*/
+//------------------------Deposit Report Module ........................................... 
+aux3 = insFld(aux2, gFld("Deposit Report", ""))
+       insDoc(aux3, gLnk("R", "Report", "../report/deposite_report.php?menu=*"))
+       
+
+//-------------------------------------------------------------------------------------------
+//==============================Advance Module ==========================================================
+	/*aux2 = insFld(foldersTree, gFld("Advance", "../main/nextaccount.php?menu=add"))
+
+      	insDoc(aux2, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=add"))
+   	insDoc(aux2, gLnk("R", "Given", "../add/sb_ledger_ef.php?menu=add&withdrawal=1"))
+	insDoc(aux2, gLnk("R", "Back", "../add/sb_ledger_ef.php?menu=add&deposit=1"))
+	insDoc(aux2, gLnk("R", "Statement", "../add/sb_account_statement.php?menu=add"))
+      	insDoc(aux2, gLnk("R", "Scroll", "../general/scroll.php?menu=add"))
+      	insDoc(aux2, gLnk("R", "Report", "../add/sb_report.php?menu=add"))
+	*/
+//-------------------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------------------
+     	aux2 = insFld(foldersTree, gFld("Loan", "../main/myzone.php?menu=loan"))
+        
+aux3 = insFld(aux2, gFld("KCC", "../main/nextaccount.php?menu=kcc"))
+	insDoc(aux3, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=kcc"))
+	insDoc(aux3, gLnk("R", "Existing", "../kcc/kcc_loan_balance_ef.php?menu=kcc"))
+	insDoc(aux3, gLnk("R", "Issue", "../kcc/kcc_loan_issue.php?menu=kcc"))
+	insDoc(aux3, gLnk("R", "Repay", "../general/loan_repay.php?menu=kcc"))
+       	insDoc(aux3, gLnk("R", "Statement", "../kcc/kcc_loan_statement.php?menu=kcc"))
+	insDoc(aux3, gLnk("R", "Main", "../general/loan_main.php?menu=kcc"))
+		insDoc(aux3, gLnk("R", "Report", "../general/loan_report_list.php?menu=kcc"))
+
+//------------------------------PLEDGE MODULE -----------------------------------------------
+	aux3 = insFld(aux2, gFld("Pledge", "../main/nextaccount.php?menu=pl"))
+	insDoc(aux3, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=pl"))
+	insDoc(aux3, gLnk("R", "Existing", "../pl/pl_loan_balance_ef.php?menu=pl"))
+        insDoc(aux3, gLnk("R", "Issue", "../pl/pl_loan_issue_ef.php?menu=pl"))
+	//insDoc(aux3, gLnk("R", "Repay", "../pl/pl_loan_repayment.php?menu=pl"))
+	insDoc(aux3, gLnk("R", "Repay", "../general/loan_repay.php?menu=pl"))
+	insDoc(aux3, gLnk("R", "Statement", "../pl/pl_statement.php?menu=pl"))
+	insDoc(aux3, gLnk("R", "Main", "../general/loan_main.php?menu=pl"))
+	insDoc(aux3, gLnk("R", "Report", "../general/loan_report_list.php?menu=pl"))
+//----------------------------------LAD--------------------------------------------
+	aux3 = insFld(aux2, gFld("LAD", "../general/loan_main.php?menu=lad"))
+	insDoc(aux3, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=lad"))
+	insDoc(aux3, gLnk("R", "Existing", "../lad/lad_loan_balance_ef.php?menu=lad"))
+        insDoc(aux3, gLnk("R", "Issue", "../lad/lad_loan_issue_ef.php?menu=lad"))
+	//insDoc(aux3, gLnk("R", "Repay", "../pl/pl_loan_repayment.php?menu=pl"))
+	insDoc(aux3, gLnk("R", "Repay", "../general/loan_repay.php?menu=lad"))
+	insDoc(aux3, gLnk("R", "Statement", "../lad/lad_statement.php?menu=lad"))
+	insDoc(aux3, gLnk("R", "Report", "../general/loan_report_list.php?menu=lad"))
+ 
+
+
+//------------------------Loan Report Module ........................................... 
+aux3 = insFld(aux2, gFld("Loan Report", ""))
+       insDoc(aux3, gLnk("R", "Report", "../report/loan_report.php?menu=*"))
+
+//----------------------SHG Module .............................................
+//aux2 = insFld(aux1, gFld("SHG", "../main/nextaccount.php?menu=shg"))
+aux2 = insFld(foldersTree, gFld("SHG", "../main/nextaccount.php?menu=shg"))
+        insDoc(aux2, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=shg"))
+	insDoc(aux2, gLnk("R", "Loan Balance", "../shg/loan_balance_ef.php?menu=shg"))
+        insDoc(aux2, gLnk("R", "Issue", "../shg/loan_ledger_ef.php?menu=shg"))
+	insDoc(aux2, gLnk("R", "Repay", "../shg/loan_ledger_efr.php?menu=shg"))
+	insDoc(aux2, gLnk("R", "Statement", "../shg/shg_mem_detail.php?menu=shg"))
+	insDoc(aux2, gLnk("R", "Main", "../shg/shg_info_view.php?menu=shg"))
+	insDoc(aux2, gLnk("R", "Report", "../shg/shg_report.php?menu=shg"))
+
+/*//----------------------JLG Module .............................................
+//aux2 = insFld(aux1, gFld("SHG", "../main/nextaccount.php?menu=shg"))
+aux2 = insFld(foldersTree, gFld("JLG", "../main/nextaccount.php?menu=jlg"))
+        insDoc(aux2, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=jlg"))
+	insDoc(aux2, gLnk("R", "Loan Balance", "../jlg/jlg_loan_balance_ef.php?menu=jlg"))
+        insDoc(aux2, gLnk("R", "Issue", "../jlg/loan_ledger_ef.php?menu=jlg"))
+	insDoc(aux2, gLnk("R", "Repay", "../jlg/loan_ledger_efr.php?menu=jlg"))
+	insDoc(aux2, gLnk("R", "Statement", "../jlg/shg_mem_detail.php?menu=jlg"))
+	//insDoc(aux2, gLnk("R", "Main", "../general/loan_main.php?menu=jlg"))
+	insDoc(aux2, gLnk("R", "Report", "../jlg/shg_report.php?menu=jlg"))*/
+
+
+//----------------------JLG Module .............................................
+//aux2 = insFld(aux1, gFld("SHG", "../main/nextaccount.php?menu=shg"))
+/*aux2 = insFld(foldersTree, gFld("JLG", "../main/nextaccount.php?menu=jlg"))
+        insDoc(aux2, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=jlg"))
+	insDoc(aux2, gLnk("R", "Loan Balance", "../jlg/jlg_loan_ledger_ef.php?menu=jlg"))
+        insDoc(aux2, gLnk("R", "Issue", "../jlg/loan_ledger_ef.php?menu=jlg"))
+	insDoc(aux2, gLnk("R", "Repay", "../jlg/loan_ledger_efr.php?menu=jlg"))
+	insDoc(aux2, gLnk("R", "Statement", "../jlg/shg_mem_detail.php?menu=jlg"))
+	//insDoc(aux2, gLnk("R", "Main", "../jlg/shg_info_view.php?menu=jlg"))
+	insDoc(aux2, gLnk("R", "Report", "../jlg/shg_report.php?menu=jlg"))*/
+
+//--------------------------------------LAND---------------------------------------------------
+/*aux1 = insFld(foldersTree, gFld("Land", "../main/myzone.php?menu=ln"))
+	 insDoc(aux1, gLnk("R", "Next a/c", "../main/nextaccount.php?menu=ln"))
+      	 insDoc(aux1, gLnk("R", "Add", "../land/land_ledger_ef.php?menu=ln"))
+	 insDoc(aux1, gLnk("R", "Less", "../land/land_ledger_lef.php?menu=ln"))
+	 insDoc(aux1, gLnk("R", "Statement", "../land/land_statement.php?menu=ln"))
+	 insDoc(aux1, gLnk("R", "Report", "../land/land_report.php?menu=ln"))
+*/
+//----------retail menu-----------------
+	aux1 = insFld(foldersTree, gFld("Retail Shop", "../retail/main_menu.php?menu=rsh"))
+	aux2 = insDoc(aux1, gLnk("R", "Master", "../retail/master.php?menu=rsh"))
+		insDoc(aux1, gLnk("R", "Stock Entry", "../retail/stockIn.php?menu=rsh"))
+		insDoc(aux1, gLnk("R", "Transaction", "../retail/transaction.php?menu=rsh"))
+		insDoc(aux1, gLnk("R", "Return", "../retail/return.php?menu=rsh"))
+		insDoc(aux1, gLnk("R", "Transfer", "../retail/transfer.php?single=true"))
+		insDoc(aux1, gLnk("R", "Shortage", "../retail/shortage.php?single=true"))		
+		insDoc(aux1, gLnk("R", "Reports", "../retail/report.php?menu=rsh"))
+
+//=====================================voucher====================================
+aux1 = insFld(foldersTree, gFld("Voucher", "../main/myzone.php?menu=vou"))
+	 insDoc(aux1, gLnk("R", "Receive", "../general/voucher.php?menu=vou&op=r"))
+      	 insDoc(aux1, gLnk("R", "Payment", "../general/voucher.php?menu=vou&op=pa"))
+	 insDoc(aux1, gLnk("R", "Journal", "../general/voucher.php?menu=vou&op=jv"))
+	 insDoc(aux1, gLnk("R", "Sales", "../general/voucher.php?menu=vou&op=s"))
+	 insDoc(aux1, gLnk("R", "Purchases", "../general/voucher.php?menu=vou&op=pu"))
+	 insDoc(aux1, gLnk("R", "Show", "../general/voucher_rpt.php?menu=vou"))
+
+	insDoc(aux1, gLnk("R", "Manual", "../manual/voucher_manual.html"))
+
+//--------------------------------------Return--------------------------------------------
+aux2 = insFld(foldersTree, gFld("Scroll", "../general/scroll_list.php?menu=gen"))
+aux2 = insFld(foldersTree, gFld( "Ledger Create", "../general/ledger_view.php?menu=gen"))
+
+
+//=======================day book====================
+aux1 = insFld(foldersTree, gFld("Cash & Day Book", "../main/myzone.php?menu=gen"))
+	insDoc(aux1, gLnk("R", "Day Book", "../fa_reports/gl_ledger_db.php?"))
+	insDoc(aux1, gLnk("R", "Cash Book", "../general/general_ledger_details.php?menu=gen&op=c&gl_code=28101"))
+	insDoc(aux1, gLnk("R", "Daily Scroll", "../fa_reports/day_book.php"))
+        insDoc(aux1, gLnk("R", "Account Ledgers", "../fa_reports/gl_ledger.php"))
+	 insDoc(aux1, gLnk("R", "General Ledgers", "../fa_reports/gl_all.php"))
+	//insDoc(aux1, gLnk("R", "Test page2", "../investment/ratio_mas.php"))
+	//insDoc(aux1, gLnk("R", "Test page3", "../investment/ratio_spcfctn.php"))
+	//insDoc(aux1, gLnk("R", "Test page4", "../investment/ratio_spc_drvd.php"))
+	//insDoc(aux1, gLnk("R", "Bank Book", "../general/general_ledger_details.php?menu=gen&op=b"))
+
+//=====================================MINI====================================================
+
+aux1 = insFld(foldersTree, gFld("Mini", "../mini/cust_mini_infmtn.php"))
+	insDoc(aux1, gLnk("R", "Customer Land Crop Info", "../mini/cust_land_crop_dtl.php"))
+	insDoc(aux1, gLnk("R", "Operator Info", "../mini/operator_info.php"))
+	insDoc(aux1, gLnk("R", "Report", "../mini/mini_report.php"))
+	insDoc(aux1, gLnk("R", "Electric Bill", "../mini/electric_bill.php"))
+//-----------------------------Asset Management----------------------------------------------
+aux1 = insFld(foldersTree, gFld("Fixed Assets", "../main/myzone.php?menu=myzone"))
+	insDoc(aux1, gLnk("R", "Opening", "../assets/asset_op.php?menu=ast"))
+	insDoc(aux1, gLnk("R", "Purchases", "../assets/asset_purchases.php?menu=ast"))
+	insDoc(aux1, gLnk("R", "Sales", "../assets/asset_sales.php?menu=ast"))
+	//insDoc(aux1, gLnk("R", "Customer", "../customer/customer_account_ef.php?menu=cust&type=Other"))
+	//insDoc(aux1, gLnk("R", "Vendor", "../retail/vendor_master.php?menu=rsh"))
+	//insDoc(aux1, gLnk("R", "Closing", "#"))
+        insDoc(aux1, gLnk("R", "Periodical Dep/App Charging", "../assets/peroid_dep_charging.php?menu=ast"))
+        insDoc(aux1, gLnk("R", "Report", "../assets/report1.php?menu=ast"))
+        insDoc(aux1, gLnk("R", "Manual", "../retail/dep_app.php"))
+//-----------------------------Investment----------------------------------------------
+
+aux1 = insFld(foldersTree, gFld("Investment", "../main/myzone.php?menu=myzone"))
+	//insDoc(aux1, gLnk("R", "Share", "../investment/sh_investment.php?menu=inv&op=sh"))
+	insDoc(aux1, gLnk("R", "Investment RI", "../investment/bk_investment.php?menu=inv&op=bk"))
+	//insDoc(aux1, gLnk("R", "Reserve", "../investment/rv_investment.php?menu=inv&op=rv"))
+	insDoc(aux1, gLnk("R", "Investment RD", "../investment/new_rd_investment.php"))
+	insDoc(aux1, gLnk("R", "Statement RD", "../investment/bk_investment_rd.php"))
+	insDoc(aux1, gLnk("R", "Investment RD/RI Report", "../investment/inv_report.php"))
+	//insDoc(aux1, gLnk("R", "Test page", "../investment/asst_hdr_ldr.php"))
+//-----------------------------------------------------------------------------------------------
+
+      		//insDoc(aux2, gLnk("R", "Group", "../retail/group_master.php?menu=rsh"))	
+
+	//insDoc(aux1, gLnk("R", "Register", "../investment/reg_investment.php?menu=inv"))
+	//insDoc(aux1, gLnk("R", "Income on Investments", ""))
+//---------------------------Bank books-----------------------------------
+aux1 = insFld(foldersTree, gFld("Bank Books", "../main/myzone.php?menu=myzone"))
+	insDoc(aux1, gLnk("R", "Bank A/C", "../bankbooks/bank_books_new.php?menu=bb&op=c"))
+	insDoc(aux1, gLnk("R", "Report", "../bankbooks/bank_books_report.php"))
+	insDoc(aux1, gLnk("R", "Clearing", "../bankbooks/cheque_report.php?menu=bb"))
+	//insDoc(aux1, gLnk("R", "Yearly Report", "../bankbooks/bank_books_new.php?menu=bb&op=m"))
+
+//******************************MONTHLY RETURN***********************************************
+aux2 = insFld(foldersTree, gFld("Monthly Return", "../main/myzone.php?menu=gen"))
+              insDoc(aux2, gLnk("R", "MonthlyReport", "../general/monthly_list.php?menu=gen"))
+		 insDoc(aux2, gLnk("R", "Monthly Report Final", "../general/monthly_list_final.html?menu=gen"))
+//------------------------------Auditors Report
+
+aux2 = insFld(foldersTree, gFld( "Final Report", "../fa_reports/report.php"))
+
+
+/*aux1 = insFld(foldersTree, gFld("Auditor's Report", "../main/myzone.php?menu=fin"))
+         insDoc(aux1, gLnk("R", "Trial Balance(B4)", "../fa_reports/trial_balance_before.php"))	
+	 insDoc(aux1, gLnk("R", "Trial Balance(Adj)", "../fa_reports/trial_balance.php"))
+	 insDoc(aux1, gLnk("R", "Cash Cum Trial[Dr]", "../fa_reports/trial_balance_dr.php"))
+	 insDoc(aux1, gLnk("R", "Cash Cum Trial[Cr]", "../fa_reports/trial_balance_cr.php"))
+	 insDoc(aux1, gLnk("R", "Trading A/C ", "../fa_reports/trading.php"))
+         insDoc(aux1, gLnk("R", "Profit & Loss A/C", "../fa_reports/profit_loss.php"))
+	 insDoc(aux1, gLnk("R", "Balance Sheet", "../fa_reports/balance_sheet.php"))
+	 insDoc(aux1, gLnk("R", "Cash A/C", "../fa_reports/monthly_cash_ac.php"))
+	 insDoc(aux1, gLnk("R", "Yearly Cash A/C", "../fa_reports/yearly_cash_ac.php"))
+	 //insDoc(aux1, gLnk("R", "Account Ledgers", "../fa_reports/gl_ledger.php"))	
+	 //insDoc(aux1, gLnk("R", "Day Book", "../fa_reports/gl_ledger_db.php"))
+	 //insDoc(aux1, gLnk("R", "Trial Balance", "../fa_reports/trial_balance.php"))
+	 
+         insDoc(aux1, gLnk("R", "Potato-NPA Register", "#"))
+         insDoc(aux1, gLnk("R", "Aman-NPA Register","#"))
+         insDoc(aux1, gLnk("R", "Boro-NPA Register","#"))
+         insDoc(aux1, gLnk("R", "Asset clasf.&Provising","#"))
+         insDoc(aux1, gLnk("R", "Periodwise overdues", "#"))
+         insDoc(aux1, gLnk("R", "Depreciation chart", "#"))*/
+//------------------------------Control Register
+
+aux2 = insFld(foldersTree, gFld( "Control Register", "../general/c_r_report.php"))
+
+
+/*aux1 = insFld(foldersTree, gFld("Control Register", "../main/myzone.php?menu=fin"))
+	 insDoc(aux1, gLnk("R", "Balancing Register", "#"))	
+	 insDoc(aux1, gLnk("R", "Membership Register","#"))
+	 insDoc(aux1, gLnk("R", "Accounts opened & closed Register", "#"))
+	 insDoc(aux1, gLnk("R", "Inoperative Deposit A/c Register ", "#"))
+         insDoc(aux1, gLnk("R", "Maturity Register", "#"))
+	 insDoc(aux1, gLnk("R", "Insurance Policy Register", "#"))
+         insDoc(aux1, gLnk("R", "Borrowing Due date Register","#"))
+	 insDoc(aux1, gLnk("R", "Investment Maturity Register", "#"))
+         insDoc(aux1, gLnk("R", "Pledged stock Register", "#"))
+	 insDoc(aux1, gLnk("R", "Suit Field Register", "#"))
+         insDoc(aux1, gLnk("R", "DCB Register", "#"))
+	 insDoc(aux1, gLnk("R", "Overdue NPA Register", "#"))
+         insDoc(aux1, gLnk("R", "Minutes Book ", "#"))
+	 insDoc(aux1, gLnk("R", "Gold stock Register", "#"))
+
+         insDoc(aux1, gLnk("R", "Sundry Debtors", "#"))
+	 insDoc(aux1, gLnk("R", "Sundry Creditors", "#"))*/
+
+//------------------------------MIS Register
+
+
+
+
+aux1 = insFld(foldersTree, gFld("MIS Register", "../main/myzone.php?menu=fin"))
+	 
+	/* insDoc(aux1, gLnk("R", "Demand List", "../fa_reports/demand_loan_rpt.php"))
+	 insDoc(aux1, gLnk("R", "Loan History", "../fa_reports/yearly_loan_rpt.php"))
+	 insDoc(aux1, gLnk("R", "Period-wise classification of overdues", "#"))
+	 insDoc(aux1, gLnk("R", "Asset classification & Provisioning ", "#"))
+         insDoc(aux1, gLnk("R", "Stock Position", "#"))
+	 insDoc(aux1, gLnk("R", "Details of Deposits Mobilised", "#"))
+         insDoc(aux1, gLnk("R", "Growth in share capital", "#"))
+	 insDoc(aux1, gLnk("R", "Progress Report", "#"))
+         insDoc(aux1, gLnk("R", "Set of performance indicators", "#"))
+	 insDoc(aux1, gLnk("R", "Concise structure of Balance Sheet", "#"))
+         insDoc(aux1, gLnk("R", "Financial Ratios", "#"))
+	 insDoc(aux1, gLnk("R", "Cash Flow statement", "#"))
+         insDoc(aux1, gLnk("R", "ks/LT issued during the year", "#"))
+	 insDoc(aux1, gLnk("R", "KCC scheme", "#"))*/
+//------------------------------Analysis of Financial Statement
+//aux2 = insFld(foldersTree, gFld( "Mis Register", "../fa_reports/mis_report.php"))
+
+//aux2 = insFld(foldersTree, gFld( "Analysis of Financial Statement", "../fa_reports/mis_report.php"))
+aux1 = insFld(foldersTree, gFld("Analysis of Financial Statement", "../main/myzone.php?menu=myzone"))
+		insDoc(aux1, gLnk("R", "Working Capital", "../mis_rpt/al_mis_report.php"))
+
+/*aux1 = insFld(foldersTree, gFld("Analysis of Financial Statement", "../main/myzone.php?menu=fin"))
+	 insDoc(aux1, gLnk("R", "Working Fund", "#"))	
+	 insDoc(aux1, gLnk("R", "Average Yield", "#"))
+	 insDoc(aux1, gLnk("R", "Average Cost", "#"))
+	 insDoc(aux1, gLnk("R", "Financial Margin ", "#"))
+         insDoc(aux1, gLnk("R", "Transaction cost", "#"))
+	 insDoc(aux1, gLnk("R", "Risk cost", "#"))
+         insDoc(aux1, gLnk("R", "Net margin", "#"))	
+	 insDoc(aux1, gLnk("R", "Net Worth", "#"))
+	 insDoc(aux1, gLnk("R", "Capital Adequacy Ratio", "#"))
+	 insDoc(aux1, gLnk("R", "Credit Deposit Ratio ", "#"))
+         insDoc(aux1, gLnk("R", "Ratio of Total Loans to Total Assets", "#"))
+	 insDoc(aux1, gLnk("R", "Ratio of Total Deposits to Total Assets", "#"))
+         insDoc(aux1, gLnk("R", "Ratio of operating Expenses to Average Total Assets", "#"))
+	 insDoc(aux1, gLnk("R", "Ratio of interest earned to interest paid", "#"))*/
+
+//------------------------------------------------------------------------------------------------------------
+aux2 = insFld(foldersTree, gFld( "Coding", "../fa/coding_report.php"))
+
+/*aux1    = insFld(foldersTree, gFld("Coding","../main/myzone.php?menu=fa"))
+	insDoc(aux1,gLnk("R", "Liabilities","../fa/liabilities.php?menu=lia")) 
+	insDoc(aux1,gLnk("R", "Assets","../fa/liabilities.php?menu=assets"))
+	insDoc(aux1,gLnk("R", "Purchase","../fa/liabilities.php?menu=pur"))
+        insDoc(aux1,gLnk("R", "sale","../fa/liabilities.php?menu=sale"))
+	insDoc(aux1,gLnk("R", "Income","../fa/liabilities.php?menu=income"))
+	insDoc(aux1,gLnk("R", "Expenditure","../fa/liabilities.php?menu=expen"))*/
+

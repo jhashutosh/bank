@@ -1,0 +1,340 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$menu1='b'.$menu;
+$op=$_REQUEST['op'];
+$l_mode=$_REQUEST['l_mode'];
+$id=$_REQUEST['id'];
+$account_no=$_REQUEST['account_no'];
+$bank_ac_no=$_REQUEST['bank_ac_no'];
+$ln_sl=$_REQUEST['ln_sl'];
+$ch_no=$_REQUEST['ch_no'];
+$principal=$_REQUEST['principal'];
+$action_date=$_REQUEST['action_date'];
+if(empty($action_date)){$action_date=date('d.m.Y');}
+$sql_statement="SELECT getLoanInterest('$account_no','$action_date','$menu1') as int";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_result($result,'int')==1){$iflag=true;}
+
+echo "<html>";
+echo "<head>";
+echo "<title>".getName('link_tb',$id,'b_name','bank_bk_dtl')." bank's ".strtoupper($menu)." Account[$account_no]";
+
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "<script src=\"../JS/validation.js\"></script>";
+echo "<script src=\"../JS/loading2.js\"></script>";
+echo "<script language=\"JavaScript\" src=\"../JS/gen_validatorv31.js\" type=\"text/javascript\"></script>";
+echo "<script type=\"text/javascript\" src=\"../JS/bsn.AutoSuggest_c_2.0.js\"></script>";
+?>
+<SCRIPT LANGUAGE="JavaScript">
+
+function f3(str){
+//alert(str)
+if(str=='cash'){
+//document.pForm.vname.disabled=true;
+//alert(str)
+//document.pForm.cheque_date.disabled=true;
+document.pForm.ch_no.value=0;
+document.pForm.ch_no.disabled=true;
+document.pForm.bank_ac_no.disabled=true;
+//document.pForm.rm.focus();
+	}
+if(str=='ch'){
+//document.pForm.vname.disabled=true;
+//document.pForm.cheque_date.disabled=false;
+document.pForm.ch_no.disabled=false;
+document.pForm.bank_ac_no.disabled=false;
+document.pForm.ch_no.value='';
+document.pForm.ch_no.focus();
+	}
+if(str=='tf'){
+//document.pForm.vname.disabled=true;
+//document.pForm.cheque_date.disabled=false;
+document.pForm.ch_no.disabled=true;
+document.pForm.bank_ac_no.disabled=false;
+document.pForm.ch_no.value='';
+document.pForm.bank_ac_no.focus();
+	}
+if(str.length==0){
+document.pForm.ch_no.value=0;
+document.pForm.ch_no.disabled=true;
+document.pForm.bank_ac_no.disabled=true;
+	}
+
+}
+
+function check(e)
+{
+	var r_prin=document.getElementById("d_principal").value;
+	var due_int=document.getElementById("d_int").value;
+	var od_due_int=document.getElementById("od_int").value;
+	var tot=(parseFloat(r_prin)+parseFloat(due_int)+parseFloat(od_due_int));
+	document.getElementById("total_d").value=tot;
+}
+
+</script>
+<?
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"amount.focus();\">";
+$flag=getBankInfo($id);
+
+echo "<hr>";
+if(empty($op)){
+	if(isOpenLoan($account_no)){
+echo "<h1>Loan Repayment Form</h1>";
+echo "varify before submit";
+echo "<hr>";
+echo "<form name=\"f1\" action=\"loan_repayment.php?menu=kcc&op=d&account_no=$account_no&id=$id\" method=\"post\">";
+echo "<table bgcolor=\"BLACK\" width=\"70%\" align=\"CENTER\">";
+echo "<tr bgcolor=YELLOW><td align=\"RIGHT\">Action Date :<td><input type=\"TEXT\" name=\"action_date\" size=\"12\" id=\"ac\" value=\"".date('d/m/Y')."\" $HIGHLIGHT>&nbsp;<input type=\"SUBMIT\" VALUE=\"Enter\" $HIGHLIGHT>"; 
+echo "</form>";
+?>
+<script language="JavaScript" type="text/javascript">
+ var frmvalidator  = new Validator("f1");
+ frmvalidator.addValidation("action_date","req","Please enter Repaymeny Date");
+</script>
+<?
+ }
+}
+//==========================DISPLAY HERE ======================================================
+if($op=='d'){
+	if(isOpenLoan($account_no)){
+echo "<table algin=CENTER width=\"100%\">";
+$sql_statement="SELECT * FROM loan_cal_int where account_no='$account_no'";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+	
+	$color="GREEN";
+	echo "<tr><th bgcolor=YELLOW colspan=\"9\">".strtoupper($menu)." Details of [$account_no] as on ".$action_date."</th>";
+	echo "<tr>";
+	echo "<th bgcolor=$color Rowspan=\"2\">Loan <br>Serial No</th>";
+	echo "<th bgcolor=$color Rowspan=\"2\">Bank Name</th>";
+	//echo "<th bgcolor=$color Rowspan=\"2\">Crop<br>Name</th>";
+	echo "<th bgcolor=$color Rowspan=\"2\">Days</th>";
+	echo "<th bgcolor=$color Rowspan=\"2\">Principal<br>(Rs.)</th>";
+	echo "<th bgcolor=$color colspan=\"2\">Interest</th>";
+	echo "<th bgcolor=$color Rowspan=\"2\">Total<br>(Rs.)</th>";
+	echo "<th bgcolor=$color Rowspan=\"2\">Operation</th>";
+	echo "<tr><th bgcolor=$color>Due</th>";
+	echo "<th bgcolor=$color >Overdue</th>";
+	for($j=0; $j<pg_NumRows($result); $j++){
+	echo "<tr>";
+	$row=pg_fetch_array($result,$j);
+	if($row['status']=='o'){
+	$color="#DC143C";
+	}
+	else{
+	$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+	}
+	if($row['principal']>0){
+	$loan_sl_no=$row['loan_serial_no'];
+	echo "<td bgcolor=$color align=center> $loan_sl_no";
+	echo "<td align=center bgcolor=$color>".getName('link_tb',$id,'b_name','bank_bk_dtl')."</td>";
+	echo "<td align=center bgcolor=$color>".$row['days']."</td>";
+	echo "<td align=right bgcolor=$color>".amount2Rs((float)$row['principal'])."</td>";
+	echo "<td align=right bgcolor=$color>".amount2Rs($row['due_int'])."</td>";
+	//echo "<td align=right bgcolor=$color>".amount2Rs(empty($row['overnt'])?0:$row['overnt'])."</td>";
+
+	echo "<td align=right bgcolor=$color>".amount2Rs($row['overdue_int'])."</td>";
+
+
+	echo "<td align=right bgcolor=$color>".amount2Rs(($row['principal']+$row['due_int']+$row['overdue_int']))."</td>";
+	echo "<td align=Center bgcolor=$color><a href=\"loan_repayment.php?menu=$menu&ln_sl=$loan_sl_no&op=r&action_date=$action_date&id=$id&account_no=$account_no\">Repay</td>";
+	}
+	}
+}
+	else{
+ 		echo "<h1><center>Your dont have any Loan!!!!!!!!!!!</h1></center>";
+   		 }
+  }
+else{
+ 		echo "<h1><font color=RED><center>Your dont have any for Payment!!!!!!!!!!!</h1></center>";
+    }
+}
+//-------------------------------INSERT INTO DATABASE -----------------------------------------
+if($op=='i'){
+$d_principal=$_REQUEST['d_principal'];
+$d_int=$_REQUEST['d_int'];
+$due=$_REQUEST['due'];
+$over_due=$_REQUEST['over_due'];
+$amount=$_REQUEST['amount'];
+$od_int=$_REQUEST['od_int'];
+$ln_sl=$_REQUEST['ln_sl'];
+//$action_date=$_REQUEST['action_date'];
+$l_mode=getIndex($loan_repay_mode_array,l_mode);
+$total_d=$_REQUEST['total_d'];
+$gl_code=getGlCode4mBank($account_no);
+$fy=getFy($action_date);
+if(empty($fy)){
+	echo "<h1><center><b>You Can't Insert any value Into database Because Financial Year already Locked by administrator !!!!!!!!!</h1>";
+		} 	
+else{
+    /* if($amount>=($d_int+$od_int)){
+	$r_i_d=$d_int;
+	$r_i_od=$od_int;
+	$r_p=$amount-($d_int+$od_int);
+	$b_p=$d_principal-$r_p;
+	$b_i_d=0;
+	$b_i_od=0;
+	}
+     else{
+		if($amount>$od_int){
+					$r_i_od=$od_int;
+					$r_i_d=$amount-$od_int;
+					$b_i_d=$d_int-$r_i_d;
+					$b_i_od=0;
+					}
+			else{
+				$r_i_od=$amount;
+				$r_i_d=0;
+				$b_i_d=$d_int;
+				$b_i_od=$od_int-$amount;
+				}
+		$r_p=0;
+		$b_p=$d_principal;
+	}*/
+	
+//----------------------------------loan_return_dtl---------------------------------
+$d_principal=$_REQUEST['d_principal'];
+$d_int=$_REQUEST['d_int'];
+$due=$_REQUEST['due'];
+$over_due=$_REQUEST['over_due'];
+$od_int=$_REQUEST['od_int'];
+$ln_sl=$_REQUEST['ln_sl'];
+$due_principal=$d_principal-$principal;
+$due_due=$d_int-$due;
+//echo "<h1>hi:$due_due:hello:$d_int:ok:$due</h1>";
+$due_ovdue=$od_int-$over_due;
+$r_total_amount=$principal+$due+$over_due;
+$l_mode=$_REQUEST['l_mode'];
+$tranfer_to=$_REQUEST['bank_ac_no'];
+$gl_code_to=getGlCode4mBank($tranfer_to);
+//$fy=getFy($action_date);
+	$fy='2011-2012';
+	if(empty($fy)){
+	echo "<h1><center><b>You Can't Insert any value Into database Because Financial Year already Locked by administrator !!!!!!!!!";
+}
+	else{
+		$t_id=getTranId();
+	
+//echo "<h1>accno:$account_no</h1>";
+$sql_statement="INSERT INTO loan_return_dtl (tran_id,loan_serial_no,account_no, action_date,r_total_amount,r_due_int,r_overdue_int,r_principal,b_due_int,b_overdue_int, b_principal,staff_id,entry_time) VALUES('$t_id','$ln_sl','$account_no','$action_date',$r_total_amount,$due,$over_due,$principal,$due_due,$due_ovdue,$due_principal,'$staff_id',CAST('$action_date'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP))";
+
+//---------------------------------For GL ENTRY-------------------------------------
+	$sql_statement.=";INSERT INTO gl_ledger_hrd (tran_id,type,action_date,fy,operator_code, entry_time) VALUES ('$t_id','b".$menu."','$action_date','$fy','$staff_id', CAST('$action_date'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP))";
+	
+	if($due>0||$over_due>0){
+	$gl_od='61'.substr($gl_code,2,strlen($gl_code));
+	$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no, gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$account_no','$gl_od',".($due+$over_due).",'Dr','interest')";
+	}
+	if($principal>0){
+	//$gl_d=getGLCodeLoanInterest($gl_code_p,'d');
+	$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no, gl_mas_code,amount,dr_cr,particulars) VALUES('$t_id','$account_no','$gl_code',$principal,'Dr', 'principal')";
+	}
+	if($l_mode=='cash'){
+$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount, dr_cr,particulars) VALUES('$t_id','28101',$r_total_amount,'Cr','Loan Repay')";
+		}
+	else{
+	$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount, dr_cr,particulars) VALUES('$t_id','$tranfer_to','$gl_code_to',$r_total_amount,'Cr','tranfer')";
+	if($l_mode=='ch'){
+		$sql_statement.=";INSERT INTO cheque_reg(tran_id,cheque_no,account_no,amount, operator_code,action_date,status,entry_time,cheque_date,status,forward_account) VALUES ('$t_id','$ch_no','$bank_ac_no','','$staff_id', CAST('$action_date'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP),'$action_date','own','$bank_ac_no')";
+	}
+
+	}
+       if($due_principal<1){
+	//for remove security from loan_security table
+		$sql_statement.=";UPDATE loan_ledger_hrd SET status='cl' WHERE loan_serial_no='$ln_sl' AND account_no='$account_no'";
+	}
+// insert data in cheque regester
+	
+	
+
+   	//echo $sql_statement;
+	$result=dBConnect($sql_statement);
+		if(pg_affected_rows($result)<1){
+		echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+			} 
+		else{
+			echo "<h4><font color=\"Green\">Sucessfully inserted data into database.</font><br>Your Transaction Id:$t_id</h4>";
+			echo "<pre><font size=\"+2\"><b>Your Amount Allocated as: <br>";
+			echo "Principal          : Rs. $principal <br>";
+			echo "Due Interst        : Rs. ".($due+$over_due)."<br>";
+			//echo "Over Due Interest  : Rs. $over_due<br>";
+			echo "Total              : Rs. $r_total_amount";
+			echo "</font></pre>";
+			//echo "<font size=+1><a href=\"loan_statement.php?menu=$menu&ln_sl=$loan_sl_no&op=r&action_date=$action_date&id=$id&account_no=$account_no\">Click</a> here to go Statement"; 
+
+		}
+		
+	}	
+ 	}
+    }
+
+//==================================FOR REPAY FORM=========================================
+
+if(trim($op)=='r'){
+//echo "<h1>HI Op=$op</h1>";
+$sql_statement="SELECT * FROM loan_cal_int where account_no='$account_no' AND loan_serial_no='$ln_sl'";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+$crop_id=pg_result($result,'crop_id');
+$principal=(float)pg_result($result,'principal');
+$days=pg_result($result,'days');
+$due_i=pg_result($result,'due_int');
+$odue_i=pg_result($result,'overdue_int');
+echo "<table bgcolor=\"Green\" width=\"80%\" align=\"CENTER\">";
+echo "<tr><th bgcolor=\"#808000\" colspan=\"4\"><font size=+2>Loan Repayment Information Form of [$account_no]</font>";
+echo "<FORM NAME=\"pForm\" method=\"POST\" action=\"loan_repayment.php?menu=$menu&op=i&ln_sl=$ln_sl&id=$id\" onSubmit=\"return checkKccReturn(this.form);\">";
+echo "<tr><td bgcolor=\"#E0FFFF\"> Account No:<td bgcolor=\"#E0FFFF\"><INPUT TYPE=\"TEXT\" VALUE=\"$account_no\" name=\"account_no\" $HIGHLIGHT size=\"15\" readonly>";
+echo "<td bgcolor=\"#E0FFFF\">Date:<td bgcolor=\"#E0FFFF\"><INPUT NAME=\"action_date\" TYPE=\"TEXT\" VALUE=\"".$action_date."\" $HIGHLIGHT size=\"12\" readonly>";
+echo "<tr><td colspan=\"2\" bgcolor=\"#E0FFFF\"><b>PAID STATUS:</b><td colspan=\"2\" bgcolor=\"#E0FFFF\"><b>CURRENT STATUS:</b>";
+recoverDetails($ln_sl,$p,$d,$o);
+if(empty($p))$p=0;
+if(empty($d))$d=0;
+if(empty($o))$o=0;
+echo "<tr><td bgcolor=\"#E0FFFF\">Principal :<td bgcolor=\"#E0FFFF\">Rs.&nbsp;<INPUT NAME=\"r_principal\" TYPE=\"TEXT\" VALUE=\"$p\" $HIGHLIGHT size=10 READONLY>";
+echo "<td bgcolor=\"#E0FFFF\">Principal :<td bgcolor=\"#E0FFFF\">Rs.&nbsp;<INPUT NAME=\"d_principal\" id=\"d_principal\" TYPE=\"TEXT\" VALUE=\"$principal\" $HIGHLIGHT size=10 id=\"p\" onchange=\"return check(event)\">";
+echo "<tr><td bgcolor=\"#E0FFFF\">Due Interest :<td bgcolor=\"#E0FFFF\">Rs.&nbsp;<INPUT  TYPE=\"TEXT\" NAME=\"r_d_int\" VALUE=\"$d\" $HIGHLIGHT size=10 READONLY>";
+echo "<td bgcolor=\"#E0FFFF\">Due Interest :<td bgcolor=\"#E0FFFF\">Rs.&nbsp;<INPUT  TYPE=\"TEXT\" NAME=\"d_int\" id=\"d_int\" VALUE=\"$due_i\" $HIGHLIGHT size=10 id=\"d\" onchange=\"return check(event)\">";
+echo "<tr><td bgcolor=\"#E0FFFF\">Over Due Interest:<td bgcolor=\"#E0FFFF\">Rs.&nbsp;<INPUT  TYPE=\"TEXT\" NAME=\"r_od_int\" VALUE=\"$o\" $HIGHLIGHT size=\"10\" readonly>";
+echo "<td bgcolor=\"#E0FFFF\">Over Due Interest:<td bgcolor=\"#E0FFFF\">Rs.&nbsp;<INPUT  TYPE=\"TEXT\" NAME=\"od_int\" id=\"od_int\" VALUE=\"$odue_i\" $HIGHLIGHT size=\"10\" id=\"o\" onchange=\"return check(event)\">";
+echo "<tr><td bgcolor=\"#E0FFFF\">Total:<td bgcolor=\"#E0FFFF\">Rs.&nbsp;<INPUT  TYPE=\"TEXT\" NAME=\"total_r\" VALUE=\"".($o+$p+$d)."\" $HIGHLIGHT size=\"10\" readonly>";
+echo "<td bgcolor=\"#E0FFFF\">Total:<td bgcolor=\"#E0FFFF\">Rs.&nbsp;<INPUT NAME=\"total_d\" id=\"total_d\" TYPE=\"TEXT\" VALUE=\"".($principal+$odue_i+$due_i)."\" $HIGHLIGHT size=\"10\" id=\"o\"";
+echo "<tr><td bgcolor=\"#E0FFFF\">Days:<td bgcolor=\"#E0FFFF\">Rs.&nbsp;<INPUT NAME=\"days\" TYPE=\"TEXT\" VALUE=\"$days\" $HIGHLIGHT size=5 READONLY><td colspan=\"2\" bgcolor=\"#E0FFFF\">";
+echo "<input type=\"hidden\" name=\"ln_sl\"  value=\"$ln_sl\" >";
+echo "</table>";
+
+//----------------------------------------------------------submit form------------------------------------------------------------------
+
+echo "<table bgcolor=\"#008000\" width=\"80%\" align=\"CENTER\">";
+echo "<tr><th bgcolor=\"Yellow\" colspan=\"4\">Loan payment Details</th>";
+//echo "<FORM NAME=\"pForm\" method=\"POST\" action=\"loan_repayment.php?menu=$menu&op=i&ln_sl=$ln_sl&id=$id\" onSubmit=\"return checkKccReturn(this.form);\">";
+echo "<tr><td bgcolor=\"#DCDCDC\">Principal:<td bgcolor=\"#DCDCDC\">Rs.&nbsp;<INPUT TYPE=\"TEXT\"  NAME=\"principal\" VALUE=\"\" $HIGHLIGHT size=\"15\">";
+echo "<td bgcolor=\"#DCDCDC\">Due Int:<td bgcolor=\"#DCDCDC\">Rs.<INPUT  TYPE=\"TEXT\" name=\"due\" VALUE=\"\" $HIGHLIGHT size=\"12\">";
+echo "<tr><td bgcolor=\"#DCDCDC\">Over Due Int:<td bgcolor=\"#DCDCDC\">Rs.&nbsp;<INPUT  TYPE=\"TEXT\" NAME=\"over_due\" VALUE=\"\" $HIGHLIGHT size=10 >";
+echo "<td bgcolor=\"#DCDCDC\">Payment Mode :<td bgcolor=\"#DCDCDC\">&nbsp&nbsp;";
+makeSelectwithJS($loan_repay_mode_array,'l_mode',"","l_mode","onchange=\"f3(this.value);\"");
+echo "<tr><td bgcolor=\"#DCDCDC\">Transfer From :<td bgcolor=\"#DCDCDC\">&nbsp;&nbsp;";
+selectBankAccount('bank_ac_no','DISABLED');
+echo "<td bgcolor=\"#DCDCDC\">Cheque no:<td bgcolor=\"#DCDCDC\">&nbsp;&nbsp;<INPUT NAME=\"ch_no\" TYPE=\"TEXT\" name=\"ch_no\" VALUE=\"\" $HIGHLIGHT size=10 id=\"d\">";
+echo "<tr><td colspan=\"2\" bgcolor=\"#DCDCDC\"><td align=\"RIGHT\" bgcolor=\"#DCDCDC\" colspan=\"2\"><input type=\"SUBMIT\" VALUE=\"    Go   \" >";
+//echo "<input type=\"hidden\" name=\"ln_sl\"  value=\"$ln_sl\" >";
+echo "</FORM>";
+?>
+<script language="JavaScript" type="text/javascript">
+ var frmvalidator  = new Validator("pForm");
+ frmvalidator.addValidation("principal","req","Amount Should Not be Null");
+ frmvalidator.addValidation("due","req","Amount Should Not be Null");
+ frmvalidator.addValidation("over_due","req","Amount Should Not be Null");
+ frmvalidator.addValidation("l_mode","req","Mood Should Not be Null");
+ //frmvalidator.addValidation("principal","dec","Amount Should be Numeric Value");
+ frmvalidator.addValidation("due","dec","Amount Should be Numeric Value");
+ frmvalidator.addValidation("over_due","dec","Amount Should be Numeric Value");
+</script>
+<?
+   }
+ }
+?>

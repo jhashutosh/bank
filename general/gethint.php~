@@ -1,0 +1,49 @@
+<?
+include "../config/config.php";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+$q=strtolower($_GET["q"]);
+$status=trim($_GET['status']);
+//echo "status is $status";
+if($status=='cust'){$table="customer_all";}
+if($status=='sb'){$table="customer_sb";}
+if($status=='fd'){$table="customer_fd";}
+if($status=='rd'){$table="customer_rd";}
+if($status=='ri'){$table="customer_ri";}
+//echo $sql_statement;
+$sql_statement="SELECT * FROM $table where name1 like '$q%'";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) 
+{
+ echo "Sorry Record not Found!!!!!!!!!!";
+}
+else
+{
+echo "<table align=center width=100%>";
+echo "<tr><th colspan=5 bgcolor=#C71585>Customer Details";
+echo "<tr bgcolor=#ADD8E6>";
+echo "<th width=\"15%\">Customer Id</th>";
+if($status!='cust'){
+echo "<th  width=\"15%\">Account No.</th>";
+}
+echo "<th >Name</th>";
+echo "<th >Address</th>";
+echo "<th  width=\"15%\">Voter Id</th>";
+$color==$TCOLOR;
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+echo "<td bgcolor=$color width=\"12%\"><a href=\"../main/set_account.php?account_no=".$row['customer_id']."&menu=cust\" target=\"_parent\">".$row['customer_id']."</td>";
+if($status!='cust'){
+echo "<td bgcolor=$color width=\"13%\"><a href=\"../main/set_account.php?account_no=".$row['account_no']."&menu=$status\" target=\"_parent\">".$row['account_no']."</a></td>";
+}
+echo "<td bgcolor=$color>".ucwords($row['name1'])."</td>";
+echo "<td bgcolor=$color>".ucwords($row['address11'])."</td>";
+echo "<td bgcolor=$color>".ucwords($row['voter_id_no1'])."</td>";
+}
+echo "<tr bgcolor=cyan><td align=center colspan=5>Total <b><font color=red>".($j-1)."</b></font>&nbsp; Record Found!!!!";
+echo "</table>";
+}
+
+?>

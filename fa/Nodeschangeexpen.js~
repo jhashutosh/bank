@@ -1,0 +1,158 @@
+USETEXTLINKS = 1
+
+STARTALLOPEN = 0
+
+ICONPATH = "../image/";
+foldersTree = gFld("60000 Expenditure ")
+  foldersTree.treeID = "Frameset"
+//-----------------------------61000-------------------------------
+aux1 = insFld(foldersTree, gFld("61000 Interest on Borrowings"))
+//-------------------------------------61100------------------------------
+	aux2 = insFld(aux1, gFld("61100 Interest on Govt. Borrowings"))
+	insDoc(aux2,gLnk("R","61101 Interest on Govt. Borrowings(Construction)"))
+	insDoc(aux2,gLnk("R","61102 Interest on Govt. Borrowings(Furniture & Fixture)"))
+	insDoc(aux2,gLnk("R","61103 Interest on Govt. Borrowings(Plant & Machinaries)"))
+	insDoc(aux2,gLnk("R","61199 Interest on Govt. Borrowings(Others)"))
+	
+//-----------------------------------61200------------------------------------
+	aux2 = insFld(aux1, gFld("61200 Interest on Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61201 Interest on short term Borrowing from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61202 Interest on Medium term(conversion)Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61203 Interest on MT/LT Re-schedulement Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61204 Interest on SHG Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61205 Interest on MT/LT Agricultural Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61206 Interest on MT/LT non-Farm Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61207 Interest on Cash Credit(Agricultural inputs)Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61208 Interest on Cash Credit(Agricultural Produce)Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61209 Interest on Cash Credit(PDS)Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61210 Interest on Cash Credit(Non PDS consumer)Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61211 Interest on Cash Credit(Miscellaneous Non-credit)Borrowings from SCB/CCB"))
+	insDoc(aux2,gLnk("R","61212 Interest on Borrowings from SCB/CCB against term deposit"))
+	insDoc(aux2,gLnk("R","61299 Interest on Other Borrowings from SCB/CCB"))
+//------------------------------------61300--------------------------------------------
+	aux2 = insFld(aux1, gFld("61300 Interest on Borrowings from Commercial Bank/RRB"))
+	insDoc(aux2,gLnk("R","61301 Interest on S.T. Borrowing from Other Banks"))
+	insDoc(aux2,gLnk("R","61302 Interest on Medium term (Conversion) Borrowing from Other Banks"))
+	insDoc(aux2,gLnk("R","61303 Interest on Medium term Borrowing from other Banks"))
+	insDoc(aux2,gLnk("R","61304 Interest on Long Term Borrowing from other Banks"))
+	insDoc(aux2,gLnk("R","61305 Interest on Cash-credit Borrowing from other Banks"))
+	insDoc(aux2,gLnk("R","61306 Interest on Overdraft Borrowing from other Banks"))
+	insDoc(aux2,gLnk("R","61399 Interest on Misc.Borrowing from other Banks"))
+
+//------------------------------------61400-------------------------------------------
+	aux2 = insFld(aux1, gFld("61400 Interest on Borrowings from other sources"))
+	insDoc(aux2,gLnk("R","61401 Interest on Borrowing from Pry. CARDB"))
+	insDoc(aux2,gLnk("R","61402 Interest on Borrowing from SCARDB"))
+	insDoc(aux2,gLnk("R","61499 Interest on Borrowing from Other sources"))
+	
+	
+//----------------------62000-------------------------------
+aux1 = insFld(foldersTree, gFld("62000 Interest on Deposits"))
+//---------------------------------62100----------------------------------
+	aux2 = insFld(aux1, gFld("62100 Interest on Deposits Individual Members"))
+	insDoc(aux2,gLnk("R","62101 Interest on Savings Deposits(Individual Members)" ))
+	insDoc(aux2,gLnk("R","62102 Interest on Recuring Deposits (Individual Members)"))
+	insDoc(aux2,gLnk("R","62103 Interest on Fixed Deposits (Individual Members)"))
+    insDoc(aux2,gLnk("R","62104 Interest on Reinvestment Term Deposits(Individual Members)"))
+	insDoc(aux2,gLnk("R","62105 Interest on Home Savings Deposits(Individual Members)"))
+	insDoc(aux2,gLnk("R","62199 Interest on Other Deposits(Individual Members)"))
+//----------------------------------62200--------------------------------------------
+	aux2 = insFld(aux1, gFld("62200 Interest on Deposits From Self-Helf Groups"))
+	insDoc(aux2,gLnk("R","62201 Interest on Savings Deposits(Self-Helf Groups)"))
+	insDoc(aux2,gLnk("R","62202 Interest on Recuring Deposits (Self-Helf Groups)"))
+	insDoc(aux2,gLnk("R","62203 Interest on Fixed Deposits (Self-Helf Groups)"))
+	insDoc(aux2,gLnk("R","62204 Interest on Reinvestment Term Deposits(Self-Helf Groups)"))
+	insDoc(aux2,gLnk("R","62205 Interest on Home Savings Deposits(Self-Helf Groups)"))
+	insDoc(aux2,gLnk("R","62299 Interest on Other Deposits(Self-Helf Groups)"))
+//------------------------------------62300--------------------------------------
+	aux2 = insFld(aux1, gFld("62300 Interest on Deposits From non-member"))
+	insDoc(aux2,gLnk("R","62301 Interest on Savings Deposits(non-member)"))
+	insDoc(aux2,gLnk("R","62302 Interest on Recuring Deposits (non-member)"))
+	insDoc(aux2,gLnk("R","62303 Interest on Fixed Deposits (non-member)"))
+	insDoc(aux2,gLnk("R","62304 Interest on Reinvestment Term Deposits(non-member)"))
+	insDoc(aux2,gLnk("R","62305 Interest on Home Savings Deposits(non-member)"))
+	insDoc(aux2,gLnk("R","62399 Interest on Other Deposits(non-member)"))
+	
+//----------------------63000------------------------------
+aux1 = insFld(foldersTree, gFld("63000 Other Revenue Expenses"))
+//------------------------63100-------------------------------
+	aux2 = insFld(aux1, gFld("63100 Staff Expenses"))
+	insDoc(aux2,gLnk("R","63101 Wages & Remuneration "))
+	insDoc(aux2,gLnk("R","63102 Salary"))
+	insDoc(aux2,gLnk("R","63103 Bonus"))
+	insDoc(aux2,gLnk("R","63104 Ex-gratia"))
+	insDoc(aux2,gLnk("R","63105 Incentive"))
+	insDoc(aux2,gLnk("R","63106 Provident Fund Contribution"))
+	insDoc(aux2,gLnk("R","63107 Gratuity(Payable for the year)"))
+	insDoc(aux2,gLnk("R","63108 Staff Training Expenses"))
+	insDoc(aux2,gLnk("R","63109 Travelling Allowance & Conveyence"))
+	insDoc(aux2,gLnk("R","63199 Miscellaneous Staff Benefits"))
+//------------------------63200-------------------------------
+	aux2 = insFld(aux1, gFld("63200 Management Expenses"))
+	insDoc(aux2,gLnk("R","63201 Remuneration/Honoraria to Directors"))
+	insDoc(aux2,gLnk("R","63202 Director's Sitting Fees"))
+	insDoc(aux2,gLnk("R","63203 Travelling Allowance & Conveyance-Directors"))
+	insDoc(aux2,gLnk("R","63204 Director's /Members training Expenses"))
+	insDoc(aux2,gLnk("R","63205 Board Meeting Expenses"))
+	insDoc(aux2,gLnk("R","63206 General Meeting Expenses"))
+//--------------------------63300-----------------------------
+	aux2 = insFld(aux1, gFld("63300 Maintenance Expenses"))
+	insDoc(aux2,gLnk("R","63301 Rent"))
+	insDoc(aux2,gLnk("R","63302 Electricity Charges"))
+	insDoc(aux2,gLnk("R","63303 Watch & ward charges"))
+	insDoc(aux2,gLnk("R","63304 Insurance Charges"))
+	insDoc(aux2,gLnk("R","63305 Repair & Maintenance"))
+	insDoc(aux2,gLnk("R","63306 Fuel Charges"))
+	insDoc(aux2,gLnk("R","63307 Telephone Charges"))
+	insDoc(aux2,gLnk("R","63308 Vehicle Hiring/Maintenance Charges"))
+//------------------------------63400--------------------------
+	aux2 = insFld(aux1, gFld("63400 Business Promotion Expenses"))
+	insDoc(aux2,gLnk("R","63401 Patronage Rebate"))
+	insDoc(aux2,gLnk("R","63402 Commission Brokerage"))
+	insDoc(aux2,gLnk("R","63403 Advertisement & Publicity"))
+	insDoc(aux2,gLnk("R","63404 Entertainment"))
+	insDoc(aux2,gLnk("R","63405 Carriege Outward"))
+	
+//-------------------------------63500-------------------------------
+	aux2 = insFld(aux1, gFld("63500 Statutory Expenses"))
+	insDoc(aux2,gLnk("R","63501 Taxes & Fees"))
+	insDoc(aux2,gLnk("R","63502 Audit Fees"))
+	insDoc(aux2,gLnk("R","63503 Tax Audit Fees"))
+	insDoc(aux2,gLnk("R","63504 Cooperative Union Subscription"))
+	insDoc(aux2,gLnk("R","63505 Deposit Guarantee Fee"))
+	insDoc(aux2,gLnk("R","63599 Other Statutory Expenses"))
+//--------------------------------63900------------------------------------
+	aux2 = insFld(aux1, gFld("63900 Other Revenue Expenses"))
+	insDoc(aux2,gLnk("R","63901 Legal Expenses"))
+	insDoc(aux2,gLnk("R","63902 Printing & Stationery Charges"))
+	insDoc(aux2,gLnk("R","63903 Postage/Courier/Fax/Photocopy"))
+	insDoc(aux2,gLnk("R","63904 Bank Charges"))
+	insDoc(aux2,gLnk("R","63905 Celebration Expenses"))
+	insDoc(aux2,gLnk("R","63906 Donation and Subcription"))
+	insDoc(aux2,gLnk("R","63999 Other Revenue Expenses"))
+	//insDoc(aux2,gLnk("R",""))
+//-------------------------64000------------------------------
+aux1 = insFld(foldersTree, gFld("64000 Depreciation"))
+	insDoc(aux1,gLnk("R","64100 Depreciation On Fixed Assets"))
+//------------------------65000--------------------------
+aux1 = insFld(foldersTree, gFld("65000 Provisions"))
+	insDoc(aux1,gLnk("R","65100 Provisions for Standrad Loan Assets(E)"))
+//---------------------------------65200--------------------------------------
+	aux2 = insFld(aux1, gFld("65200 Provision for Non-performing Assets(E)"))
+	insDoc(aux2,gLnk("R","65201 Provisions for NPA-Substandrad Loan Assets(E)"))
+	insDoc(aux2,gLnk("R","65202 Provisions for NPA-Doubtful Loan Assets(E)"))
+	insDoc(aux2,gLnk("R","65203 Provisions for NPA-Unsecured Loan Assets(E)"))
+	insDoc(aux2,gLnk("R","65204 Provisions for NPA-Loss Loan Assets(E)"))
+//---------------------------------65300---------------------------------------
+	insDoc(aux1,gLnk("R","65300 Provision for Depreciation on Investment(E)"))
+//-------------------------------65400--------------------------------------
+	aux2 = insFld(aux1, gFld("65400 Provision for Overdue Interest"))
+	insDoc(aux2,gLnk("R","65401  Provision for Overdue Interest on Loans(E)"))
+	insDoc(aux2,gLnk("R","65402  Provision for Overdue Interest on Investment(E)"))
+//-------------------------------65500--------------------------------
+	aux2 = insFld(aux1, gFld("65500 Provision for Loss on DebtorA/CS(E)"))
+	insDoc(aux2,gLnk("R","65501  Provision for other Bad and Doubtful Trade Debtor A/CS(E)"))
+	insDoc(aux2,gLnk("R","65599  Provision for other Bad and Doubtful Debtor A/CS(E)"))
+//----------------------------------65600-----------------------------------
+	insDoc(aux1,gLnk("R","65600 Provision for Taxation(E)"))
+	insDoc(aux1,gLnk("R","65900 Provision for Other Losses(E)"))

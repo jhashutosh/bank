@@ -1,0 +1,77 @@
+<?
+include "config.php";
+$id=$_REQUEST['id'];
+$membership_no=$_REQUEST['membership_no'];
+echo "<html>";
+echo "<head>";
+echo "<title>Table: [Land_info_t]";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+//echo "<h3> Land Information About Membership no.: $membership_no  ";
+//echo "</h1>";
+//echo "<a href=\"membership_account.php?membership_no=$membership_no\" target=\"_self\">BACK</a>";
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+if(empty($id)){$id=getCustomerId($membership_no);}
+$flag=getGeneralInfo_Customer($id);
+echo "<hr>";
+$sql_statement="SELECT * FROM land_info_t where membership_no='$membership_no' order by entry_time";
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>Record Not found!!!</h4><br>";
+echo "<a href=\"land_info_t_ef.php?membership_no=$membership_no\">Click Here </a> to Add Land Information !!!!!";
+} else {
+echo "<table border=\"1\" align=CENTER>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr><td bgcolor=\"GREEN\" colspan=\"12\" align=\"center\"><font color=\"white\">Land List Of Member $membership_no";
+echo "<tr>";
+echo "<th bgcolor=$color>Land ID</th>";
+echo "<th bgcolor=$color>Farmer Type</th>";
+echo "<th bgcolor=$color>Land_Type</th>";
+echo "<th bgcolor=$color>Gram panchayeet name</th>";
+echo "<th bgcolor=$color>Size of land(in acre)</th>";
+echo "<th bgcolor=$color>Value Of Land</th>";
+echo "<th bgcolor=$color>Dag No</th>";
+echo "<th bgcolor=$color>Mouja</th>";
+echo "<th bgcolor=$color>J.L.No</th>";
+echo "<th bgcolor=$color>Mini No</th>";
+//echo "<th bgcolor=$color>Remarks</th>";
+echo "<th bgcolor=$color>Operation</th>";
+//echo "<th bgcolor=$color>Entry Time</th>";
+
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+echo "<td align=\"right\" bgcolor=$color>".$row['land_id']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['farmer_type']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['land_type']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['gp_name']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['land_size']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['value_of_land']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['dag_no']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['mouja']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['j_l_no']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['mini_no']."</td>";
+//echo "<td align=\"right\" bgcolor=$color>".$row['insurance_claim_receive']."</td>";
+//echo "<td align=\"right\" bgcolor=$color>".$row['remarks']."</td>";
+echo "<td align=\"center\" bgcolor=$color><a href=\"land_info_t_uf.php?land_id=".$row['land_id']."\" target=\"_self\">M</a> &nbsp;<a href=\"land_info_t_ef.php?membership_no=$membership_no\">A</a>";
+//echo "<td align=\"right\" bgcolor=$color>".$row['entry_time']."</td>";
+ }
+}
+echo "</TABLE>";
+
+//$id=getCustomerId($membership_no);
+//echo "<a href=\"customer_statement.php?id=$id\" target=\"_self\">BACK</a>";
+echo "<BR>";
+echo "<BR>";
+
+
+footer();
+
+echo "</body>";
+echo "</html>";
+?>

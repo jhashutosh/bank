@@ -1,0 +1,110 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$op=$_REQUEST['op'];
+$menu=$_REQUEST['menu'];
+if(empty($op)){
+	$account_no=$_SESSION["current_account_no"];
+	isPermissible($menu);
+}
+else{
+	$account_no=$_REQUEST["account_no"];
+
+}
+echo "<html>";
+echo "<head>";
+echo "<script language=\"JAVASCRIPT\">";
+echo "function closeme() { close(); }";
+echo "</script>";
+echo "<title>Statement";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$title='Saving Bank';
+echo "<h3>Account Statement [$account_no]";
+echo "</h3><hr>";
+$id=getCustomerId($account_no,$menu);
+//echo "id is :$id";
+// Customization required for WHERE CLAUSE
+$flag=getGeneralInfo_Customer($id);
+if($flag==1)
+{
+$gl_code=getGlCode4mCustomerAccount($account_no);
+//$sql_statement="SELECT * FROM  loan_statement where account_no='$account_no' ORDER BY crop_id,entry_time DESC";
+$sql_statement="SELECT * FROM  loan_statement_dtl where account_no='$account_no' AND action_date<=current_date ORDER BY fy DESC,CAST(loan_serial_no AS INT) DESC,entry_time DESC";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>New Account</h4>";
+} else {
+echo "<table valign=\"top\" width=\"100%\">";
+$balance=total_loan_current_balance($account_no,$action_date);
+echo "<tr><td bgcolor=\"green\" colspan=\"14\" align=\"center\"><font color=\"white\">Statement</font><font color=BLACK size=+1><b>[Current Balance:Rs.".$balance."]</b></font>";
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color Rowspan=\"2\">Tran. Id</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Date</th>";
+//echo "<th bgcolor=$color Rowspan=\"2\">Particulars</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Crop</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Issued<br>(Rs.)</th>";
+echo "<th bgcolor=$color colspan=\"3\">Repayment(Rs.)</th>";
+echo "<th bgcolor=$color colspan=\"3\">Balance(Rs.)</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Remarks</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Op.code</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Entry time</th>";
+echo "<tr><th bgcolor=$color>Due</th>";
+echo "<th bgcolor=$color>OD</th>";
+echo "<th bgcolor=$color>Pr</th>";
+echo "<th bgcolor=$color>Due</th>";
+echo "<th bgcolor=$color>OD</th>";
+echo "<th bgcolor=$color>Pr</th>";
+
+for($j=1; $j<=pg_NumRows($result); $j++){
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+/*if($j==1){
+	$ocrop=$row['crop_id'];
+}
+if(strcmp($ocrop,$row['crop_id'])){
+	echo "<tr><td colspan=14 bgcolor=\"YELLOW\"></td></tr>";
+	$ocrop=$row['crop_id'];
+}
+*/
+if($j==1){
+	echo "<tr><td colspan=13 bgcolor=\"YELLOW\" align='center'><b>".getInterestRate($row['loan_serial_no'])."</td></tr>";
+	$ocrop=trim($row['loan_serial_no']);
+
+}
+if($ocrop!=trim($row['loan_serial_no'])){
+	echo "<tr><td colspan=13 bgcolor=\"YELLOW\" align='center'><b>".getInterestRate($row['loan_serial_no'])."</td></tr>";
+	$ocrop=trim($row['loan_serial_no']);
+	
+}
+echo "<td align=right bgcolor=$color><a href =\"../general/voucherdetails.php?tran_id=".$row['tran_id']."\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=700,height=500'); return false;\" >".$row['tran_id']."</a></td>";
+echo "<td align=right bgcolor=$color>".$row['action_date']."</td>";
+echo "<td bgcolor=$color>".getName('crop_id',$row['crop_id'],'crop_desc','crop_mas')."[".$row['fy']."]</td>";
+echo "<td align=right bgcolor=$color>".(float)$row['loan_amount']."</td>";
+echo "<td align=right bgcolor=$color>".(float)$row['r_due_int']."</td>";
+echo "<td align=right bgcolor=$color>".(float)$row['r_overdue_int']."</td>";
+echo "<td align=right bgcolor=$color>".(float)$row['r_principal']."</td>";
+echo "<td align=right bgcolor=$color>".(float)$row['b_due_int']."</td>";
+echo "<td align=right bgcolor=$color>".(float)$row['b_overdue_int']."</td>";
+echo "<td align=right bgcolor=$color>".(float)$row['b_principal']."</td>";
+echo "<td align=right bgcolor=$color>".$row['remarks']."</td>";
+echo "<td align=right bgcolor=$color>".$row['staff_id']."</td>";
+echo "<td align=right bgcolor=$color>".$row['entry_time']."</td>";
+   }
+echo "</table>";
+ }
+}
+if(!empty($op)){
+echo "<DIV ID=\"date_time\" style=\"position:relative; left:5; top:5\">";
+echo "<input type=\"BUTTON\" name=\"CLOSE_BUTTON\" value=\"Close\" onclick=\"closeme()\"> </DIV> ";
+}
+
+echo "</body>";
+echo "</html>";
+?>

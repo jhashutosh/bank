@@ -1,0 +1,88 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$group_no=$_REQUEST['group_no'];
+echo "<head>";
+echo "<title>Shg group List";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<h2><FONT color=#8A2BE2><b><i> <center>Deposits Detail of Group No:$group_no</i></b></font>";
+echo "</h3>";
+echo "<hr>";
+$sb_total=0;
+$fd_total=0;
+$ri_total=0;
+$rd_total=0;
+$mis_total=0;
+
+$sql_statement="SELECT * FROM shg_account WHERE shg_no='$group_no'";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4><font color=\"red\">Not found!!!</font></h4>";
+}
+else{
+	for($j=0; $j<pg_NumRows($result); $j++) {
+		$row=pg_fetch_array($result,$j);
+		if(!strcmp(trim($row['account_type']),'sb')){
+		if(COUNT($sb_account)!=0){$sb_account.=',';}
+		$sb_total+=sb_current_balance($row['account_no']);
+		$sb_account.=$row['account_no'];
+		}
+		if(!strcmp(trim($row['account_type']),'fd')){
+		if(COUNT($fd_account)!=0){$fd_account.=',';}
+		$fd_total+=sb_current_balance($row['account_no']);
+		$fd_account.=$row['account_no'];
+		}
+		if(!strcmp(trim($row['account_type']),'rd')){
+		if(COUNT($rd_account)!=0){$rd_account.=',';}
+		$rd_total+=sb_current_balance($row['account_no']);
+		$rd_account.=$row['account_no'];
+		}
+		if(!strcmp(trim($row['account_type']),'ri')){
+		if(COUNT($ri_account)!=0){$ri_account.=',';}
+		$ri_total+=sb_current_balance($row['account_no']);
+		$ri_account.=$row['account_no'];
+		}
+		if(!strcmp(trim($row['account_type']),'mis')){
+		if(COUNT($mis_account)!=0){$mis_account.=',';}
+		$mis_total+=sb_current_balance($row['account_no']);
+		$mis_account.=$row['account_no'];
+		}
+
+	}
+
+echo "<table width=\"80%\" bgcolor=BALACK align=CENTER>";
+echo "<tr><td bgcolor=\"green\" colspan=\"2\" align=\"center\"><b><font color=\"white\">Deposits Details</font>";
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color >Deposit</th>";
+echo "<th bgcolor=$color >Amount</th>";
+echo "<tr>";
+echo "<td bgcolor=$color>Savings(A/C no :".$sb_account.") </td>";
+echo "<td align=right bgcolor= $color>".amount2Rs($sb_total)."</td>";
+echo "<tr>";
+echo "<td bgcolor=$color>Fixed Deposit(A/C no :".$fd_account.")</td>";
+echo "<td align=right bgcolor=$color>".amount2Rs($fd_total)."</td>";
+echo "<tr>";
+echo "<td bgcolor=$color>Recurring(A/C no :".$rd_account.")</td>";
+echo "<td align=right bgcolor=$color>".amount2Rs($rd_total)."</td>";
+echo "<tr>";
+echo "<td bgcolor=$color>Reinvestment(A/C no :".$ri_account.")</a></td>";
+echo "<td align=right bgcolor=$color>".amount2Rs($ri_total)."</td>";
+echo "<tr>";
+echo "<td bgcolor=$color>Reinvestment(A/C no :".$mis_account.")</a></td>";
+echo "<td align=right bgcolor=$color>".amount2Rs($mis_total)."</td>";
+echo "<tr>";
+$sum=$sb_total+$fd_total+$rd_total+$ri_total;
+$color="cyan";
+echo "<td align=center bgcolor=$color><B>Total: </B></td>";
+echo "<td align=right bgcolor=$color><B>".amount2Rs($sum)."</B></td>";
+echo "</table>";
+}
+echo "<H1><B><a href=\"shg_info_view.php?menu=shg\">Back</a></b><h1>";
+echo "</body>";
+echo "</html>";
+?>

@@ -1,0 +1,41 @@
+<?php
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+if(menu=='kcc')
+{
+$i_page="../kcc/kcc_loan_issue.php?menu=kcc&account_no=";
+$r_page="../kcc/kcc_loan_repayment.php?menu=kcc&account_no=";
+$s_page="../kcc/kcc_loan_statement.php?menu=kcc&op=i&account_no=";
+}
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+$sql_statement="select account_no, sum(loan_amount) as principal, sum(due_interest-r_due_int) as due_int, sum(od_interest-r_od_int) as od_int from get_mas_bal_dt(current_date) group by account_no";
+//echo $sql_statement; 
+$result=dBConnect($sql_statement);
+echo "<table bgcolor=\"Black\" width=\"120%\">";
+if(pg_NumRows($result)>0){
+for($j=1; $j<=pg_NumRows($result); $j++){
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+if(isOverDue($row['account_no'])){
+$color="#DC143C";
+}
+echo "<tr>";
+echo "<td align=CENTER bgcolor=$color width =\"68\"><a href=\"$s_page".$row['account_no']."\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes,top=100,left=150, width=1050,height=500'); return false;\">".$row['account_no']."</a></td>";
+$id=getCustomerId($row['account_no'],$menu);
+echo "<td align=Center bgcolor=$color width =\"120\">".getName('customer_id',$id,'name1','customer_master')."</td>";
+echo "<td align=right bgcolor=$color width=\"80\">".$row['principal,']."</td>";
+echo "<td align=right bgcolor=$color width =\"100\">".$row['due_int ']."</td>";
+echo "<td align=right bgcolor=$color width =\"100\">".$row['od_int']."</td>";
+echo "<td align=right bgcolor=$color width =\"80\">".($row['principal']+$row['due_int']+$row['od_int'])."</td>";
+echo "<td align=right bgcolor=$color width=\"70\">".getAcer(getLand($id));
+$membership_id=getMemberId($id);
+share_current_balance($membership_id,$no,$val);
+echo "<td align=right bgcolor=$color width=\"80\">$val";
+
+echo "<td align=CENTER bgcolor=$color><a href=\"$i_page".$row['account_no']."\" target=\"_parent\">Issue</a>  || <a href=\"$r_page".$row['account_no']."\" target=\"_parent\">Repay</a></td>";
+  }
+//echo "</table>";
+
+
+?>

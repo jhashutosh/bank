@@ -1,0 +1,15 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+echo "<html>";
+echo "<head>";
+echo "<title>  Trial Balance";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+
+echo "</head>";
+echo "<body>";
+echo "</body>";
+echo "</html>";
+
+?>

@@ -1,0 +1,77 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST["menu"];
+$operation=$_REQUEST['operation'];
+$account_no=$_REQUEST["account_no"];
+$opening_date=$_REQUEST["opening_date"];
+$period=$_REQUEST["period"];
+$due_date=$_REQUEST["due_date"];
+$monthly_installment=$_REQUEST["monthly_int"];
+$no_month=$_REQUEST["no_month"];
+$rate_of_interest=$_REQUEST["rate_of_interest"];
+$maturity_amount=$_REQUEST["maturity_amount"];
+$maturity_date=$_REQUEST["maturity_date"];
+$withdrawn_type=$_REQUEST["withdrawn_type"];
+$withdrawal_date=$_REQUEST["withdrawal_date"];
+$withdrawal_amount=$_REQUEST["withdrawal_amount"];
+$interest=$_REQUEST["due_int"];
+$due_install=$_REQUEST["due_inst"];
+$account_no=$_REQUEST["account_no"];
+if( empty($cheque_dt) ) { $cheque_dt=$DOB_DEFAULT; }
+echo "<html>";
+echo "<head>";
+echo "<title>Update Form - MIS ";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<h1>Update Form - MIS";
+echo "</h1>";
+echo "<h3>Your submission has been accepted.";
+echo "</h3>";
+echo "<hr>";
+$fy=getFy($withdrawal_date);
+if(empty($fy)){
+echo "<h1><center><b>You Can't Insert any value Into database Because Financial Year already Locked by administrator !!!!!!!!!";
+}
+else{
+$t_id=getTranId();
+if($operation=="i"){//monthly interest withdrawal
+ //   $balance=mis_current_balance($account_no);
+    	$total=$no_month*$monthly_installment;
+     	$gl_code=getGlCode4mCustomerAccount($account_no,$action_date);
+	$gl_code_int=getGlCodeInterest($gl_code,$menu);
+	// Modification required to suite data type
+	$sql_statement="INSERT INTO gl_ledger_hrd(tran_id,type,action_date,certificate_no, fy,remarks,cheque_no,cheque_dt,operator_code,entry_time) VALUES ('$t_id','mis', '$withdrawal_date','$status','$fy','$remarks','$cheque_no','$cheque_dt','$staff_id',now())";
+//gl_ledger_details
+	$sql_statement.=";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$account_no','$gl_code_int',$total,'Dr','MIS Interest')";
+	if(empty($account_sb)){
+		$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','28101',$total,'Cr','cash')";
+		}
+	//For Transfer to SB A/C.
+		else{
+		$gl_code=getGlCode4mCustomerAccount($account_sb,$withdrawal_date);
+		$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars,account_no) VALUES('$t_id','$gl_code',$total,'Cr','trf[$account_no]','$account_sb')";
+		}	
+}
+if($operation=="p"){//fully withdrawal
+}
+echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_affected_rows($result)<1) {
+	echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+	} 
+else {
+      header("location:../main/set_account.php?menu=mis&account_no=$account_no");
+      }
+        
+}
+
+   
+
+
+echo "</body>";
+echo "</html>";
+?>

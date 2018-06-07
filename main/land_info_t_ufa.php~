@@ -1,0 +1,57 @@
+<?
+include "config.php";
+//include "autho_conf.php";
+
+$menu=$_REQUEST['menu'];
+$staff_id=verifyAutho();
+
+// PHP4 
+$land_id=$_REQUEST['land_id'];
+$gp_name=$_REQUEST['gp_name'];
+$land_size=$_REQUEST['land_size'];
+$membership_no=$_REQUEST['membership_no'];
+$value_of_land=$_REQUEST['value_of_land'];
+$j_l_no=$_REQUEST['j_l_no'];
+$dag_no =$_REQUEST['dag_no'];
+$mini_no=$_REQUEST['mini_no'];
+$mouja=$_REQUEST['mouja'];
+$farmer_type =$_REQUEST['farmer_type'];
+$land_type=$_REQUEST['land_type'];
+$remarks=$_REQUEST['remarks'];
+$operator_code=$_REQUEST['operator_code'];
+if(empty($land_size)){$land_size=0.0;}
+//if(empty($insurance_claim_made)){$insurance_claim_made=0.0;}
+
+echo "<html>";
+echo "<head>";
+echo "<title>Update Form ";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"cyan\">";
+echo "<h1>Update Form land information: land info";
+echo "</h1>";
+echo "<h3>Your submission has been accepted.";
+echo "</h3>";
+echo "<hr>";
+
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+
+
+// Modification required for WHERE CLAUSE
+$sql_statement="UPDATE land_info_t SET  gp_name='$gp_name', land_size=$land_size, membership_no='$membership_no', value_of_land=$value_of_land,dag_no='$dag_no', farmer_type='$farmer_type',land_type='$land_type',j_l_no='$j_l_no',mouja='$mouja',mini_no= '$mini_no', remarks='$remarks', operator_code='$staff_id', entry_time=now() WHERE land_id='$land_id'";
+
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_affected_rows($result)<1) {
+	echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+	
+} else {
+	echo "<br><h5><font color=\"GREEN\">Data entered into database.</font></h5>";
+	header("Location:land_info_statment.php?id=$id&membership_no=$membership_no");
+}
+footer();
+echo "</body>";
+echo "</html>";
+
+?>

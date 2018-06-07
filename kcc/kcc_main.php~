@@ -1,0 +1,113 @@
+<?
+include "../config/config.php";
+$menu=$_REQUEST['menu'];
+$account_no=$_REQUEST['account_no'];
+$op=$_REQUEST['op'];
+//echo "<h1>MENU:$menu</h1>";
+$staff_id=verifyAutho();
+if($menu=='kcc'){$l_name='KCC';$status='kcc';}
+if($menu=='MT'){$l_name='MT';$status='mt';}
+if($menu=='pl'){$l_name='PLEDGE';$status='pl';}
+if($menu=='shg'){$l_name='SHG';$status='sgl';}
+
+if(empty($op)){$op='a';}
+if($op=='a'){$name="All Account List";}
+if($op=='i'){$name='New Account List';}
+if($op=='d'){$name="Due Account List";}
+if($op=='o'){$name='Over Due Account List';}
+$WHERE_CONDITIONS="action_date=current_date";
+if(!empty($account_no)){
+	$arr=explode(",",$account_no); // Multiple entry seperated by ,
+	$n=count($arr);
+	for($i=0; $i<($n-1);$i++){
+		$WHERE_CONDITIONS="$WHERE_CONDITIONS AND account_no='$arr[$i]' OR ";
+	}
+ 
+	$WHERE_CONDITIONS="WHERE $WHERE_CONDITIONS AND account_no='$arr[$i]'"; 
+	$name='Account No List';
+	
+} else {
+	if($op=='d'||$op=='o'||$op=='i'){
+		$WHERE_CONDITIONS="WHERE $WHERE_CONDITIONS AND loan_type='$status' AND status='$op'"; 
+       }else{
+		$WHERE_CONDITIONS="WHERE $WHERE_CONDITIONS AND loan_type='$status'";
+	
+	    }
+	$name=$name;
+	}
+
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+?>
+<script language="javascript">
+function onSubmits(f)
+{
+  f.submit();
+}
+</script>
+
+<?
+
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$sql_statement="SELECT loan_calculation('$status',current_date) as int";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_result($result,'int')=='k'){
+$sql_statement="SELECT COUNT(*) as row_no,SUM(d) as due,SUM(o) as odue,SUM(p) as principal FROM (select SUM(due_int) as d,SUM(overdue_int) as o,SUM(principal) as p from loan_cal_int  $WHERE_CONDITIONS group by account_no) as foo";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+	$no_row=pg_result($result,'row_no');
+	$due_int=pg_result($result,'due');
+	$odue_int=pg_result($result,'odue');
+	$principal=pg_result($result,'principal');
+}
+else{
+	$no_row=0;
+	$due_int=0;
+	$odue_int=0;
+	$principal=0;
+}
+echo "<form action=\"kcc_main.php\">";
+//echo "<h1>MENU=$menu</h1>";
+echo "<table width=\"100%\" bgcolor=\"yellow\" align=\"center\"><tr><th>";
+echo "Viewing Option :&nbsp";
+echo "<select name=\"op\" onchange=\"onSubmits(this.form);\">";
+echo "<option value=\"s\">Select";
+echo "<option value=\"a\">All List";
+echo "<option value=\"d\">Due List";
+echo "<option value=\"o\">Overdue List";
+echo "<option value=\"i\">New List";
+echo "</select>"; 
+echo "<input type=\"HIDDEN\" value=\"$menu\" name=\"menu\">";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Search By Account No: <input type=\"\" name=\"account_no\" id=\"account_no\" $HIGHLIGHT>&nbsp;<input type=\"SUBMIT\" value=\"Enter\">";
+echo "</table>";
+
+
+echo "<table  width=\"100%\">";
+echo "<tr><td bgcolor=\"#808000\" colspan=\"10\" align=\"center\"><font color=\"white\"><b>MAIN MENU OF KCC of $name as on ".date('d.m.Y')."</font>";
+echo "</form>";
+$color="GREEN";
+echo "<tr>";
+echo "<th bgcolor=$color width =\"80\" Rowspan=\"2\">A/C No</th>";
+echo "<th bgcolor=$color width =\"200\" Rowspan=\"2\">Name</th>";
+echo "<th bgcolor=$color width=\"80\" Rowspan=\"2\">Principal<br>(Rs.)</th>";
+echo "<th bgcolor=$color width =\"75\" colspan=\"2\">Interest</th>";
+echo "<th bgcolor=$color width =\"80\" Rowspan=\"2\">Total<br>(Rs.)</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Operation</th>";
+echo "<tr><th bgcolor=$color width =\"100\">Due</th>";
+echo "<th bgcolor=$color width =\"100\">Overdue</th>";
+echo "<tr><td colspan=\"10\" align=\"center\"><iframe src=\"kcc_main_db.php?menu=kcc&c=$WHERE_CONDITIONS\" width=\"900%\" height=\"350\"></iframe></td></tr>";
+echo "<tr bgcolor=\"AQUA\"><th colspan=\"2\">Total:  ".$no_row." Account Found!!!!!<th align=\"right\">$principal <th align=\"right\">$due_int<th align=\"right\">$odue_int<th align=\"right\">".($principal+$due_int+$odue_int)."<th>";
+echo "</table>";
+	
+}
+else{
+echo "<h1>Sytem Error</h1>";
+
+}
+echo "</body>";
+echo "</html>";
+?>

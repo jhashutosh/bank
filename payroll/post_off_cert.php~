@@ -1,0 +1,154 @@
+<?
+include "../config/config.php";
+$status=$_REQUEST['status'];
+$emp_id=$_REQUEST['emp_id'];
+$sql_statement3="select e.name,p.* from emp_pf_dtl p,emp_master e where p.emp_id=$emp_id and p.emp_id=e.emp_id";
+$result3=dBConnect($sql_statement3);
+$row3=pg_fetch_array($result3,0);
+$p=(empty($row3['pf_ac_no']))?$a:$row3['pf_ac_no'];
+$pf_amnt=$row3['op_bal']+$row3['total_empl_cont_pf_amt']+$row3['total_emplee_cont_pf_amt'];
+$name=$row3['name'];
+$acno=$row3['pf_ac_no'];
+$saving_regno=$_REQUEST['saving_regno'];
+echo "<head>";
+echo "<title>post office certificate</title>";
+echo "<script src=\"../JS/calendar.js\">";
+echo "</script>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+?>
+
+<script src="../JS/jquery-1.9.1.js"></script>
+	<script src="../JS/ui/jquery.ui.core.js"></script>
+	<link rel="stylesheet" type="text/css" href="../JS/jquery.gritter.css" />
+	<script type="text/javascript" src="../JS/jquery.gritter.js"></script>
+	<script src="../JS/ui/jquery.ui.widget.js"></script>
+	<script src="../JS/ui/jquery.ui.tabs.js"></script>
+	<script src="../JS/ui/jquery.ui.accordion.js"></script>
+	<script src="../JS/ui/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="../JS/modernizr.custom.js"></script> 
+<style type="text/css">
+	#menuUL
+	{
+	   background-color:  #999999;
+	   filter: alpha(opacity=80);
+	   -moz-opacity: 0.80;
+ 	   opacity: 0.80;
+	}
+	.report { border-collapse:collapse;}
+        .report h4 { margin:0px; padding:0px;}
+        .report img { float:right;}
+        .report ul { margin:10px 0 10px 40px; padding:0px;}
+        .report th { background:white url(header_bkg1.png) repeat-x scroll center left; color:#0a0a0a; padding:7px 15px; text-align:left;}
+	//.report th { background:#CCCCCC none repeat-x scroll center left; color:#fff; padding:7px 15px; text-align:left;}
+        .report td { background:#CCCCCC  url(row_bkg1.png) repeat-x scroll center left; color:#000; padding:7px 15px; }
+	//.report td { background-color: #FFFFFF; border-top-style: solid; border-top-width: 2px; border-top-color: #CCCCCC; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #CCCCCC;}
+        .report tr.odd td { background:#fff url(row_bkg1.png) repeat-x scroll center left; cursor:pointer; }
+	//.report tr.odd td { cursor:pointer;}
+        .report div.arrow { background:transparent url(arrows.png) no-repeat scroll 0px -16px; width:16px; height:16px; display:block;}
+        .report div.up { background-position:0px 0px;}
+</style>
+<script>
+function numbersonly(e){
+	var unicode=e.charCode? e.charCode : e.keyCode;
+	if (unicode!=8){ 
+		if (unicode<46||unicode>57||unicode==47) {
+			return false;		
+		}
+	}
+}
+function validator(f)
+{	var msg='';
+		if(f.crt_n.value==null || f.crt_n.value=='')
+		{
+			msg+="Its A mandatory Field Enter Certificate No....\n";
+		}
+		if(f.crt_amnt.value==null || f.crt_amnt.value=='')
+		{
+			msg+="Its A mandatory Field Enter Certificate Amount...\n";
+		}
+		
+		if(msg==''){
+			return true;
+		}
+		else{
+			alert(msg);
+			return false;
+		}
+		
+}			
+</script>
+<?
+echo "</head>";
+
+echo "<body bgcolor=\"white\">";
+
+echo"<form  name='f1' action=\"post_off_cert.php?op=i&emp_id=$emp_id&saving_regno=$saving_regno\" method='post' onSubmit=\"return validator(this);\">";
+if($op=='i')
+{
+$pemp_id =$_REQUEST['emp_id'];
+$psaving_regno =$_REQUEST['saving_regno'];
+$pcerf_slno =$_REQUEST['crt_s_n'];
+$temp=$_REQUEST['crt_n'];
+echo $pcerf_slno;
+ $cerf_slno=$pcerf_slno+$temp;
+echo $cerf_slno;
+$pcerf_amount =$_REQUEST['crt_amnt'];
+$poperator_code=verifyAutho();
+$pentry_time=date('d/m/Y H:i:s');
+$sql="select emp_pforgratuity_po_dtl_save_fnc($pemp_id,'$psaving_regno','$cerf_slno',$pcerf_amount,'$poperator_code','$pentry_time')";
+$res=dBConnect($sql);
+echo $sql;
+//header('location:post_off_cert.php?emp_id='.$emp_id);
+}if($mt==0){
+echo"<table valign=\"top\"width='100%' align='center' bgcolor='#E0E0E0'>";
+echo"<tr><th colspan='5'bgcolor='#839EB8'><font color='white' size='2'>Post Office Certificate</font></th></tr><tr><td  colspan='3'></td></tr><tr><td  colspan='3'></td></tr><tr><td  colspan='3'></td></tr>";
+echo"<tr><td  colspan='3'></td></tr><tr><td  colspan='3'></td></tr><tr><td  colspan='3'></td></tr>";
+echo "<td  colspan=\"1\" align='right'><font color='black'size='2' >Certificate Serial No.&nbsp;:</td>";
+echo"<td><input type='text' name='crt_s_n' size='7' value=\"$saving_regno/\" style='border-right:0px;' ><input type='text' id='crt_n'  name='crt_n' style='border-left:0px;' size='2' ></td>";
+
+echo"<td></td>";
+echo "<td  colspan=\"1\" align='right'><font color='black'size='2' >Certificate Amount&nbsp;:</td>";
+echo"<td><input type='text' name='crt_amnt' size='15' onkeypress=\"return numbersonly(event);\"></td>";
+echo"<tr><td  colspan='3'></td></tr><tr><td  colspan='3'></td></tr><tr><td  colspan='3'></td></tr>";
+
+echo"<tr><td colspan='5'bgcolor='#839EB8' align='center'><input type='submit'  value='Submit'></td><tr><td  colspan='3'></td></tr>";
+echo"</table><hr>";
+echo"</form>";}
+echo"</body>";
+
+//=================================================================gridview=========================================================================================
+
+echo"<br><br><table width='100%' >";
+echo"<tr><td  colspan='3'></td></tr><tr><td  colspan='3'></td></tr>";
+//echo"<tr><td  bgcolor='#839EB8' colspan=\"7\" height='10%'></td></tr>";
+echo"<tr>";
+echo "<th bgcolor='#BBBBBB' width=\"20%\"><font color='white' size='2'>Serial No.</font></th>";
+echo "<th bgcolor='#BBBBBB'  width=\"16%\" ><font color='white' size='2'>Date of Issue</font></th>";
+echo "<th bgcolor='#BBBBBB' width=\"16%\"><font color='white' size='2'>Registration No.</font></th>";
+echo "<th bgcolor='#BBBBBB'  width=\"18%\"><font color='white' size='2'>Post Office Name</font></th>";
+echo "<th bgcolor='#BBBBBB'  width=\"16%\"><font color='white' size='2'>Date of Maturity</font></th>";
+echo "<th bgcolor='#BBBBBB' width=\"14%\"><font color='white' size='2'>Issue Amount</font></th>";
+echo"<tr><td colspan=\"6\" align=center>";
+echo "<div style=\"overflow-y:auto;height:200px\">";
+echo"<table valign=\"top\"width='110%' align='center' class='report'>";
+$sql="select * from emp_pforgratuity_po_dtl e,emp_pforgratuity_po_hdr p where e.emp_id=p.emp_id and e.saving_regno=p.saving_regno and p.saving_regno='$saving_regno'";
+$res=dBConnect($sql);
+//echo $sql;
+$color==$TCOLOR;
+for($j=0;$j<pg_NumRows($res);$j++){
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($res,$j);
+echo "<tr>";
+echo "<td  bgcolor='$color' align='center' colspan=\"1\"  width=\"20%\"><font color='black' size='2'>".$row['cerf_slno']."</font></td>";
+echo "<td  bgcolor='$color' align='center' colspan=\"1\"  width=\"16%\"><font color='black' size='2'>".$row['dt_of_issue']."</font></td>";
+echo "<td  bgcolor='$color' align='center' colspan=\"1\"  width=\"16%\"><font color='black' size='2'>".$row['saving_regno']."</font></td>";
+echo "<td  bgcolor='$color' align='center' colspan=\"1\"  width=\"18%\"><font color='black' size='2'>".$row['po_name']."</font></td>";
+echo "<td  bgcolor='$color' align='center' colspan=\"1\"  width=\"16%\"><font color='black' size='2'>".$row['dt_of_maturity']."</font></td>";
+echo "<td  bgcolor='$color' align='right' colspan=\"1\"  width=\"14%\"><font color='black' size='2'>".$row['cerf_amount']."</font></td>";
+$amt+=$row['cerf_amount'];
+echo"</tr>";
+}
+echo"</table>";
+echo"</div>";
+echo"</td></tr><tr bgcolor='silver'><td colspan=5 align='center'><b>Total Amount !!!</td><td colspan=5 width=\"14%\" align='right'><b>$amt";
+echo"</td></tr></table>";

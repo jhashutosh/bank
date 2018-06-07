@@ -1,0 +1,52 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+if ($op=='28202'){$name='Savings A/c(SCB/CCB)[28202]';}
+if ($op=='28302'){$name='Savings A/c(Other Banks)[28302]';}
+if ($op=='22401'){$name='Invest In Recurring Deposit(SCB/CCB)[22401]';}
+if ($op=='22402'){$name='Invest In Fixed Deposit(SCB/CCB)[22402]';}
+if ($op=='22403'){$name='Invest In Re-invest Deposit(SCB/CCB)[22403]';}
+if ($op=='22501'){$name='Invest In Recurring Deposit(Other Banks)[22501]';}
+if ($op=='22502'){$name='Invest In Fixed Deposit(Other Banks)[22502]';}
+if ($op=='22503'){$name='Invest In Re-invest Deposit(Other Banks)[22503]';}
+$current_date=$_REQUEST["current_date"];
+$op=$_REQUEST['op'];
+if(empty($current_date) ) { $current_date=date("d/m/Y"); }
+echo "<html>";
+echo "<head>";
+echo "<script src=\"../JS/calendar.js\">";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"cd.focus();\">";
+echo "<hr>";
+if($op=='28202'||$op=='28302'||$op=='22401'||$op=='22402'||$op=='22403'||$op=='22501'||$op=='22502'||$op=='22503'){
+echo "<form name=\"f1\" action=\"ccb_current_balance.php?menu=$menu\" method=\"POST\">";
+echo "<table align=center bgcolor=\"BLUE\"><tr><td  align=\"center\"><b>Current Balance as on :<td><input type=TEXT size=12 name=current_date id=cd value= $current_date $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.current_date,'dd/mm/yyyy','Choose Date')\">";
+echo "&nbsp;<input type=\"Submit\"  value=\"Enter\">";
+echo "</table></form>";
+}
+echo "<hr><hr>";
+$sql_statement="SELECT (SUM(CASE WHEN dr_cr='Dr' AND gl_mas_code='$op' AND account_no IN(SELECT DISTINCT account_no FROM customer_account WHERE gl_mas_code='$op' AND opening_date<=current_date) THEN amount ELSE 0 END) - SUM(CASE WHEN dr_cr='Cr' AND gl_mas_code='$op' AND account_no IN(SELECT DISTINCT account_no FROM customer_account WHERE gl_mas_code='$op' AND opening_date<=current_date) THEN amount ELSE 0 END)) as balance from gl_ledger_dtl;
+";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){ 
+//echo $sql_statement;
+ $balance=pg_result($result,'balance');
+ settype($balance,'int');
+echo "<center><font color=blue size=+3>Current Balance :</font><font size=+4><b>Rs. $balance</b></font></center></h4>";
+echo "<table align=CENTER width=85%>";
+echo "<tr bgcolor=YELLOW><th colspan=2>Current Balance as on $current_date";
+echo "<tr bgcolor=SKYBLUE><th>Particulars<th>Balance(Rs)";
+echo "<tr bgcolor=$TBGCOLOR><td><a href=\"ccb_current_balance_tabular.php?current_date=$current_date&op=$op&balance=$balance\">$name</a><td align=right><b>$balance";
+echo "<tr bgcolor=cyan><td align=CENTER>Total:<td align=RIGHT><b>$balance";
+echo "</table>";
+}
+else{
+echo "<blink><h1><b><center>System Error!!!!!!!</h1>";
+}
+echo "</body>";
+echo "</html>";
+
+?>

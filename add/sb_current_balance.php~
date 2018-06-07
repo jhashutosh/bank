@@ -1,0 +1,51 @@
+<?
+include "../config/config.php";
+//echo "<h1>hi</h1>";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$current_date=$_REQUEST["current_date"];
+if(empty($current_date) ) { $current_date=date("d/m/Y"); }
+echo "<html>";
+echo "<head>";
+echo "<script src=\"../JS/calendar.js\"></script>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"cd.focus();\">";
+echo "<hr>";
+echo "<form name=\"f1\" action=\"sb_current_balance.php?menu=$menu\" method=\"POST\">";
+echo "<table align=center bgcolor=\"BLUE\"><tr><td  align=\"center\"><b>Current Balance as on :<td><input type=TEXT size=12 name=current_date id=cd value= $current_date $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.current_date,'dd/mm/yyyy','Choose Date')\">";
+echo "&nbsp;<input type=\"Submit\"  value=\"Enter\">";
+echo "</table></form>";
+echo "<hr><hr>";
+$sql_statement="SELECT current_balance('$current_date') as balance";
+echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+ $balance=pg_result($result,'balance');
+ settype($balance,'int');
+ 
+echo "<center><font color=blue size=+3>Current Balance :</font><font size=+4><b>Rs. ".$balance."/=</font>(";
+money_int2string($balance);
+echo ")</b></center>";
+echo "<table align=CENTER width=85%>";
+echo "<tr bgcolor=YELLOW><th colspan=2>Current Balance as on $current_date";
+echo "<tr bgcolor=SKYBLUE><th>Particulars<th>Balance(Rs)";
+$member_balance=global_sb_current_balance('14101');
+echo "<tr bgcolor=$TBGCOLOR><td><a href=\"sb_current_balance_tabular.php?current_date=$current_date&code=14101&balance=$member_balance\">Member[14101]</a><td align=right><b>$member_balance";
+$shg_balance=global_sb_current_balance('14201');
+echo "<tr bgcolor=$TCOLOR><td><a href=\"sb_current_balance_tabular.php?current_date=$current_date&code=14201&balance=$shg_balance\">SHG[14201]<td align=right><b>$shg_balance";
+$non_balance=global_sb_current_balance('14301');
+echo "<tr bgcolor=$TBGCOLOR><td><a href=\"sb_current_balance_tabular.php?current_date=$current_date&code=14301&balance=$non_balance\">Non-Member[14301]</a><td align=right><b>$non_balance";
+$nrgs_balance=global_sb_current_balance('14401');
+echo "<tr bgcolor=$TCOLOR><td><a href=\"sb_current_balance_tabular.php?current_date=$current_date&code=14401&balance=$nrgs_balance\">NRGS<td align=right><b>$nrgs_balance";
+echo "<tr bgcolor=cyan><td align=CENTER><a href=\"sb_current_balance_tabular.php?current_date=$current_date&code=all&balance=$balance\">Total:<td align=RIGHT><b>$balance";
+echo "</table>";
+}
+else{
+echo "<blink><h1><b><center>System Error!!!!!!!</h1>";
+}
+echo "</body>";
+echo "</html>";
+
+?>

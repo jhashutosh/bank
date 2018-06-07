@@ -1,0 +1,66 @@
+<?
+include "../config/config.php";
+$staff_id==verifyAutho();
+$mdate=$_REQUEST['mdate'];
+if(empty($mdate)){$mdate=date('d.m.Y');}
+echo "<html>";
+echo "<head>";
+echo "<title>PF Statement</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"#EFEFEF\" onload=\"cd.focus();\">";
+echo "<form METHOD=\"POST\" ACTION=\"monthly_return_loan.php\">";
+echo "<center>";
+echo "<table width=\"100%\">";
+echo "<tr><td bgcolor=\"#0000CD\" colspan=\"19\" align=\"center\"><b><font color=\"WHITE\">PF Statement</font>";
+echo "<tr bgcolor=#BA55D3>";
+echo "<th bgcolor=\"#9ACD32\">Employee Id</th>";
+echo "<th bgcolor=\"#9ACD32\">Name </th>";
+echo "<th bgcolor=\"#9ACD32\" >PF Account No</th>";
+echo "<th bgcolor=\"#9ACD32\">PF Account Open Date </th>";
+echo "<th  bgcolor=\"#9ACD32\">PF Certificate No</th>";
+echo "<th bgcolor=\"#9ACD32\">Opening Balance</th>";
+echo "<th bgcolor=\"#9ACD32\">Employers' Contribution PF Amount</th>";
+echo "<th  bgcolor=\"#9ACD32\">Employee's Contribution PF Amount</th>";
+echo "<th  bgcolor=\"#9ACD32\">PF Balance</th>";
+$TBGCOLOR="WHITE";
+$TCOLOR="FFFFCC";
+$sql_statement="select epd.emp_id,em.name,epd.pf_ac_no,pf_ac_open_dt,pf_certificate_no,op_bal,total_empl_cont_pf_amt,total_emplee_cont_pf_amt,
+op_bal+total_emplee_cont_pf_amt+total_empl_cont_pf_amt as pf_balance
+from emp_master em, emp_pf_dtl epd
+where em.emp_id=epd.emp_id
+order by epd.emp_id";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+for($j=0,$i=1; $j<pg_NumRows($result); $j++,$i++){
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,$j);
+echo "<tr>";
+echo "<td  bgcolor=$color ><b>".$row['emp_id']."</td>";
+
+echo "<td bgcolor=$color  align=right >".ucwords($row['name'])."</td>";
+
+echo "<td bgcolor=$color  align=right >".$row['pf_ac_no']."</td>";
+
+echo "<td bgcolor=$color  align=right >".$row['pf_ac_open_dt']."</td>";
+
+echo "<td bgcolor=$color  align=right >".$row['pf_certificate_no']."</td>";
+
+echo "<td bgcolor=$color  align=right >".$row['op_bal']."</td>";
+
+echo "<td bgcolor=$color  align=right >".$row['total_empl_cont_pf_amt']."</td>";
+
+echo "<td bgcolor=$color  align=right >".$row['total_emplee_cont_pf_amt']."</td>";
+
+echo "<td bgcolor=$color  align=right >".$row['pf_balance']."</td>";
+
+//echo "<td bgcolor=$color  align=right >".$row[9]."</td>";
+
+//echo "<td bgcolor=$color align=right >".$row[10]."</td>";
+
+   }
+}
+echo "</table>";
+echo "</body>";
+echo "</html>";
+?>

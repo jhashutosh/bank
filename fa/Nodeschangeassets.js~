@@ -1,0 +1,102 @@
+USETEXTLINKS = 1
+
+STARTALLOPEN = 0
+
+ICONPATH = "../image/";
+foldersTree = gFld("20000 ASSETS ")
+  foldersTree.treeID = "Frameset"
+//----------------------------21000--------------------------
+
+aux1 = insFld(foldersTree, gFld("21000 Fixed Assets"))
+//--------------------------21100--------------------
+  aux2 = insFld(aux1, gFld("21100 Immovable Assets"))
+     insDoc(aux2, gLnk("R", "21101 Land"))
+     insDoc(aux2, gLnk("R", "21102 Godown & Building"))
+     insDoc(aux2, gLnk("R", "21103 Implements Shed"))
+     insDoc(aux2, gLnk("R", "21104 Cold Storage Building"))
+
+//--------------------------21200-----------------
+     aux2 = insFld(aux1, gFld("21200 Furniture & Machinery"))
+	insDoc(aux2, gLnk("R", "21201 Furniture & Fixture "))
+	insDoc(aux2, gLnk("R", "21202 Machinery "))
+    aux2 = insFld(aux1, gFld("21300 Vehicles & Utilities"))
+	insDoc(aux2, gLnk("R", "21301 Vehicles"))
+	insDoc(aux2, gLnk("R", "21302 Tractors/Power tillers"))
+
+//-------------------------22000------------------------------
+    aux1 = insFld(foldersTree, gFld("22000 Investments"))
+//-----------------------------22100----------------------------
+	aux2 = insFld(aux1, gFld("22100 Shares In Co-operatives"))
+
+
+
+//--------------------------------22200------------------------------------
+	aux2 = insFld(aux1, gFld("22200 Statutory Reserves Investment"))
+
+
+
+//------------------------------22300----------------------------------------
+	aux2 = insFld(aux1, gFld("22300 Other Reserves & Funds Investment"))
+
+
+//------------------------------22400--------------------------------------
+	aux2 = insFld(aux1, gFld("22400 Investment In Deposits Of SCB/CCB"))
+
+
+
+     //--------------------------------22500-----------------------------------
+	aux2 = insFld(aux1, gFld("22500 Investment In Deposits Of Other Banks"))
+
+
+//-------------------------------------22600-----------------------------------
+	aux2 = insFld(aux1, gFld("22600 Investment In Post Office"))
+
+//-------------------------------------22700--------------------------------------------
+	aux2 = insFld(aux1, gFld("22700 Investment In Government & Trustee Securities"))
+
+//--------------------------------------22900---------------------------
+        aux2 = insFld(aux1, gFld("22900 Other Investments"))
+//---------------------------------------23000---------------------
+ aux1 = insFld(foldersTree, gFld("23000 Loans & Advances"))
+//-----------------------------23100---------------------------
+	  aux2 = insFld(aux1, gFld("23100 Short Term Loans"))
+//------------------------------23200-------------------------
+	aux2 = insFld(aux1, gFld("23200 Medium Term Loans"))
+//-----------------------------23300---------------------------
+	 aux2 = insFld(aux1, gFld("23300 Long Term Loans"))
+//---------------------------------23400----------------------
+	aux2 = insFld(aux1, gFld("23400 Staff Loans"))
+//--------------------------------23500-----------------------
+	 aux2 = insFld(aux1, gFld("23500 Other Loans & Advances"))
+//---------------------------------23600----------------------
+	insDoc(aux1, gLnk("R", "23600 Non - Overdue NPA Loans"))
+//-----------------------------------------24000---------------------------
+ aux1 = insFld(foldersTree, gFld("24000 Interest Receivable on Investments"))
+	aux2 = insFld(aux1, gFld("24100 Dividend Receivable On Shares In Cooperatives"))
+	aux2 = insFld(aux1, gFld("24200 Interest Receivable On Statutory Reserves Investment"))
+	aux2 = insFld(aux1, gFld("24300 Interest Receivable On Other Reserves & Runds Investment"))
+	aux2 = insFld(aux1, gFld("24400 Interest Receivable On Investments In SCB/CCB"))
+	aux2 = insFld(aux1, gFld("24500 Interest Receivable On Investments Other Banks"))
+	aux2 = insFld(aux1, gFld("24600 Interest Receivable on Investments In post Office"))
+	aux2 = insFld(aux1, gFld("24700 Interest Receivable on Investments in Bonds"))
+	aux2 = insFld(aux1, gFld("24900 Interest Receivable on Other Investments"))
+//----------------------------------------25000------------------------------
+ aux1 = insFld(foldersTree, gFld("25000 Interest Receivable on Loans & Advances"))
+	aux2 = insFld(aux1, gFld("25100 Interest Receivable On Short Term Loans"))
+	aux2 = insFld(aux1, gFld("25200 Interest Receivable on Medium Term Loans"))
+	aux2 = insFld(aux1, gFld("25300 Interest receivable On Long-Term Loans"))
+	aux2 = insFld(aux1, gFld("25400 Interest Receivable On Staff Loan"))
+	aux2 = insFld(aux1, gFld("25500 Interest Receivable On Other Loans & Advances"))
+	insDoc(aux1, gLnk("R", "25600"))
+	
+//------------------------------------26000--------------------------
+ aux1 = insFld(foldersTree, gFld("26000 Stock-In-Trade"))
+//-------------------------------27000------------------------
+ aux1 = insFld(foldersTree, gFld("27000 Other Receivables & Advances"))
+//--------------------------------28000--------------------------------
+ aux1 = insFld(foldersTree, gFld("28000 Cash"))
+//-----------------------------------29000------------------------
+ aux1 = insFld(foldersTree, gFld("29000 Deferred Revenue Expenditure"))
+
+
+

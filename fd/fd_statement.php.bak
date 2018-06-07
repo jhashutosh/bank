@@ -1,0 +1,107 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$op=$_REQUEST['op'];
+$menu=$_REQUEST['menu'];
+if(empty($op)){
+	$account_no=$_SESSION["current_account_no"];
+	isPermissible($menu);
+}
+else{
+	$account_no=$_REQUEST["account_no"];
+
+}
+echo "<html>";
+echo "<head>";
+echo "<title>Statement";
+echo "</title>";
+echo "<script language=\"JAVASCRIPT\">";
+echo "function closeme() { close(); }";
+echo "</script>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<h3>Account Statement of Fixed Deposit [$account_no]";
+echo "</h3><hr>";
+$id=getCustomerId($account_no,$menu);
+$flag=getGeneralInfo_Customer($id);
+if($flag==1){
+echo "<hr>";
+// Ledger Section*/
+//$sql_statement="SELECT * FROM customer_fd WHERE account_no='$account_no'";
+
+$sql_statement="SELECT distinct customer_id,certificate_no,principal,period,maturity_amount,operator_code,date_with_effect,scheme,action_date,interest_rate ,
+interest_method,maturity_date,withdrawal_type,entry_time,withdrawal_date,withdrawal_amount FROM customer_fd WHERE account_no='$account_no'";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>Not found!!!</h4>";
+} else {
+echo "<table valign=\"top\" width=\"90%\" class=\"border\">";
+echo "<tr><td bgcolor=\"green\" colspan=\"16\" align=\"center\"><font color=\"white\">Statement [$account_no] </font>";
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color>Certificate no</th>";
+echo "<th bgcolor=$color>Opening date</th>";
+echo "<th bgcolor=$color>Effective date</th>";
+echo "<th bgcolor=$color>Scheme</th>";
+echo "<th bgcolor=$color>Period</th>";
+echo "<th bgcolor=$color>Fd compute type</th>";
+echo "<th bgcolor=$color>Amount deposit</th>";
+echo "<th bgcolor=$color>Rate of interest</th>";
+echo "<th bgcolor=$color>Total interest</th>";
+echo "<th bgcolor=$color>Maturity amount</th>";
+echo "<th bgcolor=$color>Maturity date</th>";
+echo "<th bgcolor=$color>Withdrawn type</th>";
+echo "<th bgcolor=$color>Withdrawal date</th>";
+echo "<th bgcolor=$color>Withdrawal amount</th>";
+echo "<th bgcolor=$color>Operator code</th>";
+echo "<th bgcolor=$color>Entry time</th>";
+
+for($j=0; $j<pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,$j);
+echo "<tr>";
+if($row['certificate_no']==$certificate_no_DEFAULT){$row['certificate_no']="";}
+echo "<td align=left bgcolor=$color>".$row['certificate_no']."</td>";
+if($row['opening_date']==$opening_date_DEFAULT){$row['opening_date']="";}
+echo "<td align=right bgcolor=$color>".$row['action_date']."</td>";
+echo "<td align=right bgcolor=$color>".$row['date_with_effect']."</td>";
+if($row['scheme']==$scheme_DEFAULT){$row['scheme']="";}
+echo "<td align=left bgcolor=$color>".$scheme_array[trim($row['scheme'])]."</td>";
+if($row['period']==$period_DEFAULT){$row['period']="";}
+echo "<td align=left bgcolor=$color>".$row['period']." Days</td>";
+if($row['interest_method']==$fd_compute_type_DEFAULT){$row['interest_method']="";}
+echo "<td align=left bgcolor=$color>".$compute_type_array[trim($row['interest_method'])]."</td>";
+if($row['principal']==$amount_deposit_DEFAULT){$row['principal']="";}
+echo "<td align=right bgcolor=$color>".$row['principal']."</td>";
+if($row['interest_rate']==$rate_of_interest_DEFAULT){$row['interest_rate']="";}
+echo "<td align=right bgcolor=$color>".$row['interest_rate']."%</td>";
+
+//if($row['total_interest']==$total_interest_DEFAULT){$row['total_interest']="";}
+echo "<td align=right bgcolor=$color>".($row['maturity_amount']-$row['principal'])."</td>";
+if($row['maturity_amount']==$maturity_amount_DEFAULT){$row['maturity_amount']="";}
+echo "<td align=right bgcolor=$color>".$row['maturity_amount']."</td>";
+if($row['maturity_date']==$maturity_date_DEFAULT){$row['maturity_date']="";}
+echo "<td align=right bgcolor=$color>".$row['maturity_date']."</td>";
+//if($row['withdrawn_type']==$withdrawn_type_DEFAULT){$row['withdrawn_type']="";}
+echo "<td align=Center bgcolor=$color>".$row['withdrawal_type']."</td>";
+if($row['withdrawal_date']==$withdrawal_date_DEFAULT){$row['withdrawal_date']="";}
+echo "<td align=right bgcolor=$color>".$row['withdrawal_date']."</td>";
+if($row['withdrawal_amount']==$withdrawal_amount_DEFAULT){$row['withdrawal_amount']="";}
+echo "<td align=right bgcolor=$color>".$row['withdrawal_amount']."</td>";
+echo "<td align=right bgcolor=$color>".$row['operator_code']."</td>";
+echo "<td align=right bgcolor=$color>".$row['entry_time']."</td>";
+}
+echo "</table>";
+  }
+}
+if(!empty($op)){
+echo "<DIV ID=\"date_time\" style=\"position:relative; left:5; top:5\">";
+echo "<input type=\"BUTTON\" name=\"CLOSE_BUTTON\" value=\"Close\" onclick=\"closeme()\"> </DIV> ";
+}
+
+echo "</body>";
+echo "</html>";
+?>

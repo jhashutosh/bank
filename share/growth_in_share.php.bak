@@ -1,0 +1,312 @@
+<?php
+include "../config/config.php";
+$staff_id=verifyAutho();
+if(isset($_REQUEST['menu']))
+{
+$menu=$_REQUEST['menu'];
+}
+else
+{
+	$menu='';
+}
+$fy=$_SESSION['fy'];
+$f_start_dt='';
+$f_end_dt='';
+getDetailFy($fy,$f_start_dt,$f_end_dt);
+if(isset($_REQUEST['start_date']))
+{
+$start_date=$_REQUEST['start_date'];
+}
+else
+{
+	$start_date='';
+}
+if(empty($start_date) ) { $start_date=$f_start_dt; }
+if(isset($_REQUEST['end_date']))
+{
+$end_date=$_REQUEST['end_date'];
+}
+else
+{
+	$end_date='';
+}
+if(empty($end_date) ) { $end_date=$f_end_dt;}
+echo "<html>";
+echo "<head>";
+echo "<title>  Trial Balance";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "<script src=\"../JS/calendar.js\"></script>";
+echo "<script src=\"../JS/date_validation.js\"></script>";
+//echo "<script src=\"../JS/dateValidation.js\"></script>";
+?>
+<SCRIPT LANGUAGE="JavaScript">
+function check(){
+f_s_dt=document.f1.f_start_dt.value;
+f_e_dt=document.f1.f_end_dt.value;
+start_dt=document.f1.start_date.value;
+end_dt=document.f1.end_date.value;
+if(!IsDateLess(f_s_dt,start_dt)){
+	alert("Starting Date beyond of starting date of Financial Year")
+	document.f1.start_date.focus();
+	return false;
+}
+if(!IsDateLess(start_dt,f_e_dt)){
+	alert("Starting Date beyond of ending date of Financial Year")
+	document.f1.start_date.focus();
+	return false;
+}
+if(!IsDateLess(f_s_dt,end_dt)){
+	alert("Ending Date beyond of starting date of Financial Year")
+	document.f1.end_date.focus();
+	return false;
+	}
+
+if(!IsDateLess(end_dt,f_e_dt)){
+	alert("Ending Date beyond of ending date of Financial Year")
+	document.f1.end_date.focus();
+	return false;
+	}
+}
+</script>
+<?php
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<table align=center bgcolor=\"silver\"><tr><font size=+3><b>$SYSTEM_TITLE</font> <br><font size=+1><b>Report Date:".date('d.m.Y')."::".getPrintTime()."</b></font><hr>";
+echo "</table>";
+echo "<form name=\"f1\" action=\"growth_in_share.php\" method=\"POST\" onsubmit=\"return check();\">";
+
+echo "<table align=center bgcolor=\"#90EE90\"><tr><td  align=\"\"><b>Date Between (DD/MM/YYYY) :<td><input type=TEXT size=12 name=\"start_date\" id=\"start_date\" value=\"$start_date\"  maxlength=\"10\" onFocus=\"javascript:vDateType='1'\" onKeyUp=\"DateFormat(this,this.value,event,false,'3')\" onBlur=\"DateFormat(this,this.value,event,true,'3')\" $HIGHLIGHT>&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.start_date,'dd/mm/yyyy','Choose Date')\"> AND <input type=TEXT size=12 name=\"end_date\" id =\"end_date\" value=\"$end_date\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.end_date,'dd/mm/yyyy','Choose Date')\">";
+echo "<input type=\"HIDDEN\" name=\"f_start_dt\" id=\"f_start_dt\" value=\"$f_start_dt\">";
+echo "<input type=\"HIDDEN\" name=\"f_end_dt\" id=\"f_end_dt\" value=\"$f_end_dt\">";
+echo "&nbsp;<input type=\"Submit\"  value=\"Enter\">";
+echo "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"BUTTON\" name=\"CLOSE_BUTTON\" value=\"Close\" onclick=\"closeme()\"> ";
+echo " <input type=\"BUTTON\" name=\"PRINT_BUTTON\" value=\"Print\" onclick=\"print()\"> ";
+
+echo "</table></form>";
+
+//--------------------------------------------printinting R----------------------------------------------
+echo "<table bgcolor=\"#667C26\" width=\"100%\" align=\"CENTER\">";
+echo "<tr><th colspan=\"15\" bgcolor=green><font color=white size=5> MONTHLY RETURN FOR GROWTH IN SHARE CAPITAL </th>";
+echo "</tr>";
+$color="#CCCCC5555";
+echo "<tr>";
+echo "<th rowspan=\"2\" bgcolor=\"$color\">S.NO</th>";
+echo "<th rowspan=\"2\" bgcolor=\"$color\">Description</th>";
+echo "<th colspan=\"5\" bgcolor=\"$color\">no. of members</th>";
+echo "<th colspan=\"5\" bgcolor=\"$color\">SHARE CAPITAL(AMOUNT)</th>";
+echo "<th colspan=\"2\" bgcolor=\"$color\">% achievment to plan</th>";
+echo "</tr>";
+echo "<tr>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">previous year 31st march closing balance</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">Upto previous month</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=9%>Addition during the month</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=11%>Reduction during the month</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">Total no.  (Col.4+col.5-col.6) </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">previous year 31st march closing balance</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">Upto previous month</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">Addition during the month</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">Reduction during the month</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">Total no. (col.9+col.10-col.11)</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">No.</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> Amount</th>";
+echo "</tr>";
+echo "<tr>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">col.1 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> col.2 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=9%>col.3</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=11%>col.4</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">col.5 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> col.6 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> col.7 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> col.8 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> col.9 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> col.10 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> col.11 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> col.12 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> col.13 </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\"> col.14 </th>";
+echo "</tr>";
+//------------------------------------- display code below----------------------------------------
+
+//$sql_statement="select * from gl_master where gl_mas_code='11100' or gl_mas_code='11200'";
+//echo $sql_statement; exit;
+$sql_statement="select a,c1,b.c2,c.c3,d.c4,e.c5,f.c6,g.c7,h.c8 from (select count(distinct account_no) as c1 from mas_gl_tran where action_date<'$f_start_dt' and gl_mas_code='11200') a, (select count(distinct account_no) as c2 from mas_gl_tran where action_date<'$start_date' and gl_mas_code='11200') b, (select count(distinct account_no) as c3 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11200') c, (select count(distinct account_no) as c4 from mas_gl_tran where  particulars='buyback' and action_date between '$start_date' and '$end_date' and gl_mas_code='11200') d, (select sum(credit)-sum(debit) as c5 from mas_gl_tran where action_date<'$f_start_dt' and gl_mas_code='11200') e, 
+(select sum(credit)-sum(debit) as c6 from mas_gl_tran where action_date<'$start_date' and gl_mas_code='11200')f, (select sum(credit) as c7 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11200')g, (select sum(debit) as c8 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11200')h
+";
+
+$result=dBConnect($sql_statement);
+//echo $sql_statement;
+$row=pg_fetch_array($result);
+$abhi=$row['c2']+$row['c3']-$row['c4'];
+$abhi1=$row['c6']+$row['c7']-$row['c8'];
+$a=$row['c2'];
+$b=$row['c6'];
+$z=$row['c3']-$row['c4'];
+$w=$row['c7']-$row['c8'];
+$x=round(($z/$a)*100);
+$y=round(($w/$b)*100);
+//echo $result; exit;
+for ($i=0;$i<pg_NumRows($result);$i++)
+{
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+echo "<tr>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">1</th>";
+echo "<th colspan=\"1\" bgcolor=\"white\">Regular member indivisuals</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=9%>".ucwords($row['c1'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=11%>".ucwords($row['c2'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c3'])." </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c4'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$abhi</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c5'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c6'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c7'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c8'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$abhi1</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$x</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$y</th>";
+echo "</tr>";
+}
+//-----------------------------------------------------------------------------------------------------------
+$sql_statement="select a,c1,b.c2,c.c3,d.c4,e.c5,f.c6,g.c7,h.c8 from (select count(distinct account_no) as c1 from mas_gl_tran where action_date<'$f_start_dt' and gl_mas_code='11100') a, (select count(distinct account_no) as c2 from mas_gl_tran where action_date<'$start_date' and gl_mas_code='11100') b, (select count(distinct account_no) as c3 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11100') c, (select count(distinct account_no) as c4 from mas_gl_tran where  particulars='buyback' and action_date between '$start_date' and '$end_date' and gl_mas_code='11100') d, (select sum(credit)-sum(debit) as c5 from mas_gl_tran where action_date<'$f_start_dt' and gl_mas_code='11100') e, 
+(select sum(credit)-sum(debit) as c6 from mas_gl_tran where action_date<'$start_date' and gl_mas_code='11100')f, (select sum(credit) as c7 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11100')g, (select sum(debit) as c8 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11100')h";
+
+$result=dBConnect($sql_statement);
+$row=pg_fetch_array($result);
+$abhi=$row['c2']+$row['c3']-$row['c4'];
+$abhi1=$row['c6']+$row['c7']-$row['c8'];
+$a=$row['c2'];
+$b=$row['c6'];
+$z=$row['c3']-$row['c4'];
+$w=$row['c7']-$row['c8'];
+if($a>0)
+{
+$x=round(($z/$a)*100);
+}
+else
+{
+$x=0;
+}
+if($b>0)
+{
+$y=round(($w/$b)*100);
+}
+else
+{
+$y=0;
+}
+
+//echo $result; exit;
+for ($i=0;$i<pg_NumRows($result);$i++)
+{
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+echo "<tr>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">2</th>";
+echo "<th colspan=\"1\" bgcolor=\"white\">State Government</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=9%>".ucwords($row['c1'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=11%>".ucwords($row['c2'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c3'])." </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c4'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$abhi</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c5'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c6'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c7'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c8'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$abhi1</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$x</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$y</th>";
+echo "</tr>";
+}
+//---------------------------------------------------------------------------------------
+
+$sql_statement="select a,c1,b.c2,c.c3,d.c4,e.c5,f.c6,g.c7,h.c8 from (select count(distinct account_no) as c1 from mas_gl_tran where action_date<'$f_start_dt' and gl_mas_code='11201') a, (select count(distinct account_no) as c2 from mas_gl_tran where action_date<'$start_date' and gl_mas_code='11201') b, (select count(distinct account_no) as c3 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11201') c, (select count(distinct account_no) as c4 from mas_gl_tran where  particulars='buyback' and action_date between '$start_date' and '$end_date' and gl_mas_code='11201') d, (select sum(credit)-sum(debit) as c5 from mas_gl_tran where action_date<'$f_start_dt' and gl_mas_code='11201') e, 
+(select sum(credit)-sum(debit) as c6 from mas_gl_tran where action_date<'$start_date' and gl_mas_code='11201')f, (select sum(credit) as c7 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11201')g, (select sum(debit) as c8 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11201')h";
+
+$result=dBConnect($sql_statement);
+$row=pg_fetch_array($result);
+$abhi=$row['c2']+$row['c3']-$row['c4'];
+$abhi1=$row['c6']+$row['c7']-$row['c8'];
+$a=$row['c2'];
+$b=$row['c6'];
+$z=$row['c3']-$row['c4'];
+$w=$row['c7']-$row['c8'];
+if($a>0)
+{
+$x=round(($z/$a)*100);
+}
+else
+{
+$x=0;
+}
+if($b>0)
+{
+$y=round(($w/$b)*100);
+}
+else
+{
+$y=0;
+}
+//echo $result; exit;
+for ($i=0;$i<pg_NumRows($result);$i++)
+{
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+echo "<tr>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">3</th>";
+echo "<th colspan=\"1\" bgcolor=\"white\">Share Branch (individual)</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=9%>".ucwords($row['c1'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=11%>".ucwords($row['c2'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c3'])." </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c4'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$abhi</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c5'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c6'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c7'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c8'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$abhi1</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$x</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$y</th>";
+echo "</tr>";
+}
+//--------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+
+$sql_statement="select a,c1,b.c2,c.c3,d.c4,e.c5,f.c6,g.c7,h.c8 from (select count(distinct account_no) as c1 from mas_gl_tran where action_date<'$f_start_dt' and gl_mas_code='11400') a, (select count(distinct account_no) as c2 from mas_gl_tran where action_date<'$start_date' and gl_mas_code='11400') b, (select count(distinct account_no) as c3 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11400') c, (select count(distinct account_no) as c4 from mas_gl_tran where  particulars='buyback' and action_date between '$start_date' and '$end_date' and gl_mas_code='11400') d, (select sum(credit)-sum(debit) as c5 from mas_gl_tran where action_date<'$f_start_dt' and gl_mas_code='11400') e, 
+(select sum(credit)-sum(debit) as c6 from mas_gl_tran where action_date<'$start_date' and gl_mas_code='11400')f, (select sum(credit) as c7 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11400')g, (select sum(debit) as c8 from mas_gl_tran where action_date between '$start_date' and '$end_date' and gl_mas_code='11400')h";
+
+$result=dBConnect($sql_statement);
+$row=pg_fetch_array($result);
+$abhi=$row['c2']+$row['c3']-$row['c4'];
+$abhi1=$row['c6']+$row['c7']-$row['c8'];
+$a=$row['c2'];
+$b=$row['c6'];
+$z=$row['c3']-$row['c4'];
+$w=$row['c7']-$row['c8'];
+$x=round(($z/$a)*100);
+$y=round(($w/$b)*100);
+//echo $result; exit;
+for ($i=0;$i<pg_NumRows($result);$i++)
+{
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+echo "<tr>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">4</th>";
+echo "<th colspan=\"1\" bgcolor=\"white\">Others</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=9%>".ucwords($row['c1'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\" width=11%>".ucwords($row['c2'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c3'])." </th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c4'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$abhi</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c5'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c6'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c7'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">".ucwords($row['c8'])."</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$abhi1</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$x</th>";
+echo "<th colspan=\"1\" bgcolor=\"$color\">$y</th>";
+echo "</tr>";
+}
+//--------------------------------------------------------------------------------
+echo "</table>";
+echo "</body>";
+echo "</html>";
+?>

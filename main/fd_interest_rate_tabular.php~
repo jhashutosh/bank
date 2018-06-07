@@ -1,0 +1,77 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+echo "<html>";
+echo "<head>";
+echo "<title>Table: fd_interest_rate";
+echo "</title>";
+echo "</head>";
+
+echo "<body>";
+echo "<h1>".." interest rate";
+echo "</h1>";
+echo "<i>[fd_interest_rate] table in tabular format";
+echo "</i><hr>";
+
+
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+
+$sql_statement="SELECT * FROM fd_interest_rate ORDER BY id";
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>Not found!!!</h4>";
+} else {
+echo "<table>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color>Id</th>";
+echo "<th bgcolor=$color>Period</th>";
+echo "<th bgcolor=$color>Rate</th>";
+echo "<th bgcolor=$color>Year With Effect</th>";
+echo "<th bgcolor=$color>Remarks</th>";
+echo "<th bgcolor=$color>Operator code</th>";
+//echo "<th bgcolor=$color>Entry time</th>";
+//echo "<th bgcolor=$color>Officer code</th>";
+//echo "<th bgcolor=$color>Signature time</th>";
+//echo "<th bgcolor=$color>Status</th>";
+//echo "<th bgcolor=$color>Updateable</th>";
+
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+echo "<td align=right bgcolor=$color>".$row['id']."</td>";
+//echo "<td align=right bgcolor=$color><a href=\"rd_interest_rate_detail.php?id=".$row['id']."\" target=\"_blank\">".$row['id']."</a></td>";
+if($row['period']==$period_DEFAULT){$row['period']="";}
+echo "<td align=left bgcolor=$color>".$row['period']." Days</td>";
+if($row['rate']==$rate_DEFAULT){$row['rate']="";}
+echo "<td align=right bgcolor=$color>".$row['rate']."</td>";
+if($row['year_witheffect']==$maturity_rate_DEFAULT){$row['year_witheffect']="";}
+echo "<td align=right bgcolor=$color>".$row['year_witheffect']."</td>";
+if($row['remarks']==$remarks_DEFAULT){$row['remarks']="";}
+echo "<td align=right bgcolor=$color>".$row['remarks']."</td>";
+if($row['operator_code']==$operator_code_DEFAULT){$row['operator_code']="";}
+echo "<td align=right bgcolor=$color>".$row['operator_code']."</td>";
+//if($row['entry_time']==$entry_time_DEFAULT){$row['entry_time']="";}
+//echo "<td align=right bgcolor=$color>".$row['entry_time']."</td>";
+//if($row['officer_code']==$officer_code_DEFAULT){$row['officer_code']="";}
+//echo "<td align=right bgcolor=$color>".$row['officer_code']."</td>";
+//if($row['signature_time']==$signature_time_DEFAULT){$row['signature_time']="";}
+//echo "<td align=right bgcolor=$color>".$row['signature_time']."</td>";
+//if($row['status']==$status_DEFAULT){$row['status']="";}
+//echo "<td align=right bgcolor=$color>".$row['status']."</td>";
+//if($row['updateable']==$updateable_DEFAULT){$row['updateable']="";}
+//echo "<td align=right bgcolor=$color>".$row['updateable']."</td>";
+}
+echo "</table>";
+}
+
+footer();
+
+echo "</body>";
+echo "</html>";
+?>

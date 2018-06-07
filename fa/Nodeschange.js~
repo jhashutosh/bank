@@ -1,0 +1,56 @@
+USETEXTLINKS = 1
+
+STARTALLOPEN = 0
+
+ICONPATH = "../image/";
+foldersTree = gFld("10000 LIABILITIES")
+  foldersTree.treeID = "Frameset"
+ //---------------------- LIABILITIES...............................
+//------------------------11000 Share Capital---------------------
+aux1 = insFld(foldersTree, gFld("11000 Share Capital"))
+     insDoc(aux1, gLnk("R", "11100 Share(Share Government)"))
+     insDoc(aux1, gLnk("R", "11200 Share(Individual)"))
+     insDoc(aux1, gLnk("R", "11300 Share(Self Helf Group)"))
+     insDoc(aux1, gLnk("R", "11400 Share(Others)"))
+     
+//------------------------Reserves & Surplus-------------------------------------     
+aux1 = insFld(foldersTree,gFld("12000 Reserves & Surplus"))
+        aux2=insFld(aux1, gFld("12100 Statutory Reserves"))
+          insDoc(aux2,gLnk("R","12101 Reserve Fund"))
+          insDoc(aux2,gLnk("R","12102 Bad Debt Fund"))
+        aux2=insFld(aux1,gFld("12200 Other Reserves & Funds"))
+	  insDoc(aux2, gLnk("R", "12201 Capital Redemption Reserve"))
+	  insDoc(aux2, gLnk("R", "12202 Capital Reserve"))
+          insDoc(aux2, gLnk("R", "12203 Gol Re-capitalisation Assistance Fund"))
+          insDoc(aux2, gLnk("R", "12204 GoWB Re-capitalisation Assistance Fund"))
+	  insDoc(aux2, gLnk("R", "12205 Dividend Equalisation Fund"))
+          insDoc(aux2, gLnk("R", "12206 Agricultural Credit Stabilisation Fund"))
+	  	  insDoc(aux2, gLnk("R", "12207 Risk Fund"))
+		  insDoc(aux2, gLnk("R", "12208 Building Fund"))
+          insDoc(aux2, gLnk("R", "12209 Development Fund"))
+	 insDoc(aux2, gLnk("R", "12210 Member's Welfare Fund"))
+	 insDoc(aux2, gLnk("R", "12211 Staff Welfare Fund"))
+         insDoc(aux2, gLnk("R", "12212 Social Welfare Fund"))
+	 insDoc(aux2, gLnk("R", "12213 Inventory Loss Fund"))
+	 insDoc(aux2, gLnk("R", "12214 Price Fluctuation Fund"))
+	 insDoc(aux2, gLnk("R", "12215 Gratuity Fund"))
+	 insDoc(aux2, gLnk("R", "12216 Provident Fund reserve"))
+	 insDoc(aux2, gLnk("R", "12299 Other Funds & Reserves"))
+//-------------------------Profit & loss account------------------------------
+        aux2=insFld(aux1,gFld("12300 Profit & Loss Account"))
+        insDoc(aux2,gLnk("R","12301 Profit & Loss Balance as per last Account"))
+	insDoc(aux2,gLnk("R","12301 Profit & Loss Balance for current year"))
+	aux2=insFld(aux1,gFld("12400 Capital Subsidy"))
+	insDoc(aux2,gLnk("R","Subsidy from Government"))
+	insDoc(aux2,gLnk("R","Subsidy from DRDA/DRDC"))
+	insDoc(aux2,gLnk("R","Subsidy from FFDA"))
+ 	insDoc(aux2,gLnk("R","Subsidy from Other Agencies"))
+ 	insDoc(aux2,gLnk("R","Subsidy for Margin Money"))
+	insDoc(aux2,gLnk("R","Other Capital Subsidies"))
+
+
+
+
+
+	  
+ 

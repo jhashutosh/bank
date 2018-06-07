@@ -1,0 +1,182 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+if(empty($op)){$_SESSION['op']='jv';}
+$gl_code=$_REQUEST['chead'];
+$start_date=$_REQUEST["start_date"];
+$gl_code=getData($gl_code);
+if(empty($start_date) ) { $start_date=$_REQUEST["sdt"]; }
+if(empty($start_date) ) { $start_date='01.04.'.date("Y"); }
+$end_date=$_REQUEST["end_date"];
+if(empty($end_date) ) { $end_date=$_REQUEST["edt"]; }
+if(empty($end_date) ) { $end_date=$current_date=date("d.m.Y"); }
+//$menu=$_REQUEST['menu'];
+$vdebit="0.00";
+$vcredit="0.00";
+$cldebit="0.00";
+$clcredit="0.00";
+$vdebit1="0.00";
+$vcredit1="0.00";
+
+$color21="lightgreen";
+$color22="lightgrey";
+echo "<html>";
+echo "<head>";
+echo "<title>  General Ledger";
+echo "</title>";
+echo "<script language=\"JavaScript\" src=\"../JS/gen_validatorv31.js\" type=\"text/javascript\"></script>";
+echo "<link rel=\"stylesheet\" href=\"../css/autosuggest_inquisitor.css\" type=\"text/css\" media=\"screen\" charset=\"utf-8\" />";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "<script type=\"text/javascript\" src=\"../JS/bsn.AutoSuggest_c_2.0.js\"></script>";
+echo "<script language=\"JavaScript\">";
+echo "function closeme() { close(); }";
+echo "</script>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+
+$sql_statement="SELECT gl_mas_code, gl_mas_desc, action_date, particulars, debit, credit from gl_ledger_rep('$start_date', '$end_date') where gl_mas_code like '$gl_code%'";
+//$sql_statement="SELECT gl_mas_code,gl_mas_desc,action_date,SUM(debit) as debit,SUM(credit) as credit FROM (SELECT gl_mas_code, gl_mas_desc, account_no, action_date, tran_id, particulars, debit, credit from gl_ledger_rep('$start_date', '$end_date') where gl_mas_code like '%' and debit+credit>0)AS foo GROUP BY gl_mas_code,gl_mas_desc,action_date";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+echo "<form name=\"f1\" action=\"gl_ledger.php?glc=$glc\" method=\"POST\">";
+echo "<table align=center bgcolor=\"#90EE90\"><tr><td  align=\"\"><b>Date Between :<td><input type=TEXT size=12 name=start_date id=cd value=\"$start_date\" $HIGHLIGHT>&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.start_date,'dd/mm/yyyy','Choose Date')\"> AND <input type=TEXT size=12 name=end_date value=\"$end_date\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.end_date,'dd/mm/yyyy','Choose Date')\">";
+
+echo "<tr><td>Account Head :<td><input type=\"TEXT\" id=\"chead\"  name=\"chead\" size=\"45\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"Submit\"  value=\"Enter\">";
+
+echo " <input type=\"BUTTON\" name=\"PRINT_BUTTON\" value=\"Print\" onclick=\"print()\"> ";
+echo "</table></form>";
+echo "<table width=\"100%\" valign=\"top\"><tr><td valign=\"top\" width=\"100%\" class=\"border\">";
+echo "<table width=\"100%\" class=\"border\" >";
+
+echo "<tr><td bgcolor=\"green\" colspan=\"4\" align=\"center\"><font color=\"white\"><b>General Ledger: Accountwise</b></font>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+
+$vglcode='   ';
+	$vdebit=0.00;
+	$vcredit=0.00;
+for($j=0; $j<pg_NumRows($result); $j++) 
+{
+	$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+	$row=pg_fetch_array($result,$j);
+		
+
+        if($vglcode <> $row['gl_mas_code']){
+		if($vdebit+$vcredit>0){
+		echo "<tr>";
+		echo "<td align=left bgcolor=$color></td>";
+		//echo "<td align=left bgcolor=$color></td>";
+		echo "<td align=left bgcolor=$color>Balance c/f</td>";
+		$bal=$vdebit-$vcredit;
+		if($vdebit>$vcredit){
+			echo "<td align=right bgcolor=$color> </td>";
+			echo "<td align=right bgcolor=$color>".amount2Rs($bal)."</td>";
+		} else
+		{
+			echo "<td align=right bgcolor=$color>".amount2Rs(-$bal)."</td>";
+			echo "<td align=right bgcolor=$color> </td>";
+
+		}
+		echo "<tr>";
+		
+		
+		echo "<td align=left bgcolor=$color21></td>";
+		//echo "<td align=left bgcolor=$color21></td>";
+		echo "<td align=left bgcolor=$color21>Total</td>";
+		if($vdebit>$vcredit){
+			echo "<td align=right bgcolor=$color21>".amount2Rs($vdebit)."</td>";
+			echo "<td align=right bgcolor=$color21>".amount2Rs($vdebit)."</td>";
+		} else{
+			echo "<td align=right bgcolor=$color21>".amount2Rs($vcredit)."</td>";
+			echo "<td align=right bgcolor=$color21>".amount2Rs($vcredit)."</td>";
+		} 
+		}
+		echo "<tr>";
+		$color=$TCOLOR;
+		echo "<th bgcolor=$color colspan=\"4\" width=\"15%\">".$row['gl_mas_code']." - ".$row['gl_mas_desc']."</th>";
+
+
+
+		echo "<tr>";
+		echo "<th bgcolor=$color22 colspan=\"1\" width=\"15%\">Date</th>";
+		//echo "<th bgcolor=$color22 colspan=\"1\" width=\"15%\">Tran Id</th>";
+		echo "<th bgcolor=$color22 colspan=\"1\" width=\"40%\">Particulars</th>";
+		echo "<th bgcolor=$color22 colspan=\"1\" width=\"15%\">Debit</th>";
+		echo "<th bgcolor=$color22 colspan=\"1\" width=\"30%\">Credit</th>";
+		$vglcode = $row['gl_mas_code'];
+		$vdebit=0.00;
+		$vcredit=0.00;
+
+	}
+	echo "<tr>";
+	echo "<td align=left bgcolor=$color>".$row['action_date']."</td>";
+	//echo "<td align=left bgcolor=$color>".$row['tran_id']."</td>";
+	//if(ltrim($row['account_no'])){
+//echo "<td align=left bgcolor=$color>".$row['account_no']." - ".$row['particulars']."</td>";
+//} else{
+	echo "<td align=left bgcolor=$color>".$row['particulars']."</td>";
+//}
+	echo "<td align=right bgcolor=$color>".amount2Rs($row['debit'])."</td>";
+	echo "<td align=right bgcolor=$color>".amount2Rs($row['credit'])."</td>";
+	$vdebit=$vdebit+$row['debit'];
+	$vcredit=$vcredit+$row['credit'];
+
+}
+
+
+echo "</tr>";
+		if($vdebit+$vcredit>0){
+		echo "<tr>";
+		echo "<td align=left bgcolor=$color>$end_date</td>";
+		//echo "<td align=left bgcolor=$color></td>";
+		echo "<td align=left bgcolor=$color>Balance c/f</td>";
+		$bal=$vdebit-$vcredit;
+		if($vdebit>$vcredit){
+			echo "<td align=right bgcolor=$color> </td>";
+			echo "<td align=right bgcolor=$color>".amount2Rs($bal)."</td>";
+		} else
+		{
+			echo "<td align=right bgcolor=$color>".amount2Rs(-$bal)."</td>";
+			echo "<td align=right bgcolor=$color> </td>";
+
+		}
+		echo "<tr>";
+		echo "<td align=left bgcolor=$color21></td>";
+		//echo "<td align=left bgcolor=$color21></td>";
+		echo "<td align=left bgcolor=$color21>Total</td>";
+		if($vdebit>$vcredit){
+			echo "<td align=right bgcolor=$color21>".amount2Rs($vdebit)."</td>";
+			echo "<td align=right bgcolor=$color21>".amount2Rs($vdebit)."</td>";
+		} else{
+			echo "<td align=right bgcolor=$color21>".amount2Rs($vcredit)."</td>";
+			echo "<td align=right bgcolor=$color21>".amount2Rs($vcredit)."</td>";
+		} 
+		}
+
+echo "</tr><tr>";
+$color="cyan";
+echo "<th bgcolor=$color colspan=\"1\" width=\"10%\"></th>";
+echo "<th bgcolor=$color colspan=\"1\" width=\"30%\">Total</th>";
+echo "<th bgcolor=$color colspan=\"1\" width=\"20%\"></th>";
+echo "<th bgcolor=$color colspan=\"1\" width=\"20%\"></th>";
+//echo "<th bgcolor=$color colspan=\"1\" width=\"20%\"></th>";
+echo "</table>";
+echo "</td><td>";
+echo "</td></tr>";
+echo "<tr>";
+
+echo "<br>";
+echo "</body>";
+echo "</html>";
+?>
+<script type="text/javascript">
+	var options = {
+		script:"autoComplete.php?json=true&",
+		varname:"input",
+		json:true,
+	};
+	var as_json2 = new AutoSuggest('chead', options);
+</script>

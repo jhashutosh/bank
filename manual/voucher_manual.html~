@@ -1,0 +1,12 @@
+<html>
+<head>
+<title>Trial Balance</title>
+<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />
+</head>
+<body bgcolor=silver>
+<h3 align=center><font color=green size=6>User Manual of Voucher Entry Details</font></h3>
+<p align=center><font color=blue size=5>Type of voucher:</font><br>There is Six type of voucher : - <br>1.<a href=receipt_voucher.html> Receipt Voucher</a><br>2. Payment voucher<br>3. Contra voucher<br>4.Sales voucher<br>5. Purchase voucher<br>6. Journal voucher
+<p align=left><font color=blue size=5>Details Of voucher :</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size=4>An accounting record in any business organization will originate on a piece of paper which is called a Voucher. A voucher, of course is a general name- the more specific names would be for example, Receipt or Payment voucher for  cash transaction,purchase voucher for credit purchase transactions, sales voucher for credit sale transactions, journal voucher for transfer transactions etc. A voucher is a primary document, a piece of substantiating evidence, a written record of expenditure, disbursement, or completed transaction it contains complete details about the transaction like date of transaction, nature of transaction, amount involved etc. The transaction is recorded in to the account books from the voucher. Since vouchers are basic records of a transaction, the society has to prepare them with full details and preserve them properly. It is better if all vouchers relating to a particular day are serially arranged , bundled together with proper markings of the date of the voucher for easy reference at a later date.</font>
+			
+</body>
+</html>

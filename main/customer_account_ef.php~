@@ -1,0 +1,279 @@
+<?
+include "config.php";
+$menu=$_REQUEST["menu"];
+$type=$_REQUEST["type"];
+$type=trim($type);
+//$customer_id=$_REQUEST["customer_id"];
+//if(empty($customer_id)){$customer_id=getId($menu);}
+
+echo "<html>";
+echo "<head>";
+echo "<title>Entry Form - Customer";
+echo "</title>";
+echo "<script src=\"calendar.js\">";
+echo "</script>";
+?>
+<script language="javascript">
+function checkAccount(){
+alert ("hi");/*
+var account_no=document.getElementById("introducer").value;
+var url_path="http://192.168.1.1/bank/bank/set_account.php?menu=cust&account_no="+account_no;
+alert(url_path);
+window.open(url_path,'welcome',
+   'width=300,height=200,menubar=no,status=no,
+   location=yes,toolbar=no,scrollbars=no');*/
+}
+function onLoadFocus(){
+document.getElementById("name1").focus();
+}
+function onSubmits(f)
+{
+ var x=document.getElementById("select_id").value;
+ if(x.length==0)
+  {
+   alert("Selected item should not be Null!!!!!");
+   return false;
+   document.getElementById("select_id").focus();
+  }
+  else{
+       f.submit();
+  }
+}
+</script>
+
+<?
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"onLoadFocus()\">";
+$title='Customer';
+echo "<font size=+2><B>Entry Form - $title";
+echo "</font>";
+echo "<form name=\"form2\" method=\"POST\" action=\"customer_account_ef.php?menu=$menu\"><br>";
+echo "<center><b>Type of Customer:</b>";
+if(empty($type)){
+makeSelectSubmit($type_of_account2_array,"type","Sole Account");
+$type="Sole Account";
+}
+else
+{
+ echo"<input type=\"TEXT\" name=\"account_no\" size=\"20\" value=\"$type\" readonly>";
+}
+echo "</form>";
+echo "<hr>";
+echo "<form name=\"form1\" method=\"POST\" action=\"customer_account_evf.php\" onSubmit=\"return check(this.form);\"><br>";
+echo "<table align=center width=100%>";
+if($type=="Sole Account"){
+//---------------------------------------- 
+echo "<tr><td bgcolor=\"red\" colspan=\"6\" align=\"center\"><font color=\"white\">First Holder</font>";
+echo "<tr><td align=\"left\">Name:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"name1\" size=\"20\" value=\"\" id=\"name1\"><br>";
+echo "<td align=\"left\">Father/Husband's name:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"father_name1\" size=\"25\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Sex:<td>";
+ makeSelect($sex_array,"sex1","");
+echo "<td align=\"left\">Dob:<td><input type=\"TEXT\" name=\"dob1\" size=\"10\" value=\"\" >";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(form1.dob1,'dd/mm/yyyy','Choose Date')\">";
+echo "<td align=\"left\">Caste:<td>";
+ makeSelect($caste_array,"caste1","");
+
+echo "<tr><td align=\"left\">Villege:<td><input type=\"TEXT\" name=\"address11\" size=\"15\" value=\"$VILL_DEFAULT\"><br>";
+echo "<td align=\"left\">PO:<td><input type=\"TEXT\" name=\"address21\" size=\"15\"  value=\"$POST_DEFAULT\"><br>";
+echo "<td align=\"left\">PS:<td><input type=\"TEXT\" name=\"address31\" size=\"15\" value=\"$POLICESTATION_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Pin:<td><input type=\"TEXT\" name=\"pin1\" size=\"10\" value=\"$PIN_DEFAULT\"><br>";
+echo "<td align=\"left\">Contact No:<td><input type=\"TEXT\" name=\"phone1\" size=\"10\" value=\"\"><br>";
+echo "<td align=\"left\">Email:<td><input type=\"TEXT\" name=\"email1\" size=\"15\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Qualification:<td colspan=2 align=\"left\">";
+makeSelect($customer_qualification_array,"qualify1","");
+echo "<td align=\"left\">Occupation:<td colspan=2 align=\"left\">";
+ makeSelect($customer_occupation_array,"occupation1","");
+echo "<tr><td align=\"left\">Voter Card No.:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"vcn1\" size=\"15\" value=\"\"><br>";
+echo "<td align=\"left\">Pan Card No.:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"pan1\" size=\"15\" value=\"\"><br>";
+
+//echo "<tr><td align=\"left\">Signature:<td><input type=\"TEXT\" name=\"signature1\" size=\"50\" value=\"\" disabled><br>";
+//echo "<tr><td align=\"left\">Photo:<td><input type=\"TEXT\" name=\"photo1\" size=\"50\" value=\"\" disabled><br>";
+}
+//----------------------------------------------------------------------------------------------
+elseif($type=="Organisational")
+{
+ echo "<tr><td bgcolor=\"red\" colspan=\"2\" align=\"center\"><font color=\"white\">Organisation </font>";
+echo "<tr><td align=\"left\">Name:<td><input type=\"TEXT\" name=\"name1\" size=\"50\" value=\"\"><br>";
+
+echo "<tr><td align=\"left\">Villege:<td><input type=\"TEXT\" name=\"address11\" size=\"50\" value=\"$VILL_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Post Office:<td><input type=\"TEXT\" name=\"address21\" size=\"50\"  value=\"$POST_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Police Station:<td><input type=\"TEXT\" name=\"address31\" size=\"50\" value=\"$POLICESTATION_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Pin:<td><input type=\"TEXT\" name=\"pin1\" size=\"50\" value=\"$PIN_DEFAULT\"><br>";
+
+echo "<tr><td align=\"left\">Pan Card No.:<td><input type=\"TEXT\" name=\"pan1\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Contact No.:<td><input type=\"TEXT\" name=\"phone1\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Email:<td><input type=\"TEXT\" name=\"email1\" size=\"50\" value=\"\"><br>";
+//echo "<tr><td align=\"left\">Signature:<td><input type=\"TEXT\" name=\"signature1\" size=\"50\" value=\"\" disabled><br>";
+//echo "<tr><td align=\"left\">Photo:<td><input type=\"TEXT\" name=\"photo1\" size=\"50\" value=\"\" disabled><br>";
+//-----------------------------------------------------------------------------------------
+echo "<tr><td bgcolor=\"green\" colspan=\"2\" align=\"center\"><font color=\"white\">First Authorised Person </font>";
+echo "<tr><td align=\"left\">Name:<td><input type=\"TEXT\" name=\"name2\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Designation:<td>";
+makeSelect($designation_orga_array,"designation1");
+echo "<tr><td align=\"left\">Sex:<td>";
+ makeSelect($sex_array,"sex2","");
+echo "<tr><td align=\"left\">Dob:<td><input type=\"TEXT\" name=\"dob2\" size=\"20\" value=\"\" >";
+echo "&nbsp;<input type=\"button\" name=\"date1\" value=\"Choose Date\" onclick=\"showCalendar(form1.dob2,'dd/mm/yyyy','Choose Date')\"><br>";
+echo "<tr><td align=\"left\">Caste:<td>";
+ makeSelect($caste_array,"caste2","");
+echo "<tr><td align=\"left\">Father/Husband's name:<td><input type=\"TEXT\" name=\"father_name2\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Villege:<td><input type=\"TEXT\" name=\"address12\" size=\"50\" value=\"$VILL_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Post office:<td><input type=\"TEXT\" name=\"address22\" size=\"50\" value=\"$POST_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Police Station:<td><input type=\"TEXT\" name=\"address32\" size=\"50\" value=\"$POLICESTATION_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Pin:<td><input type=\"TEXT\" name=\"pin2\" size=\"50\" value=\"$PIN_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Qualification:<td>";
+makeSelect($customer_qualification_array,"qualify2","");
+echo "<tr><td align=\"left\">Occupation:<td>";
+ makeSelect($customer_occupation_array,"occupation2","");
+echo "<tr><td align=\"left\">Voter Card No.:<td><input type=\"TEXT\" name=\"vcn2\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Pan Card No.:<td><input type=\"TEXT\" name=\"pan2\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Contact No.:<td><input type=\"TEXT\" name=\"phone2\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Email:<td><input type=\"TEXT\" name=\"email2\" size=\"50\" value=\"\"><br>";
+//echo "<tr><td align=\"left\">Signature:<td><input type=\"TEXT\" name=\"signature2\" size=\"50\" value=\"\" disabled><br>";
+//echo "<tr><td align=\"left\">Photo:<td><input type=\"TEXT\" name=\"photo2\" size=\"50\" value=\"\" disabled><br>";
+//--------------------------------------------------------------------------------------------
+echo "<tr><td bgcolor=\"blue\" colspan=\"2\" align=\"center\"><font color=\"white\">Second Authorised Person </font>";
+echo "<tr><td align=\"left\">Name:<td><input type=\"TEXT\" name=\"name3\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Designation:<td>";
+makeSelect($designation_orga_array,"designation2");
+echo "<tr><td align=\"left\">Sex:<td>";
+ makeSelect($sex_array,"sex3","");
+echo "<tr><td align=\"left\">Dob:<td><input type=\"TEXT\" name=\"dob3\" size=\"20\" value=\"\" >";
+echo "&nbsp;<input type=\"button\" name=\"date3\" value=\"Choose Date\" onclick=\"showCalendar(form1.dob3,'dd/mm/yyyy','Choose Date')\"><br>";
+echo "<tr><td align=\"left\">Caste:<td>";
+ makeSelect($caste_array,"caste3","");
+echo "<tr><td align=\"left\">Father/Husband's name:<td><input type=\"TEXT\" name=\"father_name3\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Villege::<td><input type=\"TEXT\" name=\"address13\" size=\"50\" value=\"$VILL_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Post Office:<td><input type=\"TEXT\" name=\"address23\" size=\"50\" value=\"$POST_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Police Station :<td><input type=\"TEXT\" name=\"address33\" size=\"50\" value=\"$DISTRIC_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Pin:<td><input type=\"TEXT\" name=\"pin3\" size=\"50\" value=\"$PIN_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Qualification:<td>";
+makeSelect($customer_qualification_array,"qualify3","");
+echo "<tr><td align=\"left\">Occupation:<td>";
+ makeSelect($customer_occupation_array,"occupation3","");
+echo "<tr><td align=\"left\">Voter Card No.:<td><input type=\"TEXT\" name=\"vcn3\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Pan:<td><input type=\"TEXT\" name=\"pan3\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Contact No.:<td><input type=\"TEXT\" name=\"phone3\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Email:<td><input type=\"TEXT\" name=\"email3\" size=\"50\" value=\"\"><br>";
+//echo "<tr><td align=\"left\">Signature:<td><input type=\"TEXT\" name=\"signature3\" size=\"50\" value=\"\" disabled><br>";
+//echo "<tr><td align=\"left\">Photo:<td><input type=\"TEXT\" name=\"photo3\" size=\"50\" value=\"\" disabled><br>";
+}
+
+//--------------------------------------------------------------------------------------------
+elseif($type=="Joint Account")
+{
+echo "<tr><td bgcolor=\"red\" colspan=\"6\" align=\"center\"><font color=\"white\">First Holder</font>";
+echo "<tr><td align=\"left\">Name:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"name1\" size=\"20\" value=\"\"><br>";
+echo "<td align=\"left\">Father/Husband's name:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"father_name1\" size=\"25\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Sex:<td>";
+ makeSelect($sex_array,"sex1","");
+echo "<td align=\"left\">Dob:<td><input type=\"TEXT\" name=\"dob1\" size=\"10\" value=\"\" >";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(form1.dob1,'dd/mm/yyyy','Choose Date')\">";
+echo "<td align=\"left\">Caste:<td>";
+ makeSelect($caste_array,"caste1","");
+
+echo "<tr><td align=\"left\">Villege:<td><input type=\"TEXT\" name=\"address11\" size=\"15\" value=\"$VILL_DEFAULT\"><br>";
+echo "<td align=\"left\">PO:<td><input type=\"TEXT\" name=\"address21\" size=\"15\"  value=\"$POST_DEFAULT\"><br>";
+echo "<td align=\"left\">PS:<td><input type=\"TEXT\" name=\"address31\" size=\"15\" value=\"$POLICESTATION_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Pin:<td><input type=\"TEXT\" name=\"pin1\" size=\"10\" value=\"$PIN_DEFAULT\"><br>";
+echo "<td align=\"left\">Contact No:<td><input type=\"TEXT\" name=\"phone1\" size=\"10\" value=\"\"><br>";
+echo "<td align=\"left\">Email:<td><input type=\"TEXT\" name=\"email1\" size=\"15\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Qualification:<td colspan=2 align=\"left\">";
+makeSelect($customer_qualification_array,"qualify1","");
+echo "<td align=\"left\">Occupation:<td colspan=2 align=\"left\">";
+ makeSelect($customer_occupation_array,"occupation1","");
+echo "<tr><td align=\"left\">Voter Card No.:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"vcn1\" size=\"15\" value=\"\"><br>";
+echo "<td align=\"left\">Pan Card No.:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"pan1\" size=\"15\" value=\"\"><br>";
+//echo "<tr><td align=\"left\">Signature:<td><input type=\"TEXT\" name=\"signature1\" size=\"50\" value=\"\" disabled><br>";
+//echo "<tr><td align=\"left\">Photo:<td><input type=\"TEXT\" name=\"photo1\" size=\"50\" value=\"\" disabled><br>";
+//-----------------------------------------------------------------------------------------
+echo "<tr><td bgcolor=\"green\" colspan=\"6\" align=\"center\"><font color=\"white\">Second Holder </font>";
+echo "<tr><td align=\"left\">Name:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"name2\" size=\"20\" value=\"\">";
+echo "<td align=\"left\">Father/Husband's name:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"father_name2\" size=\"25\" value=\"\">";
+
+echo "<tr><td align=\"left\">Sex:<td>";
+ makeSelect($sex_array,"sex2","");
+echo "<td align=\"left\">Dob:<td><input type=\"TEXT\" name=\"dob2\" size=\"10\" value=\"\" >";
+echo "&nbsp;<input type=\"button\" name=\"date1\" value=\"...\" onclick=\"showCalendar(form1.dob2,'dd/mm/yyyy','Choose Date')\">";
+echo "<td align=\"left\">Caste:<td>";
+ makeSelect($caste_array,"caste2","");
+
+echo "<tr><td align=\"left\">Villege:<td><input type=\"TEXT\" name=\"address12\" size=\"15\" value=\"$VILL_DEFAULT\">";
+echo "<td align=\"left\">PO:<td><input type=\"TEXT\" name=\"address22\" size=\"15\" value=\"$POST_DEFAULT\"><br>";
+echo "<td align=\"left\">PS:<td><input type=\"TEXT\" name=\"address32\" size=\"15\" value=\"$POLICESTATION_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Pin:<td><input type=\"TEXT\" name=\"pin2\" size=\"10\" value=\"$PIN_DEFAULT\"><br>";
+echo "<td align=\"left\">Contact No.:<td><input type=\"TEXT\" name=\"phone2\" size=\"10\" value=\"\">";
+echo "<td align=\"left\">Email:<td><input type=\"TEXT\" name=\"email2\" size=\"15\" value=\"\">";
+echo "<tr><td align=\"left\">Qualification:<td colspan=2 align=\"left\">";
+makeSelect($customer_qualification_array,"qualify2","");
+echo "<td align=\"left\">Occupation:<td colspan=2 align=\"left\">";
+ makeSelect($customer_occupation_array,"occupation2","");
+echo "<tr><td align=\"left\">Voter Card No.:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"vcn2\" size=\"15\" value=\"\">";
+echo "<td align=\"left\">Pan Card No.:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"pan2\" size=\"15\" value=\"\"><br>";
+
+//echo "<tr><td align=\"left\">Signature:<td><input type=\"TEXT\" name=\"signature2\" size=\"50\" value=\"\" disabled><br>";
+//echo "<tr><td align=\"left\">Photo:<td><input type=\"TEXT\" name=\"photo2\" size=\"50\" value=\"\" disabled><br>";
+//--------------------------------------------------------------------------------------------
+echo "<tr><td bgcolor=\"blue\" colspan=\"6\" align=\"center\"><font color=\"white\">Third Holder</font>";
+echo "<tr><td align=\"left\">Name:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"name3\" size=\"20\" value=\"\">";
+echo "<td align=\"left\">Father/Husband's name:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"father_name3\" size=\"25\" value=\"\">";
+echo "<tr><td align=\"left\">Sex:<td>";
+ makeSelect($sex_array,"sex3","");
+echo "<td align=\"left\">Dob:<td><input type=\"TEXT\" name=\"dob3\" size=\"10\" value=\"\" >";
+echo "&nbsp;<input type=\"button\" name=\"date3\" value=\"...\" onclick=\"showCalendar(form1.dob3,'dd/mm/yyyy','Choose Date')\">";
+echo "<td align=\"left\">Caste:<td>";
+ makeSelect($caste_array,"caste3","");
+echo "<tr><td align=\"left\">Villege::<td><input type=\"TEXT\" name=\"address13\" size=\"15\" value=\"$VILL_DEFAULT\">";
+echo "<td align=\"left\">PO:<td><input type=\"TEXT\" name=\"address23\" size=\"15\" value=\"$POST_DEFAULT\">";
+echo "<td align=\"left\">PS :<td><input type=\"TEXT\" name=\"address33\" size=\"15\" value=\"$DISTRIC_DEFAULT\">";
+echo "<tr><td align=\"left\">Pin:<td><input type=\"TEXT\" name=\"pin3\" size=\"10\" value=\"$PIN_DEFAULT\">";
+echo "<td align=\"left\">Contact No.:<td><input type=\"TEXT\" name=\"phone3\" size=\"10\" value=\"\">";
+echo "<td align=\"left\">Email:<td><input type=\"TEXT\" name=\"email3\" size=\"15\" value=\"\">";
+echo "<tr><td align=\"left\">Qualification:<td colspan=2 align=\"left\">";
+makeSelect($customer_qualification_array,"qualify3","");
+echo "<td align=\"left\">Occupation:<td colspan=2 align=\"left\">";
+ makeSelect($customer_occupation_array,"occupation3","");
+echo "<tr><td align=\"left\">Voter Card No.:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"vcn3\" size=\"15\" value=\"\">";
+echo "<td align=\"left\">Pan:<td colspan=2 align=\"left\"><input type=\"TEXT\" name=\"pan3\" size=\"15\" value=\"\">";
+
+//echo "<tr><td align=\"left\">Signature:<td><input type=\"TEXT\" name=\"signature3\" size=\"50\" value=\"\" disabled><br>";
+//echo "<tr><td align=\"left\">Photo:<td><input type=\"TEXT\" name=\"photo3\" size=\"50\" value=\"\" disabled><br>";
+}
+else{
+echo "<tr><td bgcolor=\"red\" colspan=\"2\" align=\"center\"><font color=\"white\">Group Account</font>";
+echo "<tr><td align=\"left\">Group Name:<td><input type=\"TEXT\" name=\"name1\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Type of group:<td>";
+makeSelect($type_of_group_array,"sex1","");
+echo "<tr><td align=\"left\">No. of member:<td><input type=\"TEXT\" name=\"no_of_member\" size=\"20\" value=\"5\"><br>";
+echo "<tr><td align=\"left\">Name of the leader:<td><input type=\"TEXT\" name=\"leader\" size=\"50\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Village:<td><input type=\"TEXT\" name=\"address11\" size=\"50\" value=\"$VILL_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Post Office :<td><input type=\"TEXT\" name=\"address21\" size=\"50\" value=\"$POST_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Police Station:<td><input type=\"TEXT\" name=\"address31\" size=\"50\" value=\"$POLICESTATION_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Pin:<td><input type=\"TEXT\" name=\"pin1\" size=\"50\" value=\"$PIN_DEFAULT\"><br>";
+echo "<tr><td align=\"left\">Monthly amount:<td><input type=\"TEXT\" name=\"monthly_amount\" size=\"50\" value=\"\"><br>";
+}
+echo "</table>";
+
+
+//------------------------------------------------------------------------------------------
+echo "<table width=100%>";
+echo "<tr><td bgcolor=\"Brown\" colspan=\"6\" align=\"center\"><font color=\"white\"> Office Uses</font>";
+echo "<tr><td align=\"left\">Date of opening:<td><input type=\"TEXT\" name=\"date_of_opening\" size=\"20\" value=\"".date('d/m/Y')."\">";
+echo "&nbsp;<input type=\"button\" name=\"date4\" value=\"...\" onclick=\"showCalendar(form1.date_of_opening,'dd/mm/yyyy','Choose Date')\"><br>";
+
+echo "<td align=\"left\">Introducer Account No.:<td><input type=\"TEXT\" name=\"introducer_id\" size=\"20\" value=\"\" id=\"introducer\" >";
+echo "&nbsp;<input type=\"button\" name=\"check\" value=\"Check\" onClick=\"checkAccount()\">";
+echo "<tr><td valign=\"middle\" align=\"center\" colspan=2 >Remarks:<td  align=\"left\" colspan=2 ><textarea name=\"remarks\" rows=\"3\" cols=\"49\"></textarea><br>";
+echo "<input type=\"HIDDEN\" name=\"type\" value=\"$type\" id=\"type\">";
+//echo "customer_id=$customer_id";
+echo "<input type=\"HIDDEN\" name=\"customer_id\" value=\"$customer_id\">";
+echo "<tr><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Submit\">";
+echo "  <input type=\"RESET\" name=\"RESET_BUTTON\" value=\"Cancel\"><br>";
+echo "</table>";
+echo "</form>";
+
+footer();
+echo "</body>";
+echo "</html>";
+
+?>

@@ -1,0 +1,121 @@
+<?
+include "config.php";
+// PHP4 
+$account_no=trim(strtoupper($_REQUEST["account_no"]));
+$menu=$_REQUEST["menu"];
+setcookie("current_account_no",$account_no);
+setcookie("current_account_type",$menu);
+if(!strcmp($menu,'sb')){
+	header("Location: sb_account_statement.php?menu=$menu");
+
+	echo "<html>";
+	echo "<head>";
+	echo "<title>setting current account:".$account_no;
+	echo "</title>";
+	echo "</head>";
+
+	echo "<body bgcolor=\"silver\">";
+	// echo "<h1>Table: account";
+	// echo "</h1>";
+	echo "Click <a href=\"sb_account_statement.php?menu=$menu\">here</a> to see detail of the account <b>".$account_no."<b>.";
+
+ }
+/*if(!strcmp($menu,'shg')){
+   header("Location: shg_info_view.php?menu=$menu");
+}*/
+if(!strcmp($menu,'fd')){
+	header("Location: fd_statement.php?menu=$menu");
+
+	echo "<html>";
+	echo "<head>";
+	echo "<title>setting current account:".$account_no;
+	echo "</title>";
+	echo "</head>";
+
+	echo "<body bgcolor=\"silver\">";
+	// echo "<h1>Table: account";
+	// echo "</h1>";
+	echo "Click <a href=\"fd_statement.php?menu=$menu\">here</a> to see detail of the account <b>".$account_no."<b>.";
+
+ }
+
+if(!strcmp($menu,'rd')){
+	header("Location: rd_statement.php?menu=$menu");
+
+	echo "<html>";
+	echo "<head>";
+	echo "<title>setting current account:".$account_no;
+	echo "</title>";
+	echo "</head>";
+
+	echo "<body bgcolor=\"silver\">";
+	// echo "<h1>Table: account";
+	// echo "</h1>";
+	echo "Click <a href=\"rd_statement.php?menu=$menu\">here</a> to see detail of the account <b>".$account_no."<b>.";
+
+ }
+if(!strcmp($menu,'share')){
+	header("Location: share_statement.php?menu=$menu");
+}
+
+if(!strcmp($menu,'ri')){
+	header("Location: ri_statement.php?menu=$menu");
+}
+if(!strcmp($menu,'cust')){
+	header("Location: customer_statement.php?menu=$menu");
+}
+
+if(!strcmp($menu,'mis')){
+	header("Location: mis_statement.php?menu=$menu");
+
+	echo "<html>";
+	echo "<head>";
+	echo "<title>setting current account:".$account_no;
+	echo "</title>";
+	echo "</head>";
+
+	echo "<body bgcolor=\"silver\">";
+	// echo "<h1>Table: account";
+	// echo "</h1>";
+	echo "Click <a href=\"mis_statement.php?menu=$menu\">here</a> to see detail of the account <b>".$account_no."<b>.";
+
+ }
+
+if(!strcmp($menu,'shg')){
+	header("Location: shg_mem_detail.php?group_no=$account_no");
+
+	echo "<html>";
+	echo "<head>";
+	echo "<title>setting current account:".$account_no;
+	echo "</title>";
+	echo "</head>";
+
+	echo "<body bgcolor=\"silver\">";
+	// echo "<h1>Table: account";
+	// echo "</h1>";
+	echo "Click <a href=\"shg_statement.php?menu=$menu\">here</a> to see detail of the account <b>".$account_no."<b>.";
+
+ }
+
+if(!strcmp($menu,'kcc')){
+	header("Location: kcc_statement.php?menu=$menu");
+}
+
+if(!strcmp($menu,'ln')){
+	header("Location: shg_loan_statement.php?menu=$menu");
+}
+
+if(!strcmp($menu,'pl')){
+	header("Location: dhal_search.php?menu=$menu");
+}
+
+if(!strcmp($menu,'stl')){
+	header("Location: stl_statement.php?menu=$menu");
+}
+
+
+footer();
+
+echo "</body>";
+echo "</html>";
+?>

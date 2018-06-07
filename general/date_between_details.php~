@@ -1,0 +1,94 @@
+<?
+include "../config/config.php";
+include "paginator.php";
+$staff_id=verifyAutho();
+$date1=date('l dS \of F Y h:i:s A');
+$menu=$_REQUEST["menu"];
+$starting_date=$_REQUEST["starting_date"];
+$ending_date=$_REQUEST["ending_date"];
+if( empty($starting_date) ) { $starting_date=date("d/m/Y",time()-604600); }
+if( empty($ending_date) ) { $ending_date=date("d/m/Y"); }
+echo "<html>";
+echo "<head>";
+echo "<title>Fixed Deposit Date Between Statement";
+echo "</title>";
+echo "</head>";
+
+echo "<body bgcolor=\"silver\">";
+//echo "<h4><font color=\"blue\">NETWARE</font>";
+echo "</h4>";
+
+echo "<h4><font color=\"green\">Dated:$date1</font>";
+echo "</h4>";
+if(trim($menu)=='ri'){$table='ri_summary';$title="Reinvestment Deopsit";}
+if($menu=='fd'){$table='customer_fd'; $title="Fixed Deopsit";}
+if($menu=='rd'){$table='rd_summary2';$title="Recurring Deopsit";}
+
+//$title=trim($menu);
+//echo "hi i'm from $menu";
+echo "<h2>Date Between Statement - $title";
+echo "</h2>";
+echo "<hr color=RED>";
+echo "<form method=\"POST\" action=\"date_between_details.php?\">";
+echo "Summary statement of bank between <input type=\"TEXT\" name=\"starting_date\" size=\"15\" value=\"$starting_date\">";
+echo "<input type=\"HIDDEN\" name=\"menu\" value=\"$menu\">";
+echo " and <input type=\"TEXT\" name=\"ending_date\" size=\"15\" value=\"$ending_date\">";
+echo " <input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Submit\">";
+echo "<hr color=RED>";
+
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+
+$sql_statement="select action_date,SUM(case when dr_cr='Cr' THEN amount ELSE 0 END) as deposit,SUM(case when dr_cr='Dr' THEN amount ELSE 0 END) as withdrawal from fd_detail_view group by action_date having action_date BETWEEN '$starting_date' AND '$ending_date'  ORDER BY action_date DESC";
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+
+if(pg_NumRows($result)==0) {
+echo "<h4>Not found!!!</h4>";
+} else {
+echo "<table valign=\"top\" width=\"100%\">";
+echo "<tr><td bgcolor=\"green\" colspan=\"11\" align=\"center\"><font color=\"white\">Summary statement between $starting_date &amp; $ending_date</font>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+//echo "<th bgcolor=$color>Account no</th>";
+echo "<th bgcolor=$color>Date</th>";
+echo "<th bgcolor=$color>Withdrawals (Rs.)</th>";
+echo "<th bgcolor=$color>Deposits (Rs.)</th>";
+echo "<th bgcolor=$color>Balance (Rs.)</th>";
+$total_withdrawals=0;
+$total_deposits=0;
+$total_balance=0;
+$off_set=0;
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+$detail_dt=$row['action_date'];
+echo "<td align=right bgcolor=$color><a href=\"summary_details.php?menu=$menu&dt=$detail_dt&st_dt=$starting_date&en_dt=$ending_date\">".$detail_dt."</a></td>";
+if($row['withdrawal_amount']==$WITHDRAWALS_DEFAULT){$row['withdrawal_amount']=0;}
+echo "<td align=right bgcolor=$color>".$row['withdrawal']."</td>";
+if($row['amount_deposit']==$DEPOSITS_DEFAULT){$row['amount_deposit']=0;}
+echo "<td align=right bgcolor=$color>".$row['deposit']."</td>";
+echo "<td align=right bgcolor=$color>".($row['deposit']-$row['withdrawal'])."</td>";
+
+$total_withdrawals=$total_withdrawals+$row['withdrawal_amount'];
+$total_deposits=$total_deposits+$row['amount_deposit'];
+$total_balance=$total_balance+$row['balance'];
+
+}
+echo "<tr>";
+$color="cyan";
+echo "<td align=center bgcolor=$color><B>Total: ".($j-1)."</B></td>";
+echo "<td align=right bgcolor=$color><B>".$total_withdrawals."</B></td>";
+echo "<td align=right bgcolor=$color><B>".$total_deposits."</B></td>";
+echo "<td align=right bgcolor=$color><B>".$total_balance."</B></td>";
+echo "</table>";
+}
+
+footer();
+
+echo "</body>";
+echo "</html>";
+?>

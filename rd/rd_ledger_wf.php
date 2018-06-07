@@ -1,0 +1,67 @@
+<?php
+include "config.php";
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$account_no=$_SESSION["current_account_no"];
+isPermissible($menu);
+echo "<html>";
+echo "<head>";
+echo "<title>Update Form - Reinvestment";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+?>
+<script language="javascript">
+
+
+</script>
+
+
+<link rel="stylesheet" href="../retail/css/retail.css">
+<?php
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"withdrawal_date.focus();\">";
+$id=getCustomerId($account_no,$menu);
+$flag=getGeneralInfo_Customer($id);
+if($flag==1){
+echo "<hr>";
+// Make WHERE CLAUSE such that only one row retrive in actual case
+$sql_statement="select * from deposit_info where account_no='$account_no' and  withdrawal_date  is null";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0){
+  echo "<h1><font color=RED align=CENTER><b>Your Account no is Wrong or You don't have any RD  !!!!!!!!!</b></h1></font>";
+ }
+else{
+  $opening_date=pg_result($result,'action_date');
+  $period=pg_result($result,'period');
+  $amount_deposit=pg_result($result,'principal');
+  $rate_of_interest=pg_result($result,'interest_rate');
+  $maturity_amount=pg_result($result,'maturity_amount');
+  $maturity_date=pg_result($result,'maturity_date');
+ 
+ echo "<form method=\"POST\" name=\"form1\" action=\"rd_ledger_wvf.php?menu=$menu\" onsubmit=\"return varify();\">";
+ echo "<table bgcolor=BLACK align=center width=70%>";
+ echo "<tr><th colspan=\"4\" bgcolor=Yellow>Withdrawal Form of ".strtoupper($menu)."[$account_no]</th></tr>";
+ echo "<tr><td align=\"left\" bgcolor=#F08080>Account no:<td bgcolor=#F08080><input type=\"TEXT\" name=\"account_no\" size=\"15\" value=\"$account_no\" $HIGHLIGHT READONLY><br>";
+echo "<td align=\"left\" bgcolor=#F08080>Opening Date:<td bgcolor=#F08080><input type=\"TEXT\" name=\"op_date\" size=\"12\" value=\"".$opening_date."\" READONLY $HIGHLIGHT><br>";
+echo "<tr><td align=\"left\" bgcolor=#F08080>Monthly Deposits:<td bgcolor=#F08080><input type=\"TEXT\" name=\"m_d\" size=\"15\" value=\"$amount_deposit\" $HIGHLIGHT READONLY><br>";
+echo "<td align=\"left\" bgcolor=#F08080>period :<td bgcolor=#F08080><input type=\"TEXT\" name=\"period\" size=\"12\" value=\"".$period."\" READONLY $HIGHLIGHT> Months";
+
+echo "<tr><td align=\"left\" bgcolor=#F08080>Rate of Interest:<td bgcolor=#F08080><input type=\"TEXT\" name=\"rate\" size=\"15\" value=\"$rate_of_interest\" $HIGHLIGHT READONLY><br>";
+echo "<td align=\"left\" bgcolor=#F08080>Maturity Amount :<td bgcolor=#F08080><input type=\"TEXT\" name=\"m_amount\" size=\"12\" value=\"$maturity_amount\" $HIGHLIGHT>";
+
+echo "<tr><td align=\"left\" bgcolor=#F08080>Maturity Interest:<td bgcolor=#F08080><input type=\"TEXT\" name=\"m_int\" size=\"15\" value=\"".($maturity_amount-($period*$amount_deposit))."\" $HIGHLIGHT ><br>";
+echo "<td align=\"left\" bgcolor=#F08080>Maturity Date :<td bgcolor=#F08080><input type=\"TEXT\" name=\"m_date\" size=\"12\" value=\"$maturity_date\" READONLY $HIGHLIGHT>";
+
+echo "<tr><td align=\"left\" bgcolor=#F08080>Current Balance:<td bgcolor=#F08080><input type=\"TEXT\" name=\"m_int\" size=\"15\" value=\"".sb_current_balance($account_no)."\" $HIGHLIGHT READONLY>";
+echo "<td align=\"left\" bgcolor=#F08080>Withdrawal Date:<td bgcolor=#F08080><input type=\"TEXT\" name=\"withdrawal_date\" size=\"12\" id=\"withdrawal_date\" value=\"".date('d.m.Y')."\" $HIGHLIGHT><br>";
+echo "<tr><td colspan=\"3\" align=\"CENTER\" bgcolor=#F08080>Transfer to Your SB A/C : <INPUT NAME=\"t_status\"  id=\"r1\" TYPE=\"radio\" VALUE=\"y\" $HIGHLIGHT >Yes &nbsp;&nbsp;<INPUT NAME=\"t_status\"  TYPE=\"radio\" id=\"r1\" VALUE=\"n\" CHECKED $HIGHLIGHT >No";
+ echo "<td align=\"right\" colspan=\"1\" bgcolor=#F08080><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\" Withdrawal\">";
+echo "</table>";
+echo "</form>";
+ }
+}
+echo "</body>";
+echo "</html>";
+
+?>

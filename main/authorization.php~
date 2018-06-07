@@ -1,0 +1,30 @@
+<? 
+include "config.php";
+// PHP4
+$id=$_REQUEST["id"];
+$password=$_REQUEST["password"];
+$lgn=$_REQUEST["lgn"]; // From login screen
+	
+if ($lgn!=NULL){
+	$password=md5($password);
+}
+//echo "Host=$HOST,Database=$DATABASE";
+$db=pg_Connect("host=".$HOST." dbname=".$DATABASE);
+if($db==null){echo "fail to connect";}
+$result=pg_Exec($db,$DATESTYLE);
+
+// verify if id and password is already registered with database
+$sql_statement="SELECT id,password FROM staff WHERE id='".$id."' AND password='".$password."'";
+echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)!=0){
+	setcookie("staff_id",$id);
+        //setcookie("fy",$fy);
+	header("Location: main.php");
+} else {
+	//setcookie("staff_id");
+	header("Location: index1.php?af=1");
+ 	
+}
+
+?>

@@ -1,0 +1,40 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$op=$_REQUEST['op'];
+if($op=='c'){$table='crop_mas';$name='Crop';}
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"st_dt.focus();\">";
+echo "<font color=\"blue\"><b>$SYSTEM_TITLE</font>";
+$sql_statement="SELECT * from $table";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>Not found!!!</h4>";
+} else {
+echo "<table valign=\"top\" width=\"50%\" align=\"center\">";
+$color=$TCOLOR;
+echo "<tr><td bgcolor=\"red\" colspan=\"2\" align=\"center\"><font color=\"white\"><b>CROP DETAILS</b></font>";
+echo "<tr>";
+echo "<th bgcolor=$color>$name Id</th>";
+echo "<th bgcolor=$color>$name Description</th>";
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+echo "<td align=right bgcolor=$color>".$row[0]."</td>";
+echo "<td align=right bgcolor=$color>".$row[1]."</td>";
+}
+echo "<tr>";
+$color="cyan";
+echo "<td align=center bgcolor=$color><B>Total:".($j-1)."</B></td>";
+echo "<td align=right bgcolor=$color><B></B></td>";
+
+echo "</table>";
+}
+
+echo "</body>";
+echo "</html>";
+?>

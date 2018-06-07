@@ -1,0 +1,25 @@
+<? 
+include "../config/config.php"; 
+$staff_id=verifyAutho();
+echo "<HTML>";
+echo "<HEAD>";
+echo "<LINK href=\"../css/test.css\" type=text/css rel=STYLESHEET>";
+echo "<TITLE>$SYSTEM_TITLE";
+echo "</TITLE>";
+echo "</HEAD>";
+echo "<BODY BGCOLOR=\"$FRAMECOLOR\" VLINK=WHITE LINK=WHITE  ALINK=WHITE ALIGN=\"CENTER\">";
+echo "<DIV ID=\"menu_item\" style=\"position:relative; top:2\">";
+echo "<TABLE>";
+echo "<TR>";
+echo "<TD width=500 align=left><font color=#8A2BE2><B>".date('l dS \of F Y h:i:s A')."</b></font>";
+echo "<TD width=500 align=right>";
+echo "<I><b>$SYSTEM_TITLE<font color=BLUE>&nbsp;$VERSION_INFO</FONT></I></FONT>";
+echo "<BR>";
+echo "<tt><font color=BLACK><b>$ORGANISATION_TITLE</b></font></tt><BR>";
+echo "<TD>";
+echo "<A HREF=\"../main/main.php\" target=_top><img src=\"../image/logo.gif\" width=35 height=45></A>";
+echo "</TABLE>";
+echo "</DIV>";
+echo "</BODY>";
+echo "</HTML>";
+?>

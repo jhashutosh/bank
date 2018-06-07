@@ -1,0 +1,38 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$op=$_REQUEST['op'];
+//echo "op=$op";  
+if ($menu=='fd'){$period='Days';}
+if ($menu=='ri'){$period='Months';}
+if ($menu=='rd' || $menu=='mis'){$period='Years';}
+                                                   
+?>
+<HTML>
+<HEAD>
+<TITLE>Configuration</TITLE>
+<link rel="stylesheet" type="text/css" href="../css/test.css">
+<font size=+2><b>Scrolling System For Banking </font><br>
+<I>Banking parameters configuration and information updation</I>
+<HR>
+<BODY>
+<TABLE Align=Center width=100%>
+<TR>
+<TH BGCOLOR=#8A2BE2><font size=+2>Deposit Module </font></TH>
+<tr>
+<Td>
+<ul type=disc>
+<li><a href="scroll.php?menu=sb" onClick="window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=1210,height=1000'); return false;">Savings Deposits Module</A> - For Saving Deposits  Scroll.
+<li><a href="scroll.php?menu=fd" onClick="window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=1210,height=1000'); return false;">Fixed Deposits Module</A> - For Fixed Deposits Scroll.
+<li><a href="scroll.php?menu=rd" onClick="window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=1210,height=1000'); return false;">Recurring Deposits Module</A> - For Recurring Deposits Scroll.
+<li><a href="scroll.php?menu=ri" onClick="window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=1210,height=1000'); return false;">Reinvestment Deposits Module</A> - For Reinvestment Deposits Scroll.
+<li><a href="scroll.php?menu=mis" onClick="window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=1210,height=1000'); return false;">MIS Deposits Module</A> - For MIS Deposits Scroll.
+<li><a href="scroll.php?menu=all" onClick="window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=1210,height=1000'); return false;">ALL Deposits Module</A> - For ALL Deposits Scroll.
+
+</TABLE>
+</BODY>
+</HTML>
+
+
+

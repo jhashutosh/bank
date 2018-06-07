@@ -1,0 +1,104 @@
+<?php
+include "../config/config.php";
+$HIGHLIGHT1="onFocus=\"this.style.backgroundColor='#E9F2FA';this.style.color:#E9F2FA \"  onBlur=\"this.style.backgroundColor='#E9F2FA'\"style=\"font-size:10pt;BACKGROUND-COLOR:#E9F2FA; BORDER-BOTTOM: #111111 1px solid; BORDER-top: #E9F2FA 0px solid; BORDER-left: #E9F2FA 0px solid; BORDER-right: #E9F2FA 0px solid; BORDER-COLLAPSE: collapse;\"";
+$staff_id=verifyAutho();
+$account_no=$_SESSION["current_account_no"];
+$menu=$_REQUEST['menu'];
+$fy=$_SESSION['fy'];
+getDetailFy($fy,&$f_start_dt,&$f_end_dt);
+$day_sql="select date(date('$f_start_dt') - interval '1 day') as dt";
+$res_dt=dBConnect($day_sql);
+$f_start_dt=pg_result($res_dt,'dt');
+//isPermissible($menu);
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+?>
+<STYLE>
+select
+{
+background-color:#E9F2FA;
+border:none;
+outline:none;
+color:#5F7AC1;
+
+}
+select:focus{
+outline:solid 1px #E9F2FA;
+border:solid 1px #E9F2FA;
+}
+input{
+color:#5F7AC1;
+}
+</STYLE>
+<SCRIPT type="text/javascript">
+function cal_int(){
+var amount=parseInt(document.getElementById('amount_deposit').value);
+var int_rate=parseFloat(document.getElementById('rate_of_interest').value);
+
+var m_int=Math.round(amount*int_rate/1200);
+document.getElementById('mnth_int').value=m_int;
+
+}
+</SCRIPT>
+<?php
+echo "</head>";
+
+if($_REQUEST['opr']=='i'){
+$account_no=$_REQUEST["account_no"];
+$scheme=$_REQUEST["scheme"];
+$date_with_effect=$_REQUEST["date_with_effect"];
+$opening_date=$date_with_effect;
+$amount_deposit=$_REQUEST["amount_deposit"];
+$period=$_REQUEST["period"];
+$rate_of_interest=$_REQUEST["rate_of_interest"];
+$holder_sb_account_no=$_REQUEST["holder_sb_account_no"];
+$maturity_date=$_REQUEST["maturity_date"];
+$rec_month=$_REQUEST['rec_month'];
+$rec_amt=$_REQUEST['rec_amt'];
+if(empty($fy)){
+echo "<h1><center><b>You Can't Insert any value Into database Because Financial Year already Locked by administrator !!!!!!!!!";
+}
+else{
+	 $t_id=getTranId();
+	//echo "fy=$fy";
+	 $gl_code=getGlCode4mCustomerAccount($account_no);
+// Modification required to suite data type
+$sql_statement="INSERT INTO deposit_info (account_no, certificate_no, account_type, scheme, action_date,date_with_effect ,principal ,period, interest_rate, maturity_amount, maturity_date, sb_account_no,operator_code, entry_time,transaction_amount,transaction_month) VALUES ('$account_no','$account_no', '$menu', '$scheme','$opening_date','$date_with_effect', $amount_deposit,$period,$rate_of_interest,$amount_deposit,'$maturity_date','$holder_sb_account_no','$staff_id',CAST('$opening_date'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP),$rec_amt,$rec_month)";
+
+$sql_statement=$sql_statement.";INSERT INTO gl_ledger_hrd (tran_id,type,action_date, certificate_no,fy,operator_code,entry_time)VALUES ('$t_id','$menu','$f_start_dt', '$account_no','$fy','$staff_id',CAST('$f_start_dt'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP));";
+$sql_statement=$sql_statement."INSERT INTO gl_ledger_dtl (tran_id,account_no,gl_mas_code, amount,dr_cr, particulars) VALUES ('$t_id','$account_no','$gl_code',$amount_deposit,'Cr','cash')";
+$result=dBConnect($sql_statement);
+echo $sql_statement;
+if(pg_affected_rows($result)<1) {
+	echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+	} 
+else {
+       header("location:../main/set_account.php?menu=$menu&account_no=$account_no");
+}
+}
+
+
+}
+echo "<body bgcolor=\"\">";
+$id=getCustomerId($account_no,$menu);
+$flag=getGeneralInfo_Customer($id);
+if($flag==1){
+echo "<hr>";
+echo "<form method=\"POST\" action=\"mis_op.php?opr=i&menu=$menu\">";
+echo "<table bgcolor=#E9F2FA align=center width=98% >";
+echo "<tr style=height:25px><td colspan=\"4\" bgcolor=#5F7AC1 align=center><font size=+1 color='white'>Entry Form of New ".strtoupper($menu)."</font></td></tr>";
+echo "<tr><td align=\"left\"style='font-size:1em'>Your Account no is &nbsp;&nbsp;<input type=\"TEXT\" name=\"account_no\" size=\"5\" value=\"$account_no\" readonly $HIGHLIGHT1>  .You have deposited Rs. <input type=\"TEXT\" name=\"amount_deposit\"  
+id=\"amount_deposit\" onkeyup='cal_int();'  onchange='cal_int();'   size=\"15\" value=\"\" $HIGHLIGHT1> on &nbsp;&nbsp;<input type=\"TEXT\" name=\"date_with_effect\" size=\"9\" value=\"".date("d.m.Y")."\" $HIGHLIGHT1>&nbsp;<font size=2px  color=green> [d/m/yyyy] </font>&nbsp;for the Period of &nbsp;&nbsp;<input type=\"TEXT\" name=\"period\" id='period' size=\"2\" value=\"\" $HIGHLIGHT1>&nbsp;&nbsp;Years <br><br> upto <input type=\"TEXT\" name=\"maturity_date\" size=\"9\" value=\"\" $HIGHLIGHT1><font size=2px color=green> [d/m/yyyy] </font>  &nbsp;&nbsp;at the interest rate of <input type=\"TEXT\" name=\"rate_of_interest\"  id=\"rate_of_interest\" onchange='cal_int();'  onkeyup='cal_int();' size=\"2\" value=\"\" $HIGHLIGHT1> % ";
+echo "  .Your Monthly Interest Amount is  Rs.  <input type=\"TEXT\" name=\"mnth_int\" id=\"mnth_int\" size=\"5\" value=\"\" $HIGHLIGHT1>&nbsp;&nbsp;";
+echo ". <br><br>You have the scheme of <select name=\"scheme\"><option value=\"nm\">Normal Deposit</option><option value='sr'>Senior Citizen</option></select>";
+echo"<br><br> You have already received interest amount Rs <input type=\"TEXT\" name=\"rec_amt\" size=\"7\" value=\"\" $HIGHLIGHT1> for <input type=\"TEXT\" name=\"rec_month\" size=\"2\" value=\"\" $HIGHLIGHT1> months .";
+echo "<tr><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Process\">";
+echo "</table>";
+echo "</form>";
+
+}
+echo "</body>";
+echo "</html>";
+
+?>

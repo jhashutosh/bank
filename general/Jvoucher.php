@@ -1,0 +1,271 @@
+<?php 
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$op=$_REQUEST['op'];
+$option=$_REQUEST['option'];
+/*if($op=="r"){$name="Receipt"; $color="#00CED1";}
+if($op=="pa"){$name="Payment";$color="#00BFFF";}
+if($op=="s"){$name="Sales";$color="#DAA520";}
+if($op=="pu"){$name="Purchases";$color="#FF69B4";}
+if($op=="c"){$name="Contra";$color="#FFE4C4";}*/
+if($op=="jv"){$name="Journal";$color="#CCCCCCD";}
+if($option=='i'){
+//$bhead=getData($_REQUEST['bhead']);
+$dhead=getData($_REQUEST['dhead']);
+$chead=getData($_REQUEST['chead']);
+$damount=$_REQUEST['damount'];
+$camount=$_REQUEST['camount'];
+$remarks=$_REQUEST['remarks'];
+$vdate=$_REQUEST['vdate'];
+$voucher_no=$_REQUEST['v1'];
+$fy=getFy();
+$debit_amount=$_REQUEST['debit_amount'];
+$credit_amount=$_REQUEST['credit_amount'];
+$section_head=$_REQUEST['section_head'];
+for($j=1;$j<=6;$j++){
+$d_amount=$d_amount+$debit_amount[$j];
+$c_amount=$c_amount+$credit_amount[$j];
+}
+
+if(empty($fy)){
+echo "<h1><center><b>You Can't Insert any value Into database Because Financial Year already Locked by administrator !!!!!!!!!";
+}
+else{
+
+	$t_id=getTranId();
+
+
+	if($op=="r"){
+	$head_section=getIndex($sectional_expenses_array,$section_head);
+	//echo "$head_section";
+	$sql_statement="INSERT INTO gl_ledger_hrd (tran_id,type,action_date,fy, remarks,operator_code,entry_time,tran_sou) VALUES('$t_id','$op','$vdate','$fy','$remarks', '$staff_id',now(), 'GL-Rec')";
+	$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr,particulars) VALUES('$t_id','$chead',$damount,'Dr','To: '||getgldesc('$dhead'))";
+	$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars,cost_code) VALUES('$t_id','$dhead',$damount,'Cr','By cash','$head_section')";
+
+	$sql_statement=$sql_statement.";INSERT INTO voucher_details (tran_id,amount,dr_cr,particulars,voucher_no,date,op,gl_mas_code,cost_code) VALUES('$t_id','$damount','Cr','$remarks','$voucher_no','$vdate','$op','$dhead:'||getgldesc('$dhead'),'$head_section')";
+//echo "$sql_statement";
+	}
+
+$result=dBConnect($sql_statement);
+if(pg_affected_rows($result)<1) {
+	echo "<h4><font color=\"RED\">Failed to insert data into database.</font></h4>";
+
+	} 
+
+else {
+	echo "<center><font color=\"green\" size=\"5\">Please Write drown Traction Id is :<b>$t_id</font></center>";
+//--------------------------------sujoy-------------------------------------
+
+    }
+
+  }
+}
+echo "<html>";
+echo "<head>";
+echo "<title>Voucher";
+echo "</title>";
+echo "<link rel=\"stylesheet\" href=\"../css/autosuggest_inquisitor.css\" type=\"text/css\" media=\"screen\" charset=\"utf-8\" />";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "<script type=\"text/javascript\" src=\"../JS/bsn.AutoSuggest_c_2.0.js\"></script>";
+echo "<script src=\"../JS/calendar.js\"></script>";
+?>
+<script type="text/javascript">
+function check(){
+
+for (var i=1; i<=6; i++){
+var de_amount=parseFloat(document.getElementById('de_amount[i]').value);
+var cr_amount=parseFloat(document.getElementById('cr_amount[i]').value);
+
+
+
+}
+alert("Total Debit Amount is:"+de_amount+"  & Total Credit Amount is:"+cr_amount);
+return false;
+}
+function valid()
+{
+var amount=document.getElemenById('damount').value;
+if(amount.length==0){
+alert("Please write down the voucher No");
+return false;
+}
+
+
+}
+
+</script>
+
+<?php
+echo "</head>";
+echo "<body bgcolor=\"silver\"	onload=\"dhead.focus();\">";
+echo "<center><font size=4><i><b>$name Voucher</i></b></font>";
+echo "<center><i>varify before submission</i><hr>";
+echo "<form action=\"voucher.php?op=$op&option=i\" method=\"post\" name=\"f1\">";
+echo "<table align=center width=82% bgcolor=$color colspan=4><tr>";
+echo "<th bgcolor=#9932CC colspan=4>$name Voucher";
+if($op==r || $op==pa || $op==s || $op==pu)
+{
+$sql_statement="SELECT max(voucher_no) as voucher FROM voucher_details WHERE op='$op'";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+$voucher=pg_result($result,'voucher');
+$voucher=$voucher+1;
+}
+}
+if($op==c || $op==jv)
+{
+$sql_statement="SELECT max(voucher_no) as voucher FROM contra_voucher WHERE op='$op'";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+$voucher=pg_result($result,'voucher');
+$voucher=$voucher+1;
+}
+}
+
+echo "<tr><td>Voucher No:<td><input type=TEXT name=\"v1\" id=\"voucher\" value=\"$voucher\" $HIGHLIGHT>";
+echo "<td>Date:<td><input type=TEXT  name=\"vdate\" size=10 value=\"".date('d/m/Y')."\" $HIGHLIGHT>";
+echo "<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.vdate,'dd/mm/yyyy','Choose Date')\">";
+if($op==jv){
+$color="green";
+echo "<tr><th bgcolor=$color>SL No.<th bgcolor=$color>Head of Account<th bgcolor=$color>Debit Amount<br>(Rs.)<th bgcolor=$color>Credit Amount<br>(Rs.)";
+for($j=1;$j<=6;$j++){
+echo "<tr><th><input type=\"TEXT\" name=\"sl_no\" size=\"5\" $HIGHLIGHT>";
+echo "<th><input type=\"TEXT\" name=\"head_account\" size=\"50\" $HIGHLIGHT>";
+echo "<th><input type=\"TEXT\" id=\"de_amount[$j]\" name=\"debit_amount[$j]\" size=\"10\" $HIGHLIGHT>";
+echo "<th><input type=\"TEXT\" id=\"cr_amount[$j]\" name=\"credit_amount[$j]\" size=\"10\" $HIGHLIGHT>";
+}
+echo "<tr><th align=right><input type=\"submit\" value=\"submit\" onclick=\"return check(this.value);\">";
+if($d_amount!=$c_amount){
+echo "<th><font color=red size=4>Drebit and Credit amount is not equal</font>";
+}
+
+}
+if($op==r || $op==pa){
+echo "<tr><td>Bank/Cash Account:<td><input type=\"TEXT\" id=\"chead\"  name=\"chead\" size=\"50\" $HIGHLIGHT>";
+}
+if($op!=jv){
+echo "<tr><td>Account Head :<td><input type=\"TEXT\" id=\"dhead\"  name=\"dhead\" size=\"50\" $HIGHLIGHT>";
+echo "<td>Amount:<td>Rs.<input type=TEXT  name=\"damount\" id=\"damount\" size=\"10\" $HIGHLIGHT>";
+if($op=='c'){
+echo "&nbsp<b></b>";
+echo "<tr><td>Account Head :<td><input type=\"TEXT\" id=\"chead\"  name=\"chead\" size=\"50\" $HIGHLIGHT>";
+}
+if($op==r || $op==pa){
+echo "<tr><td>Sectional Head:<td>";
+echo "".makeSelect($sectional_expenses_array,"section_head","")."";
+}
+echo "<tr><td valign=\"top\" align=\"left\">Narration:<td colspan=3><textarea name=\"remarks\" rows=\"3\" cols=\"50\" $HIGHLIGHT></textarea>";
+echo "<input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Submit\" onclick=\" return valid(this.value);\">";
+}
+echo "</form>";
+echo "</table>";
+echo "<hr>";
+//------------------------sujoy-------------------------------------
+if($op==r || $op==pa || $op==s || $op==pu)
+{
+$sql_statement="SELECT tran_id,gl_mas_code,amount,dr_cr,particulars,voucher_no,date FROM voucher_details WHERE op='$op'";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+echo "<table align=center bgcolor=silver width=100%>";
+echo "<tr><th colspan=9 bgcolor=$color>$name Voucher Details</th>";
+echo "<tr bgcolor=#FF00FF><th>Voucher No.<th>Date<th>Particulars<th>Amount<th>Gl_mas_code<th>Dr_Cr<th>Transaction Id";
+		$color=$TCOLOR;
+		for($j=0;$j<pg_NumRows($result);$j++){
+		$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+ 		$row=pg_fetch_array($result,$j);
+		echo "<tr>";
+		echo "<td bgcolor=$color width=\"5%\">".$row["voucher_no"];
+		echo "<td bgcolor=$color width=\"10%\">".$row["date"];
+		echo "<td bgcolor=$color width=\"30%\">".$row["particulars"];
+		echo "<td bgcolor=$color width=\"10%\">".$row["amount"];
+		echo "<td bgcolor=$color width=\"20%\">".$row["gl_mas_code"];
+		echo "<td bgcolor=$color width=\"5%\">".$row["dr_cr"];
+		echo "<td bgcolor=$color width=\"10%\">".$row["tran_id"];
+		//echo "<td bgcolor=$color>".$row["account_no"];
+		
+		
+		
+		
+	}
+    }
+   } 
+
+
+if($op==c)
+{
+$sql_statement="SELECT * FROM contra_voucher WHERE op='$op'";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+echo "<table align=center bgcolor=silver width=100%>";
+echo "<tr><th colspan=10 bgcolor=$color>$name Voucher Details</th>";
+echo "<tr bgcolor=#FF00FF><th>Voucher No.<th>Date<th>Particulars<th>gl_code_dr<th>Amount<th>DR<th>gl_code_cr<th>Amount<th>CR<th>Tran Id";
+		$color=$TCOLOR;
+		for($j=0;$j<pg_NumRows($result);$j++){
+		$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+ 		$row=pg_fetch_array($result,$j);
+		echo "<tr>";
+		echo "<td bgcolor=$color width=\"5%\">".$row["voucher_no"];
+		echo "<td bgcolor=$color width=\"5%\">".$row["date"];
+		echo "<td bgcolor=$color width=\"25%\">".$row["particulars"];
+		echo "<td bgcolor=$color width=\"25%\">".$row["gl_mas_code_dr"];
+		echo "<td bgcolor=$color>".$row["damount"];
+		echo "<td bgcolor=$color>".$row["dr"];
+		echo "<td bgcolor=$color width=\"25%\">".$row["gl_mas_code_cr"];
+		echo "<td bgcolor=$color>".$row["camount"];
+		echo "<td bgcolor=$color>".$row["cr"];
+		echo "<td bgcolor=$color>".$row["tran_id"];
+		
+		
+	}
+    }
+}
+if($op==jv)
+{
+$sql_statement="SELECT * FROM contra_voucher WHERE op='$op'";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+echo "<table align=center bgcolor=silver width=100%>";
+echo "<tr><th colspan=10 bgcolor=$color>$name Voucher Details</th>";
+echo "<tr bgcolor=#FF00FF><th>Voucher No.<th>Date<th>Particulars<th>Head of Account<th> Debit Amount<th>Credit Amount<th>Tran Id";
+		$color=$TCOLOR;
+		for($j=0;$j<pg_NumRows($result);$j++){
+		$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+ 		$row=pg_fetch_array($result,$j);
+		echo "<tr>";
+		echo "<td bgcolor=$color width=\"5%\">".$row["voucher_no"];
+		echo "<td bgcolor=$color width=\"5%\">".$row["date"];
+		echo "<td bgcolor=$color width=\"15%\">".$row["particulars"];
+		echo "<td bgcolor=$color width=\"50%\">".$row["gl_mas_code_dr"]." To ".$row["gl_mas_code_cr"];
+		echo "<td bgcolor=$color>".$row["damount"];
+		echo "<td bgcolor=$color>";
+		echo "<td bgcolor=$color>".$row["tran_id"];
+		echo "<tr>";
+		echo "<td bgcolor=$color>";
+		echo "<td bgcolor=$color>";
+		echo "<td bgcolor=$color>";
+		echo "<td bgcolor=$color>";
+		echo "<td bgcolor=$color>";
+		echo "<td bgcolor=$color>".$row["camount"];
+		echo "<td bgcolor=$color>";
+	}
+}
+}
+
+ 
+?>
+<script type="text/javascript">
+	var options = {
+		script:"autoComplete.php?json=true&",
+		varname:"input",
+		json:true,
+	};
+	var as_json1 = new AutoSuggest('dhead', options);
+	var as_json2 = new AutoSuggest('chead', options);
+</script>
+
+<?php
+echo "</body>";
+echo "</html>";
+?>

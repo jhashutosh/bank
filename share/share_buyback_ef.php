@@ -1,0 +1,39 @@
+<?php
+include "config.php";
+// PHP4 
+$account_no=$_REQUEST["current_account_no"];
+$menu=$_REQUEST['menu'];
+echo "<html>";
+echo "<head>";
+echo "<title>Statement";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$title=$type_of_account1_array[trim($menu)];
+echo "<h2>[$title] Withdrawal Ledger";
+echo "</h2><hr>";
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+ //Customization required for WHERE CLAUSE
+$sql_statement="SELECT * FROM share_ledger WHERE member_id='$account_no' AND entry_time=(SELECT MAX(entry_time) from share_ledger where member_id='$account_no')";
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+$current_no_share=pg_result($result,"no_of_share_balance");
+$current_val_share=pg_result($result,"value_of_balance");
+echo "<form method=\"POST\" action=\"withdrawal_evf.php\"><br>";
+echo "<table>";
+echo "<tr><td align=\"left\">Membership no:<td><input type=\"TEXT\" name=\"membership_no\" size=\"50\" value=\"$account_no\" readonly><br>";
+echo "<tr><td align=\"left\">Action Date:<td><input type=\"TEXT\" name=\"action_date\" size=\"50\" value=\"".date('d/m/Y')."\"><br>";
+echo "<tr><td align=\"left\">Withdrawal Operation:<td><Select name=\"operation\"><option>Share</option><option>Dividend</option></Select><br>";
+echo "<tr><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Submit\">";
+echo "  <input type=\"RESET\" name=\"RESET_BUTTON\" value=\"Cancel\"><br>";
+echo "</table>";
+echo "</form>";
+footer();
+echo "</body>";
+echo "</html>";
+
+
+
+
+?>

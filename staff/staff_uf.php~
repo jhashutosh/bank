@@ -1,0 +1,48 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$id=$_REQUEST['id'];
+$sql_statement="SELECT * FROM staff WHERE id='$id'";
+$result=dBConnect($sql_statement);
+echo "<html>";
+echo "<head>";
+echo "<title>Update Form - Table: Staff";
+echo "</title>";
+echo "</head>";
+echo "<body>";
+echo "<h1>Update Form - Table: Staff";
+echo "</h1>";
+echo "<h3>Please update information prior to submission";
+echo "</h3>";
+echo "<hr>";
+
+if(pg_NumRows($result)==0) {
+  echo "<h4>Record Not found!!!</h4>";
+} else {
+  $id=pg_result($result,'id');
+  $name=pg_result($result,'name');
+  $password=pg_result($result,'password');
+  //$password_txn=pg_result($result,'password_txn');
+  $role=pg_result($result,'role');
+  $boss=pg_result($result,'boss');
+  //$last_login=pg_result($result,'last_login');
+echo "<form method=\"POST\" action=\"staff_ufa.php\"><br>";
+echo "<table>";
+echo "<tr><td align=\"left\">Id:<td><input type=\"TEXT\" name=\"id\" size=\"50\" value=\"$id\"><br>";
+echo "<tr><td align=\"left\">Name:<td><input type=\"TEXT\" name=\"name\" size=\"50\" value=\"$name\"><br>";
+echo "<tr><td align=\"left\">Password:<td><input type=\"PASSWORD\" name=\"password\" size=\"50\" value=\"\"> (Enter Password)<br>";
+//echo "<tr><td align=\"left\">Password txn:<td><input type=\"PASSWORD\" name=\"password_txn\" size=\"50\" value=\"\"> (Enter Password)<br>";
+echo "<tr><td align=\"left\">Role:<td><input type=\"TEXT\" name=\"role\" size=\"50\" value=\"$role\"><br>";
+echo "<tr><td align=\"left\">Boss:<td><input type=\"TEXT\" name=\"boss\" size=\"50\" value=\"$boss\"><br>";
+//echo "<tr><td align=\"left\">Last login:<td><input type=\"TEXT\" name=\"last_login\" size=\"50\" value=\"$last_login\"><br>";
+echo "<tr><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Update my values\">";
+echo "  <input type=\"RESET\" name=\"RESET_BUTTON\" value=\"Cancel\"><br>";
+echo "</table>";
+echo "</form>";
+}
+
+footer();
+echo "</body>";
+echo "</html>";
+
+?>

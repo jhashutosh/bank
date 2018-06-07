@@ -1,0 +1,24 @@
+<?
+include "../config/config.php";
+registerSession(); 
+$staff_id=verifyAutho();
+//$login_timestamp=$_REQUEST["login_time"];
+$login_timef=date('l dS \of F Y h:i:s A',$login_timestamp);
+$fy=$_SESSION["fy"];
+echo "<HTML>";
+echo "<TITLE>my zone";
+echo "</TITLE>";
+echo "<body bgcolor=\"silver\">";
+echo "<H1><i><font color=red>$PROJECT_TITLE</font></i></H1>";
+echo "<I>it is all about yourself</I>";
+echo "<HR>";
+echo "<br>welcome. <br><br><table width=\"60%\"><tr><td><p>";
+echo "your present login or id is <b>$staff_id</b>,your present ";
+echo "ip address is <b>".$REMOTE_ADDR."</b>. your ";
+echo "login time is <b>".$login_timef."</b> and perhaps you are using ";
+echo "<b>".$HTTP_USER_AGENT."</b> as browser. ";
+echo "you may be happy to know that the communication protocol or ";
+echo "server protocol is <b>".$SERVER_PROTOCOL.".</b> You successfully login in financial year is <b>$fy</b></P></table>";
+
+echo "</body></html>";
+?>

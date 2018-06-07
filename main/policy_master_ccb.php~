@@ -1,0 +1,112 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+//$operator_code=$staff_id;
+//$fy=$_SESSION['fy']
+echo "<html>";
+echo "<head>";
+echo "<script src=\"../JS/calendar.js\"></script>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"id.focus();\">";
+$id=countRows('crop_mas');
+if(empty($op)){
+
+echo "<form method=\"POST\" action=\"policy_master_ccb.php?op=e\" name=\"f1\">";
+
+//echo "$id";
+$name=selectcropname($id);
+//echo "$name";
+echo "<table bgcolor=\"white\" width=100% align=center>";
+echo "<tr>";
+echo "<th colspan=\"12\" bgcolor=\"green\"><font color=WHITE size=\"2\" align=\"center\">KCC Ploicy Entry of Farmer & CCB";
+echo "<tr><th>Crop Name:<input type=\"text\" name=\"crop_name\" id=\"txt1\" size=\"10\" value=\"$name\"$HIGHLIGHT></th>";
+echo "<th>Issue Date:<input type=\"text\" name=\"start_date\" id=\"txt2\" size=\"9\" $HIGHLIGHT><input type=\"button\" name=\"caldate\" value=\"..\" >";
+echo "<th>End Date:<td><input type=\"text\" name=\"end_date\" id=\"txt3\" size=\"9\" $HIGHLIGHT><input type=\"button\" name=\"caldate\" value=\"..\">";
+echo "<th>Repayment Date:<td><input type=\"text\"  name=\"due_date\" size=\"9\" id=\"txt4\" $HIGHLIGHT><input type=\"button\" name=\"caldate\" value=\"..\">";
+echo "</tr>";
+echo "<tr>";
+echo "<th>Scale of finance:<input type=\"text\" name=\"credit_limit\" id=\"txt5\" size=\"10\" $HIGHLIGHT>/satak</th>";
+echo "<th>Crop Insurance:<input type=\"text\" name=\"insurance\" id=\"txt6\" size=\"8\" $HIGHLIGHT>%</th>";
+echo "<th>Max Loan<input type=\"text\" name=\"mlsfoy\" id=\"txt7\" size=\"8\" $HIGHLIGHT>/yy</th>";
+
+echo "<tr>";
+echo "<th colspan=\"12\" bgcolor=\"#FFE4B5\"><font color=\"green\" align=\"center\">Take From Farmer</th>";
+echo "<tr>";
+echo "<th>Due Int:<input type=\"text\" name=\"fdueint\" id=\"txt8\" size=\"6\" $HIGHLIGHT>%</th>";
+echo "<th>Overdue Int:<input type=\"text\" name=\"fovdint\" id=\"txt9\" size=\"6\" $HIGHLIGHT>%</th>";
+
+echo "<tr>";
+echo "<th colspan=\"12\" bgcolor=\"#FFE4B5\"><font color=\"green\" align=\"center\">Give to CCB</th>";
+echo "<tr>";
+echo "<th>Due Int:<input type=\"text\" name=\"cdueint\" id=\"txt8\" size=\"6\" $HIGHLIGHT>%</th>";
+echo "<th>Overdue Int:<input type=\"text\" name=\"covdint\" id=\"txt9\" size=\"6\" $HIGHLIGHT>%</th>";
+echo "<th><input type=\"submit\" name=\"button\" value=\"submit\" onclick=\"return check(this.value);\"></th>";
+echo "</table>";
+echo "</form>";
+echo "<hr>";
+$sql_statement="SELECT * FROM loan_policy";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+echo "<table align=center bgcolor=#FFE4B5 width=100%>";
+echo "<tr><th colspan=12 bgcolor=GREEN>Kcc details of Farmer & CCB</th>";
+echo "<tr bgcolor=#FFE4B5><th rowspan=\"2\">crop name</th><th colspan=\"3\">Date</th><th rowspan=\"2\">Scale of Finance</th><th rowspan=\"2\">Insurance</th><th colspan=\"2\">Take from Farmer</th><th colspan=\"2\">Give to CCB</th><th rowspan=\"2\">Maximum Loan</th>";
+echo "<tr bgcolor=\"#FFE4B5\"><th rowspan=\"1\">Issue date</th><th rowspan=\"1\">End date</th><th rowspan=\"1\">Repayment date</th><th rowspan=\"1\">Due int %</th><th rowspan=\"1\">Overdue int %</th><th rowspan=\"1\">Due int %</th><th rowspan=\"1\">Overdue int %</th>";
+		$color=$TCOLOR;
+		for($j=0;$j<pg_NumRows($result);$j++){
+		$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+ 		$row=pg_fetch_array($result,$j);
+		echo "<tr>";
+		echo "<th bgcolor=$color>".$row["crop_name"];
+		echo "<th bgcolor=$color>".$row["start_date"];
+		echo "<th bgcolor=$color>".$row["end_date"];
+		echo "<th bgcolor=$color>".$row["due_date"];
+		//echo "<th bgcolor=$color>";
+		echo "<th bgcolor=$color>".$row["credit_limit"];
+		echo "<th bgcolor=$color>".$row["crop_insurance"];
+		
+		echo "<th bgcolor=$color>".$row["fdue_int"];
+
+		echo "<th bgcolor=$color>".$row["foverdue_int"];
+		echo "<th bgcolor=$color>".$row["codue_int"];
+		echo "<th bgcolor=$color>".$row["coverdue_int"];
+		echo "<th bgcolor=$color>".$row["max_loan"];
+		//echo "<th bgcolor=$color>".$row["r_date"];
+	}
+    }
+}
+if($op=='e'){
+$id=countRows('crop_mas');
+$idn=$id-1;
+//$name=selectcropname($id);
+$crop_name=$_REQUEST['crop_name'];
+$issue_date=$_REQUEST['start_date'];
+$fy=getFy($issue_date);
+$end_date=$_REQUEST['end_date'];
+$r_date=$_REQUEST['due_date'];
+$sof=$_REQUEST['credit_limit'];
+$crop_ins=$_REQUEST['insurance'];
+$max_loan=$_REQUEST['mlsfoy'];
+$fd_int=$_REQUEST['fdueint'];
+$fod_int=$_REQUEST['fovdint'];
+$cd_int=$_REQUEST['cdueint'];
+$cod_int=$_REQUEST['covdint'];
+$sql_statement="INSERT INTO loan_policy (start_date,end_date,credit_limit,fdue_int,foverdue_int,due_date,crop_insurance,max_loan,codue_int,coverdue_int,loan_type,crop_id,crop_name,fy,staff_id,entry_time) VALUES('$issue_date','$end_date','$sof','$fd_int','$fod_int','$r_date','$crop_ins','$max_loan','$cd_int','$cod_int','kcc','$idn','$crop_name','$fy','$staff_id',now())";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_affected_rows($result)<1)
+  {
+   echo "<h1 align=\"center\">!!!Please handle it carefuly!!!</h1>";
+   
+  }
+ else{
+	header('Location:policy_master_ccb.php?menu=kcc');
+     }
+
+}
+
+echo "</body>";
+echo "</html>";
+?>

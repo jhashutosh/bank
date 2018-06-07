@@ -1,0 +1,45 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$date1=date('l dS \of F Y');
+$menu=$_REQUEST["menu"];
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"st_dt.focus();\">";
+echo "<font color=\"blue\"><b>$SYSTEM_TITLE</font>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "<font color=\"green\">$date1</font></center><br>";
+echo "<hr>";
+
+$sql_statement="SELECT * from panchatay_mas";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>Not found!!!</h4>";
+} else {
+echo "<table valign=\"top\" width=\"50%\" align=\"center\">";
+$color=$TCOLOR;
+echo "<tr><td bgcolor=\"red\" colspan=\"2\" align=\"center\"><font color=\"white\"><b>PANCHAYAT DETAILS</b></font>";
+echo "<tr>";
+echo "<th bgcolor=$color>Panchatay id</th>";
+echo "<th bgcolor=$color>Panchatay description</th>";
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+echo "<td align=right bgcolor=$color>".$row['panchatay_id']."</td>";
+echo "<td align=right bgcolor=$color>".$row['panchatay_desc']."</td>";
+}
+echo "<tr>";
+$color="cyan";
+echo "<td align=center bgcolor=$color><B>Total:".($j-1)."</B></td>";
+echo "<td align=right bgcolor=$color><B></B></td>";
+
+echo "</table>";
+}
+
+echo "</body>";
+echo "</html>";
+?>

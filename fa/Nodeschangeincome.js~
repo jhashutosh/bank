@@ -1,0 +1,85 @@
+USETEXTLINKS = 1
+
+STARTALLOPEN = 0
+
+ICONPATH = "../image/";
+foldersTree = gFld("50000 Income ")
+  foldersTree.treeID = "Frameset"
+//-------------------------------------51000---------------------
+aux1 = insFld(foldersTree, gFld("51000 Interest on investments"))
+//-------------------------------51100--------------------------------------------
+	aux2 = insFld(aux1, gFld("51100 Dividend on shares in co-opreative socities"))
+//-----------------------------------51200-----------------------------------------
+	aux2 = insFld(aux1, gFld("51200 Interest on statutory reserves investment"))
+//---------------------------------------51300-------------------------------------------
+	aux2 = insFld(aux1, gFld("51300 Interest on other funds & reserves investment"))
+//--------------------------------------51400--------------------------------------------
+	aux2 = insFld(aux1, gFld("51400 Interest on investments in deposits of SCB/CCB"))
+//----------------------------------------51500----------------------------------------------
+	aux2 = insFld(aux1, gFld("51500 Interest on investments in deposits of other banks"))
+//-------------------------------------------51600------------------------------
+	aux2 = insFld(aux1, gFld("51600 Interest on investment in post office"))
+//-------------------------------------------51700-------------------------------------
+	aux2 = insFld(aux1, gFld("51700 Interest on investment in government and trustee securities"))
+//------------------------------------51900---------------------------------------
+	aux2 = insFld(aux1, gFld("51900 Interest on other investments"))
+//-----------------------------------52000---------------------------
+aux1 = insFld(foldersTree, gFld("52000 Interest on loans & advances"))
+//---------------------------------------52100---------------------------------
+	aux2 = insFld(aux1, gFld("52100 Interest on short term loans"))
+//-------------------------------------52200-------------------------------
+	aux2 = insFld(aux1, gFld("52200 Interest on mid term loans"))
+//------------------------------52300--------------------------------------
+	aux2 = insFld(aux1, gFld("52300 Interest on long term loans"))
+//---------------------------------52400--------------------------------------
+	aux2 = insFld(aux1, gFld("52400 Interest on staff loans"))
+	insDoc(aux2, gLnk("R", "52401 Interest on staff loans-Current"))
+	insDoc(aux2, gLnk("R", "52402 Interest on staff loans-Overdue"))
+//---------------------------------------52500-------------------------------------
+	aux2 = insFld(aux1, gFld("52500 Interest on other loans & advances"))
+	insDoc(aux2, gLnk("R", "52501 Interest on Gold Loan-Current"))
+	insDoc(aux2, gLnk("R", "52502 Interest on Gold Loan-Overdue"))
+	insDoc(aux2, gLnk("R", "52591 Interest on other loans & advances-Current"))
+	insDoc(aux2, gLnk("R", "52592 Interest on other loans & advances-Overdue")).
+//------------------------------------52600---------------------------------
+	//insDoc(aux1, gLnk("R","52600 Interest on Non-overdue NPA Loans"))
+//-------------------------------------53000--------------------
+ aux1 = insFld(foldersTree, gFld("53000 Marketing Commission"))
+	// insDoc(aux1, gLnk("R", "53100 Marketing Commission(Govt/Semi-Govt)"))
+	// insDoc(aux1, gLnk("R", "53200 Marketing Commission (Marketing Co-operative)"))
+	 insDoc(aux1, gLnk("R", "53900 Marketing Commission others"))
+//---------------------------------54000--------------------------
+aux1 = insFld(foldersTree, gFld("54000 Agricultural implements rent"))
+	insDoc(aux1, gLnk("R", "54100 Agricultural implements rent(member)"))
+	insDoc(aux1, gLnk("R", "54200 Africultural implements rent(non-member)"))
+	
+//-----------------------------------55000-------------------------------
+aux1 = insFld(foldersTree, gFld("55000 Agricultural Produces Pledge/Storage Rent"))
+	insDoc(aux1, gLnk("R", "55100 Agl. Produces Pledge/Storage rent(member)"))
+	insDoc(aux1, gLnk("R", "55200 Agl. Produces Pledge/Storage rent(non-member)"))
+//------------------------------------56000-------------------
+aux1 = insFld(foldersTree, gFld("56000 Cold Storage Rent"))
+	insDoc(aux1, gLnk("R", "56100 Cold Storage Rent(member)"))
+	insDoc(aux1, gLnk("R", "56200 Cold Storage Rent(non-member)"))
+//---------------------------------57000----------------
+aux1 = insFld(foldersTree, gFld("57000 Other Income"))
+	insDoc(aux1, gLnk("R","57100 Government Rebate"))
+	
+//----------------------------57200---------------------------------
+	aux2 = insFld(aux1, gFld("57200 Revenue Subsidies"))
+	insDoc(aux2, gLnk("R", "57201 Adhoc Grant"))
+	insDoc(aux2, gLnk("R", "57202 D.R.D.C Subsidy"))
+	insDoc(aux2, gLnk("R", "57203 Management/Training Subsidy"))
+	insDoc(aux2, gLnk("R", "57204 Incentive Grant"))
+	insDoc(aux2, gLnk("R", "57299 Other Subsidies"))
+	
+//---------------------------57900-----------------------------------
+ 	aux2 = insFld(aux1, gFld("57900 Other Revenue Income"))
+	insDoc(aux2, gLnk("R", "57901 Water Rate"))
+	insDoc(aux2, gLnk("R", "57902 Lease Rent"))
+	insDoc(aux2, gLnk("R", "57903 Other Service Charges"))
+	insDoc(aux2, gLnk("R", "57904 Donation"))
+	insDoc(aux2, gLnk("R", "57905 Admission Fee"))
+	insDoc(aux2, gLnk("R", "57906 Miscellaneous Claims"))
+	insDoc(aux2, gLnk("R", "57999 Other Income"))
+	

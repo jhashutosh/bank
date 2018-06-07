@@ -1,0 +1,57 @@
+<?
+include "config.php";
+$id=$_REQUEST['id'];
+$id=checkUserId($id);
+echo "<html>";
+echo "<head>";
+echo "<title>Entry Form - Table: Staff";
+echo "</title>";
+echo "<script src=\"calendar.js\">";
+echo "</script>";
+echo "</head>";
+echo "<body>";
+echo "<h5>Entry Form for New Staff";
+echo "</h5>";
+//echo "<h>Please fill-up this form";
+//echo "</h3>";
+echo "<hr>";
+if($id==null){
+echo "<form name=\"form1\" action=\"staff_ef.php\" method=\"post\">";
+echo "<table>";
+echo "<tr><td align=\"left\">Check Id:&nbsp;&nbsp;&nbsp; &nbsp; <td><input type=\"TEXT\" name=\"id\" size=\"25\" value=\"\">";
+echo "<td><input type=\"SUBMIT\" value=\"Check\">";
+echo "</table>";
+echo "</form>";
+}
+else{
+echo "<form name=\"form2\" method=\"POST\" action=\"staff_eadd.php\"><br>";
+echo "<table bgcolor=pink align=center width=100%>";
+echo "<tr><td align=\"left\">LoginId:<td><input type=\"TEXT\" name=\"id\" size=\"15\" value=\"$id\" readonly>";
+echo "<tr><td align=\"left\">Password:<td><input type=\"PASSWORD\" name=\"password\" size=\"15\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Repassword:<td><input type=\"PASSWORD\" name=\"repassword\" size=\"15\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Name:<td><input type=\"TEXT\" name=\"name\" size=\"20\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Address:<td><input type=\"TEXT\" name=\"add\" size=\"35\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Sex:<td>";
+ makeSelect($sex_array,"sex","");
+echo "<tr><td align=\"left\">Contact No.:<td><input type=\"TEXT\" name=\"ph\" size=\"11\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Qualification:<td>";
+makeSelect($customer_qualification_array,"qualify","Higher Secondary");
+echo "<tr><td align=\"left\">Designation:<td>";
+makeSelect($designation_orga_array,"designation","Staff");
+echo "<tr><td align=\"left\">Date Of Joining:<td><input type=\"TEXT\" name=\"doj\" size=\"11\" value=\"\">";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"Choose Date\" onclick=\"showCalendar(form2.doj,'dd/mm/yyyy','Choose Date')\"><br></tr>";
+echo "<tr><td align=\"left\">Role:<td>";
+makeSelect($role_of_array,"role","");
+echo "<tr><td align=\"left\">Reporting Boss:<td>";
+getReportingBoss();
+echo "<tr><td align=\"left\">Monthly Salary:<td><input type=\"TEXT\" name=\"sal\" size=\"5\" value=\"0\"><br>";
+echo "<tr><td><td align=\"\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Submit\">";
+echo "  <input type=\"RESET\" name=\"RESET_BUTTON\" value=\"Cancel\"><br>";
+echo "</table>";
+echo "</form>";
+}
+footer();
+echo "</body>";
+echo "</html>";
+
+?>

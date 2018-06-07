@@ -1,0 +1,11 @@
+<html>
+<head>
+<title>Receipt Voucher Details</title>
+<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />
+</head>
+<body bgcolor=silver>
+<h3 align=center><font color=green size=5>Receipt Voucher Entry Details</font></h3>
+<p align=left><font color=blue size=4>Description :</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size=3>Receipt voucher are used for recording amounts received by way of share capital from members, admission fees, membership fees etc., from new members, sale of inputs like seed,  fertilisers, pesticides,sale of PDS items and service charges from customers for the services rendered to them.
+<p align=left><font color=blue size=4>Rules :</font><br><font size=3>a) Have to enter Voucher at voucher no input form.<br>b) Date has to be given correctly.<br>c) Have to be put to account head one for cash or bank account which goes to always debit side and other for credit side.<br>d) Have to put amount correctly and narration.<br>e) all above points are necessary and must be put into the input box.
+</body>
+</html>

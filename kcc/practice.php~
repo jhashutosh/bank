@@ -1,0 +1,38 @@
+<? 
+include "../../config/config.php";
+$status=$_REQUEST['status'];
+echo "<html>";
+echo "<head>";
+echo "<title>List of accounts";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<table width=\"120%\" align=\"center\">";
+echo "<center><h1>Due List Of KCC Loan</h1></center>";
+$color="#F0E68C";
+echo "<tr>";
+echo "<th bgcolor=$color width=\"25%\">KCC A/C NO.</th>";
+echo "</tr>";
+echo "</table>";
+if($status==1){
+$sql_statement="SELECT account_no FROM loan_ledger_hrd";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>RECORD Not found!!!</h4>";
+} else {
+echo "<table width=\"100%\">";
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$row=pg_fetch_array($result,($j-1));
+
+echo "<tr><th>sujoy das</th></tr>";
+
+
+}
+echo "</table>";
+}
+}
+
+echo "</body>";
+echo "</html>";
+?>

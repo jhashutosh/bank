@@ -1,0 +1,15 @@
+select a.gl_mas_code, b.gl_mas_desc,count(*) as cnt, sum(debit) as debit, sum(credit) as credit from mas_gl_tran as a,  gl_master as b where a.gl_mas_code= b.gl_mas_code and action_date ='$start_date' and a.gl_mas_code not  like '$gl_code%' and tran_id in (select tran_id from mas_gl_tran where gl_mas_code like '28101' and debit+credit>0 and action_date='$start_date') group by a.gl_mas_code, b.gl_mas_desc
+
+
+
+RECEIPT CASH DEBIT SO OTHER SHOULD BE CREDIT;
+select gl_mas_code, sum(cnt) as cnt, sum(received) as received, sum(transfer) as transfer from
+(
+select 'R' as typ, a.gl_mas_code, count(*) as cnt, sum(credit-debit) as received, 0.00 as transfer, 0.00 as Payment from mas_gl_tran as a where a.gl_mas_code not  like '28101' and tran_id in (select tran_id from mas_gl_tran where gl_mas_code like '28101' and debit-credit>0) group by a.gl_mas_code
+union all
+select 'P' as typ,a.gl_mas_code, count(*) as cnt, 0.00 as received, 0.00 as transfer, sum(debit-credit) as Payment from mas_gl_tran as a where  a.gl_mas_code not  like '28101' and tran_id in (select tran_id from mas_gl_tran where gl_mas_code like '28101' and debit-credit<0) group by a.gl_mas_code
+union all
+select 'P' as typ, a.gl_mas_code, count(*) as cnt, 0.00 as received, sum(credit-debit) as transfer, 0.00 as Payment from mas_gl_tran as a where  a.gl_mas_code not  like '28101' and tran_id not in (select tran_id from mas_gl_tran where gl_mas_code like '28101' and debit-credit<0) group by a.gl_mas_code
+union all
+select 'R' as typ, a.gl_mas_code, count(*) as cnt, 0.00 as received, sum(debit-credit) as transfer, 0.00 as Payment from mas_gl_tran as a where  a.gl_mas_code not  like '28101' and tran_id not in (select tran_id from mas_gl_tran where gl_mas_code like '28101' and debit-credit>0) group by a.gl_mas_code
+) as foo where typ='R' group by gl_mas_code;

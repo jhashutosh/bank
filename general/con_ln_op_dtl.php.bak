@@ -1,0 +1,53 @@
+<?
+include "../config/config.php";
+$months=$_REQUEST['months'];
+$menu=$_REQUEST['menu'];
+if($menu=='all'){
+$sql_statement="select con_loan_due_all('$months', 'x')";}
+else 
+{$sql_statement="select con_loan_due_typ('$menu','$months','x')";}
+$sql_statement.=";fetch all from x";
+$result=dBConnect($sql_statement);
+//echo $sql_statement;
+$color==$TCOLOR;
+echo "<HTML>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo"<body bgcolor='silver'>";
+echo"<h3><center>Yearly Report For Opening Balance for  <font color='darkblue'><b>".$loan_type_array[$menu]."</font> before $months<b></font></h3><br>";
+echo"<table width='100%' bgcolor='black'>";
+echo"<tr><td size=1 bgcolor=green>Serial No.</td><td bgcolor=green size=1>Customer ID.</td><td bgcolor=green size=1>Membership No.</td><td size=1 bgcolor=green>Loan A/C No</td><td bgcolor=green size=1>Name</td><td bgcolor=green size=1>Loan Issued</td><td bgcolor=green size=1>Loan Repaid</td><td bgcolor=green size=1>Loan Due</td></tr>";
+for($j=0; $j<pg_NumRows($result); $j++) {
+echo "<tr>";
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,$j);
+if($j==pg_NumRows($result)-1){
+$color="#FFDEAD";
+echo"<td size=1 bgcolor='$color'>Total</td>
+<td size=1 bgcolor='$color'>".$row['cst_id']."</td>
+<td bgcolor='$color' size=1>".$row['mem_id']."</td>
+<td size=1 bgcolor='$color'>".$row['iss_ac']."</td>
+<td bgcolor='$color' size=1>".$row['nm']."</td>
+<td bgcolor='$color' size=1>".$row['tot_iss']."</td>
+<td bgcolor='$color' size=1>".$row['tot_rpy']."</td>
+<td bgcolor='$color' size=1>".$row['ln_bal']."</td>
+</td>
+</tr>";
+}
+else{
+echo"<td size=1 bgcolor='$color'>".$row['srl']."</td>
+<td size=1 bgcolor='$color'>".$row['cst_id']."</td>
+<td bgcolor='$color' size=1>".$row['mem_id']."</td>
+<td size=1 bgcolor='$color'>".$row['iss_ac']."</td>
+<td bgcolor='$color' size=1>".$row['nm']."</td>
+<td bgcolor='$color' size=1>".$row['tot_iss']."</td>
+<td bgcolor='$color' size=1>".$row['tot_rpy']."</td>
+<td bgcolor='$color' size=1>".$row['ln_bal']."</td>
+</tr>";
+}}
+$sql_statement.=";close e";
+//$result=dBConnect($sql_statement);
+echo"</table></body></html>";
+
+?>

@@ -1,0 +1,210 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$group_no=$_SESSION["current_account_no"];
+$menu=$_REQUEST['menu'];
+$op=$_REQUEST['op'];
+$account_no=$_REQUEST["loan_no"];
+$ln_sl=$_REQUEST['ln_sl'];
+$id=getCustomerIdFromGroupId($group_no);
+echo "<html>";
+echo "<head>";
+echo "<title>SHG Loan Details </title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\" onload=\"amount.focus();\">";
+$flag=getGeneralInfo_Customer($id);
+if($flag==1){
+echo "<hr>";
+if($op=='r'){
+$sql_statement="SELECT * FROM loan_cal_int where account_no='$account_no' AND loan_serial_no='$ln_sl'";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+$principal=(float)pg_result($result,'principal');
+$days=pg_result($result,'days');
+$due_i=pg_result($result,'due_int');
+$odue_i=pg_result($result,'overdue_int');
+echo "<table bgcolor=\"#F5F5DC\" width=\"80%\" align=\"CENTER\">";
+echo "<tr><th bgcolor=\"#808000\" colspan=\"4\"><font size=-1>SHG Loan Repayment Form of [$account_no]</font>";
+echo "<FORM NAME=\"orderform\" method=\"POST\" action=\"loan_repayment.php?menu=$menu&op=i&ln_sl=$ln_sl&loan_no=$account_no\" onSubmit=\"return varify();\">";
+echo "<tr><td> Account No:<td><INPUT TYPE=\"TEXT\" VALUE=\"$account_no\" $HIGHLIGHT size=\"15\" readonly>";
+echo "<td>Date:<td><INPUT NAME=\"action_date\" TYPE=\"TEXT\" VALUE=\"".date('d/m/Y')."\" $HIGHLIGHT size=\"12\" readonly>";
+echo "<tr><td colspan=\"2\"><b>RECOVERY:</b><td colspan=\"2\"><b>DUE:</b>";
+recoverDetails($ln_sl,$p,$d,$o);
+if(empty($p))$p=0;
+if(empty($d))$d=0;
+if(empty($o))$o=0;
+echo "<tr><td>Principal :<td>Rs.&nbsp;<INPUT NAME=\"r_principal\" TYPE=\"TEXT\" VALUE=\"$p\" $HIGHLIGHT size=10 READONLY>";
+echo "<td>Principal :<td>Rs.&nbsp;<INPUT NAME=\"d_principal\" TYPE=\"TEXT\" VALUE=\"$principal\" $HIGHLIGHT size=10 id=\"p\" READONLY>";
+echo "<tr><td >Due Interest :<td>Rs.&nbsp;<INPUT NAME=\"r_d_int\" TYPE=\"TEXT\" VALUE=\"$d\" $HIGHLIGHT size=10 READONLY>";
+echo "<td>Due Interest :<td>Rs.&nbsp;<INPUT NAME=\"d_int\" TYPE=\"TEXT\" VALUE=\"$due_i\" $HIGHLIGHT size=10 id=\"d\" READONLY>";
+echo "<tr><td>Over Due Interest:<td>Rs.&nbsp;<INPUT NAME=\"r_od_int\" TYPE=\"TEXT\" VALUE=\"$o\" $HIGHLIGHT size=\"10\" readonly>";
+echo "<td>Over Due Interest:<td>Rs.&nbsp;<INPUT NAME=\"od_int\" TYPE=\"TEXT\" VALUE=\"$odue_i\" $HIGHLIGHT size=\"10\" id=\"o\" readonly>";
+echo "<tr><td>Total:<td>Rs.&nbsp;<INPUT NAME=\"total_r\" TYPE=\"TEXT\" VALUE=\"".($o+$p+$d)."\" $HIGHLIGHT size=\"10\" readonly>";
+echo "<td>Total:<td>Rs.&nbsp;<INPUT NAME=\"total_d\" TYPE=\"TEXT\" VALUE=\"".($principal+$odue_i+$due_i)."\" $HIGHLIGHT size=\"10\" id=\"o\" readonly>";
+echo "<tr><td>Days:<td>Rs.&nbsp;<INPUT NAME=\"days\" TYPE=\"TEXT\" VALUE=\"$days\" $HIGHLIGHT size=5 READONLY>";
+echo "<td>Amount:<td>Rs.&nbsp;<INPUT NAME=\"amount\" TYPE=\"TEXT\" VALUE=\"\" id=\"amount\" $HIGHLIGHT size=\"10\">";
+
+echo "</table><hr>";
+echo "<table align=center width=100%>";
+echo "<tr><TH colspan=12 bgcolor=BLUE><font color=WHITE size=-1><b>SHG Loan Repaymnt Details Form";
+$sql_statement="SELECT * FROM shg_mem_loan_dtl_v  WHERE ln_sl='$ln_sl'";
+$result=dBConnect($sql_statement);
+//echo $sql_statement; 
+echo "<tr>";
+$color="GREEN";
+echo "<th bgcolor=$color Rowspan=\"2\">Serial No</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Name</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Days</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Principal<br>(Rs.)</th>";
+echo "<th bgcolor=$color colspan=\"3\">Recovery</th>";
+echo "<th bgcolor=$color colspan=\"3\">Balance</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Total<br>(Rs.)</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Payment</th>";
+echo "<tr><th bgcolor=$color>Due</th>";
+echo "<th bgcolor=$color >Overdue</th>";
+echo "<th bgcolor=$color >Principal</th>";
+echo "<th bgcolor=$color >Due</th>";
+echo "<th bgcolor=$color >Overdue</th>";
+echo "<th bgcolor=$color >principal</th>";
+if(pg_NumRows($result)>0){
+for($j=0; $j<pg_NumRows($result); $j++){
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,$j);
+echo "<tr>";
+$sl_no=$row['customer_id'];
+echo "<td align=right bgcolor=$color><input type=\"checkbox\" name=\"music\" value=\"$sl_no\" onclick=\"ShowInfo(this.value);\">$sl_no";
+echo "<td bgcolor=$color>".ucwords($row['name1']);
+echo " ( ".ucwords($row['designation1']).")";
+echo "<td bgcolor=$color>".($row['days']);
+echo "<td bgcolor=$color align=right>".(float)$row['p'];
+echo "<td bgcolor=$color align=right>".(float)($row['r_d_i']);
+echo "<td bgcolor=$color align=right>".(float)($row['r_od_i']);
+echo "<td bgcolor=$color align=right>".(float)($row['r_p']);
+echo "<td bgcolor=$color align=right>".(float)($row['b_d_i']);
+echo "<td bgcolor=$color align=right>".(float)($row['b_od_i']);
+echo "<td bgcolor=$color align=right>".(float)($row['b_p']);
+echo "<td bgcolor=$color align=right>".(float)($row['b_od_i']+$row['b_p']+$row['b_d_i']);
+echo "<td>Amount :<input type=text name=\"name\" size=\"5\" disabled $HIGHLIGHT>";
+}
+echo "<input type=\"HIDDEN\" value=\"\" name=\"member_info\" id=\"member_info\">";
+echo "<input type=\"HIDDEN\" value=\"\" name=\"member_amount\" id=\"member_amount\">";
+echo "&nbsp;<input type=\"SUBMIT\" VALUE=\" GO \" >";
+echo "</table>";
+echo "</FORM>";
+	}
+   }
+ }
+}
+?>
+<script language="JAVASCRIPT">
+function ShowInfo(){
+	if(document.orderform.music.length>1){
+		for (var i=0; i < document.orderform.music.length; i++){
+	   		if (document.orderform.music[i].checked){
+			document.orderform.name[i].disabled=false;
+			document.orderform.name[i].focus();
+			}
+			else{
+			document.orderform.name[i].value='';
+			document.orderform.name[i].disabled=true;
+			}
+		}
+	}
+     	else{document.orderform.name[i].value
+		if (document.orderform.music.checked){
+			document.orderform.name.disabled=false;
+			document.orderform.name.focus();
+			}
+		else{
+			document.orderform.name.value='';
+			document.orderform.name.disabled=true;
+			}
+			
+	   }
+}
+function IsPNumeric(strString){
+   var strValidChars = "0123456789.";
+   var strChar;
+   var blnResult = true;
+   if (strString.length == 0) return false;
+   //  test strString consists of valid characters listed above
+   for (i = 0; i < strString.length && blnResult == true; i++){
+      strChar = strString.charAt(i);
+      if (strValidChars.indexOf(strChar) == -1){
+         blnResult = false;
+         }
+      }
+   return blnResult;
+   }
+function varify(){
+		var loan_amount=parseFloat(document.orderform.amount.value);
+		var total=parseFloat(document.orderform.total_d.value);
+		var flag;
+		var c_value = "";
+		var c_amount="";
+		var amount=0;
+		if(document.orderform.music.length>1){
+		for (var i=0; i < document.orderform.music.length; i++){
+	   		if (document.orderform.music[i].checked){
+				 if(IsPNumeric(document.orderform.name[i].value)){
+				 if(c_value!=""){
+				 c_value=c_value+',';
+				 c_amount=c_amount+',';
+					    }
+				 c_value = c_value + document.orderform.music[i].value;
+				 c_amount=c_amount+ document.orderform.name[i].value;
+				 amount=amount+parseFloat(document.orderform.name[i].value);
+		     		 flag=1;
+      					}
+				else{
+					alert("Please Enter the amount or put off the check mark");
+					document.orderform.name[i].value='';
+					document.orderform.name[i].focus();
+					return false;
+				     }
+				}
+
+			}
+		}
+		else{
+			if (document.orderform.music.checked){
+				if(IsPNumeric(document.orderform.name.value)){
+				c_value = c_value + document.orderform.music.value;
+				c_amount=c_amount+ document.orderform.name.value;
+				amount=amount+parseFloat(document.orderform.name.value);
+				flag=1;
+				}
+				else{
+				alert("Please Enter the amount or put off the check mark");
+					document.orderform.name.value='';
+					document.orderform.name.focus();
+					return false;
+				}
+			}		
+   		}
+		if(flag!=1){
+		alert("You must Select atleast one Member to Issue the entire loan Amount!!!!!!!! ");
+		return false;
+	 	}
+		if(amount>total){
+		alert("You can't take more than your dues !!!!!!\nTotal Due is :Rs. "+total+"\n But you are putting :Rs. "+loan_amount);
+		document.orderform.amount.focus();
+		return false;
+		}
+		
+		if(amount!=loan_amount){
+		alert("Repayment amount is not match to Collected amount !!!!!!\nGroup payment is :Rs. "+loan_amount+"\n But you Allocate :Rs. "+amount);
+		document.orderform.amount.value=' ';
+		document.orderform.amount.focus();
+		return false;
+		}
+		document.getElementById("member_info").value=c_value;
+		document.getElementById("member_amount").value=c_amount;
+	
+	}
+</script>
+<?
+echo "</body>";
+echo "</html>";

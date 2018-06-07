@@ -1,0 +1,107 @@
+.hs-menu{
+	position: fixed;
+	z-index: 100;
+	color: #f8f8f8;
+	background: #131313;
+	width: 200px;
+	left: 0px;
+	top: 0px;
+	height: 100%;
+}
+.hs-menu nav{
+	position: absolute;
+	top: 100px;
+	left: 0px;
+	right: 0px;
+	bottom: 50px;
+	overflow-y :auto; 
+}
+.hs-menu nav a{
+	display: block;
+	color: #003399;
+	text-decoration:none;
+	padding: 10px 20px;
+	text-align: center;
+	outline: none;
+	border-bottom: 1px dashed rgba(126, 126, 126, 0.2);
+}
+.hs-menu nav a:active{
+	box-shadow: 7px 0px 17px #000 inset;
+	-moz-box-shadow: 7px 0px 17px #000 inset;
+}
+.hs-menu nav a:first-child{
+	border-top: 1px dashed rgba(126, 126, 126, 0.2);
+}
+.hs-menu nav a span:nth-child(2){
+	display: block;
+	color: #fff;
+	font-style: italic;
+	font-weight: 400;
+	text-transform: none;
+	padding-top: 3px;
+}
+.hs-menu nav:hover .jspVerticalBar{
+	opacity: 1;
+}
+.hs-headline{
+	text-align: center;
+}
+.hs-headline h1{
+	font-family:Brush Script MT;
+	
+}
+.hs-author{
+	text-transform: uppercase;
+	display: block;
+	letter-spacing: 2px;
+	font-weight: 700;
+	padding: 20px 10px;
+}
+.hs-content-scroller{
+	
+	margin-left:200px;
+}
+.hs-content-wrapper{
+	
+}
+.hs-content{
+	//height:500px;
+	background: #e9f0f5 url(../images/pattern.png) repeat top left;
+	//border-bottom:1px solid rgba(126, 126, 126, 0.2);
+	//border-top:1px solid rgba(126, 126, 126, 0.2);
+	padding-left:40px;
+	padding-right:40px;
+}
+.hs-inner{
+	//height:446px;
+	background-color:#ffffff;
+	padding:15px;
+	text-align: justify;
+	//border-bottom:1px solid rgba(126, 126, 126, 0.2);
+}
+.hs-content h2{
+	text-align:center;
+	border-bottom:4px dashed rgba(126, 126, 126, 0.2);
+	border-top:4px dashed rgba(126, 126, 126, 0.2);
+	height:50px;
+	color:#6f6f6f;
+	margin:0px;
+}
+#introTable th{
+	background: #e9f0f5 url(../images/pattern.png) repeat top left;
+	border-bottom:1px solid rgba(126, 126, 126, 0.2);
+	border-top:1px solid rgba(126, 126, 126, 0.2);
+}
+#introTable td ul,
+.hs-inner ul
+{
+	font-weight:bolder;
+}
+#introTable td li,
+.hs-inner li
+{
+	font-weight:normal;
+}
+.hs-inner li img{
+	width:100%;
+}

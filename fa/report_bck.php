@@ -1,0 +1,19 @@
+<?php
+include "../config/config.php";
+$staff_id=verifyAutho();
+$v_id=$_REQUEST['q'];
+$date=$_REQUEST['date'];
+$sql="select all_receivables_payables('$date')";
+$res=dBConnect($sql);
+if(pg_NumRows($res)>0)
+{
+	echo"1";
+}
+else
+{
+	echo"Sorry There is some Problem";
+}
+
+
+?>
+

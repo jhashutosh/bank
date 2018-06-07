@@ -1,0 +1,19 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "<h1><center><font color=GREEN>Loan Report</font></h1><hr>";
+echo "<ol>";
+//echo "<li><a href=\"list_of_loan.php?menu=$menu\">List of Loan According to Account No.</a>";
+//echo "<li><a href=\"consolidated_loan_list.php?menu=$menu\">Consolidated Loan List</a>";
+echo "<li><a href=\"list_of_loan.php?menu=$menu\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=750,height=800'); return false;\">List of Loan According to Account No.</a>";
+echo "<li><a href=\"consolidated_loan_list.php?menu=$menu\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=668,height=500'); return false;\">Consolidated Loan List</a>";
+
+echo "<li><a href=\"list_of_loan.php?menu=$menu&op=d\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=750,height=800'); return false;\">List of Due Loan List</a>";
+
+echo "<li><a href=\"list_of_loan.php?menu=$menu&op=o\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=750,height=800'); return false;\">List of Over Due Loan List</a>";
+
+echo "<li><a href=\"loan_recovery_rpt.php?menu=$menu\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=50, width=900,height=800'); return false;\">Recovery Summary</a>";
+echo "<li><a href=\"loan_list.php?menu=$menu\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=50, width=720,height=1000'); return false;\">Debtors List</A>";
+?>

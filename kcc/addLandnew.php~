@@ -1,0 +1,116 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+//$menu=$_REQUEST['menu'];
+//$account_no=$_SESSION["current_account_no"];
+//$crop_id=$_REQUEST['crop_id'];
+//$chkinfo=$_REQUEST["land_info"];
+//$id=getCustomerId($account_no,$menu);
+echo "<html>";
+echo "<head>";
+//echo "<title>Credit Limit of [$id] for ".getName('crop_id',$crop_id,'crop_desc','crop_mas')."</title>";
+echo "<title>credit limit</title>"
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+//echo "<script src=\"../JS/max_limit.js\"></script>";
+/*?>
+<script language="JAVASCRIPT">
+function closeme() { 
+	close(); 
+}
+function myRefresh(URL){
+	var crop_id=document.getElementById("crop").value;
+	URL=URL+"&crop_id="+crop_id;
+	//alert(URL)
+	window.opener.location.href =URL;
+    	self.close();
+    	}
+
+</script>
+*/
+//<?
+echo "</head>";
+
+//echo "<body onload=\"ShowInfo();\">";
+//echo "<body onload=\"get_check_value() ;\">";
+echo "<body>";
+//if(empty($_REQUEST['op'])){
+echo "sujoy das";
+
+$sql_statement="SELECT * FROM land_info WHERE customer_id='C-28'";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0) {
+echo "<h4>Information Not Found !!!!!!!!!!</h4>";
+}else 
+{
+//echo "<input type=\"HIDDEN\" value=\"$crop_id\" name=\"crop_id\" id=\"crop_id\">";
+//$color=$TCOLOR;
+echo "<table valign=\"top\" width=\"100%\" align=\"CENTER\">";
+echo "<tr bgcolor=Green>";
+echo "<th rowspan=\"2\">Land Id</th>";
+echo "<th rowspan=\"2\">Date</th>";
+echo "<th  rowspan=\"2\">Dag No.</th>";
+echo "<th rowspan=\"2\">Mouja No.</th>";
+echo "<th rowspan=\"2\">JL No.</th>";
+echo "<th rowspan=\"2\">GP</th>";
+echo "<th rowspan=$chkinfo\"2\">Mark</th>";
+echo "<th  rowspan=\"2\">Mini No.</th>";
+echo "<th colspan=\"3\">Karbanama</th>";
+echo "<tr bgcolor=Green><th>Bond No.</th>";
+echo "<th>Area</th>";
+echo "<th>Value</th>";
+//echo "<form name=\"orderform\" action=\"addLand.php?menu=$menu&op=i\" method=\"POST\"  onSubmit=\"return varify();\">";
+for($j=0; $j<pg_NumRows($result); $j++){
+//$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,$j);
+echo "<tr>";
+echo "<td align=right bgcolor=$color><input type=\"checkbox\" name=\"music\" value=\"".$row['land_id']."\" onclick=\"ShowInfo();\">".$row['land_id']."</td>";
+echo "<td  bgcolor=$color>".$row['action_date']."</td>";
+echo "<td  bgcolor=$color>".$row['dag_no']."</td>";
+echo "<td  bgcolor=$color>".$row['mouja_no']."</td>";
+echo "<td bgcolor=$color>".$row['jl_no']."</td>";
+echo "</table>";
+}
+
+  
+
+}
+echo "</body>";
+echo "</html>";
+?>
+
+/*echo "<td  bgcolor=$color>".getName('panchayat_id',trim($row['gp']),'panchayat_desc
+','panchayat_mas'). "</td>";
+
+echo "<td align=right bgcolor=$color>".getName('mark_id',trim($row['land_identity']),'mark_desc','land_identification_mas')."</td>";
+echo "<td align=right bgcolor=$color>".getName('mini_id',trim($row['mini_no']),'mini_desc','mini_mas')."</td>";
+$t_area+=$row['land_area'];
+echo "<td bgcolor=$color>".$row['karbanama_bond_no']."</td>";
+echo "<td align=right bgcolor=$color>".getAcer($row['land_area'])."</td>";
+$t_value+=$row['land_value'];
+echo "<td align=right bgcolor=$color> Rs. ".(float)$row['land_value']."/=</td>";
+*/
+//}
+/*
+echo "<tr bgcolor=AQUA>";
+echo "<th colspan=9>Total : $j Land Infomation Found!!!!!!";
+echo "<td  align=right><b>".getAcer($t_area);
+echo "<td align=right><b> Rs. $t_value /=";
+echo "<tr bgcolor=YELLOW><th colspan=\"10\">Your Credit Limit will Be: Rs.<div id=\"show_info\" name=\"show_info\"></div>";
+echo "<input type=\"HIDDEN\" value=\"$crop_id\" name=\"crop_id\" id=\"crop_id\">";
+echo "<input type=\"HIDDEN\" value=\"\" name=\"land_info\" id=\"land_info\">";
+//echo "<td><input type=\"SUBMIT\" Value=\"Save\">&nbsp;";
+echo "<input type=\"BUTTON\" name=\"CLOSE_BUTTON\" value=\"Close\" onclick=\"closeme()\">";
+echo "</form>";
+echo "</table>";
+*/
+	//}
+//}
+
+  
+
+//}
+//echo "</body>";
+//echo "</html>";
+//?>
+

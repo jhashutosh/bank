@@ -1,0 +1,30 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+// PHP4 
+echo "<html>";
+echo "<head>";
+echo "<title>Update Form - Table: Fd_interest_rate";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=pink onload=\"id.focus();\">";
+echo "<h1>Update Form -".strtoupper($menu)." interest rate";
+echo "</h1>";
+echo "<h3>Please fill-up this form";
+echo "</h3>";
+echo "<hr>";
+if($menu=='fd'){$id="fd_rate-";}
+if($menu=='ri'){$id="ri_rate-";}
+if($menu=='rd'){$id="rd_rate-";}
+echo "<form method=\"POST\" action=\"interest_rate_ef.php?menu=$menu&status=u\"><br>";
+echo "<table>";
+echo "<tr><td align=\"left\">Id:<td><input type=\"TEXT\" name=\"id\" size=\"50\" value=\"$id\" id=\"id\"><br>";
+echo "<tr><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"   Go for update   \">";
+echo "  <input type=\"RESET\" name=\"RESET_BUTTON\" value=\"Reset\"><br>";
+echo "</table>";
+echo "</form>";
+echo "</body>";
+echo "</html>";
+
+?>

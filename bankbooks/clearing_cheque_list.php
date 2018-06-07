@@ -1,0 +1,70 @@
+<?php
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$bank_account_no=$_REQUEST["bank_account_no"];
+$option=$_REQUEST['option'];
+if(empty($bank_account_no)){
+	$name='All Account';
+	$sql_statement="SELECT * FROM  cheque_reg WHERE status='$option' ORDER BY action_date DESC";
+}
+else{
+	$name= $bank_account_no."Account";
+	$sql_statement="SELECT * FROM  cheque_reg WHERE status='$option' AND forward_account='$bank_account_no' ORDER BY action_date DESC";
+	
+
+}
+echo "<html>";
+echo "</script>";
+echo "<title>Statement";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<form action=\"clearing_cheque_list.php?option=$option\" method=\"POST\">";
+echo "<table width=\"100%\" bgcolor=\"YELLOW\" align=\"center\">";
+echo "<tr><td><b> $option List Of Cheque Details of :";
+echo "<td>".selectBankAccount('bank_account_no','','');
+echo "<td align=\"left\"><input type=\"SUBMIT\" VALUE=\"ENTER\"></b></font></table>";
+echo "</form>";
+echo "<hr>";
+
+
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0){
+ echo "<h1><font color=red><b>Sorry Record Not Found!!!!!!!!!</b></font></h1>";
+}
+else{
+echo "<table width=100% BGCOLOR=BLACK>";
+echo "<tr><th colspan=\"9\" bgcolor=\"GREEN\">Details of [$name] : $option";
+echo "<tr bgcolor=GREEN><th>Transaction Id<th>Account No.<th>Action Date <th>Bank Name<th>Branch<th>Cheque No.<th>Cheque Date<th>Amount";
+if($option=='clearing'){echo "<th>Operation";}
+else if($option=='bounced'){echo "<th>Bounced Date";}
+else { echo "<th>Cleared Date";} 
+$color==$TCOLOR;
+for($j=0; $j<pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,$j);
+$t_id=$row['tran_id'];
+$ac_no=$row['account_no'];
+echo "<tr>";
+echo "<td bgcolor=$color align=\"center\"><a href =\"../general/voucherdetails.php?tran_id=$t_id\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=700,height=500'); return false;\" >$t_id</a>";
+echo "<td bgcolor=$color>$ac_no";
+echo "<td bgcolor=$color>".$row['action_date'];
+echo "<td bgcolor=$color>".$row['bank_name'];
+echo "<td bgcolor=$color>".$row['branch'];
+$ch_no=$row['cheque_no'];
+echo "<td bgcolor=$color>".$ch_no;
+echo "<td bgcolor=$color>".$row['cheque_date'];
+$ch_amount+=$row['amount'];
+echo "<td align=right bgcolor=$color>".amount2Rs($row['amount']);
+	if($option=='clearing'){
+	echo "<td align=center bgcolor=$color><a href =\"bank_charge.php?t_id=$t_id&op=cleared \" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=600,height=300'); return false;\" >Cleared</a>&nbsp;&nbsp;<a href=\"bank_charge.php?t_id=$t_id&op=bounced\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150, width=600,height=300'); return false;\">Bounced</a>";
+	}
+	else{
+	echo "<td align=center bgcolor=$color>".$row['clearing_dt'];
+	}
+    }
+echo "<tr><td bgcolor=AQUA align=\"CENTER\" colspan=\"7\"><B>Total : $j Cheques Found<td bgcolor=AQUA align=\"right\"><B>".amount2Rs($ch_amount)."<td bgcolor=AQUA>";
+}
+?>

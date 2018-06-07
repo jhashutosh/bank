@@ -1,0 +1,131 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$end_dt=$_REQUEST['current_date'];
+if(empty($end_dt))$end_dt=date('d.m.Y');
+$sql_statement="SELECT monthly_return_deposit('$end_dt') as deposit_return";
+//echo $sql_statement; 
+$result=dBConnect($sql_statement);
+$rpt_date=pg_result($result,'deposit_return');
+echo "<html>";
+echo "<head>";
+echo "<title>$PROJECT_TITLE</title>";
+echo "<script src=\"../JS/calendar.js\"></script>";
+echo "<script language=\"JAVASCRIPT\">";
+echo "function closeme() { close(); }";
+echo "</script>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"\" onload=\"cd.focus();\">";
+echo "<font size=+2>$SYSTEM_TITLE</font><br>";
+echo "<i>Monthly Return Deposits as on $name</i>";
+echo "<hr>";
+echo "<form METHOD=\"POST\" ACTION=\"monthly_return_deposit.php\">";
+echo "<table align=center bgcolor=\"#90EE90\">";
+echo"<tr><td><b>Return Month as on :<td><input type=TEXT size=10 name=\"current_date\" id=\"cd\" Value=\"$end_dt\" onclick=\"this.value=''\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"Submit\"  value=\"Enter\">";
+echo "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"BUTTON\" name=\"CLOSE_BUTTON\" value=\"Close\" onclick=\"closeme()\"> ";
+echo " <input type=\"BUTTON\" name=\"PRINT_BUTTON\" value=\"Print\" onclick=\"print()\"> ";
+echo "</table></form>";
+echo "<hr>";
+
+echo "<center>";
+echo "<table width=\"100%\"><tr><td>";
+echo "<table border=\"1\" align=center>";
+echo "<tr><td bgcolor=\"#0000CD\" colspan=\"20\" align=\"center\"><b><font color=\"WHITE\">MONTHLY RETURN OF DEPOSIT As On $rpt_date</font>";
+echo "<tr bgcolor=#BA55D3>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Sl.No.</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Type of deposit</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Begining of the Year</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Begining of the Month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>End of Month</th>";
+echo "<th bgcolor=\"#9ACD32\"colspan=2>During the month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Decrease or increase</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>% of <br>Decrease/<br>increase</th>";
+echo "<th bgcolor=\"#9ACD32\" colspan=3>cash at Bank</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>% of deposit in CCB</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>Begining of the month no of A/C</th>";
+echo "<th colspan=2 bgcolor=\"#9ACD32\">During the Month</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>End of the month no of A/C</th>";
+echo "<th bgcolor=\"#9ACD32\" rowspan=2>No of A/C Transction Ledger</th>";
+echo "<tr>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Deposit</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Withdrawal</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">CCB/SCB</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Others</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Total</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">closed</th>";
+echo "<th colspan=1 bgcolor=\"#9ACD32\">Open</th>";
+//============================================================
+$sql_statement="SELECT * FROM monthly_return_deposit";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+for($j=0,$i=1; $j<pg_NumRows($result); $j++,$i++){
+$row=pg_fetch_array($result,$j);
+echo "<tr>";
+echo "<th>$i";
+echo "<td><b>".$type_of_account1_array[$row[0]]."</td>";
+$r1+=$row[1];
+echo "<td align=right >".amount2Rs($row[1])."</td>";
+$r2+=$row[2];
+echo "<td align=right >".amount2Rs($row[2])."</td>";
+$r3+=$row[3];
+echo "<td align=right >".amount2Rs($row[3])."</td>";
+$r4+=$row[4];
+echo "<td align=right >".amount2Rs($row[4])."</td>";
+$r5+=$row[5];
+echo "<td align=right >".amount2Rs($row[5])."</td>";
+$r01=$row[3]-$row[1];
+echo "<td align=right >".amount2Rs($r01)."</td>";
+$per=$r01*100/$row[3];
+if(empty($per))$per=0;
+echo "<td align=right >".amount2Rs($per)."%</td>";
+$r6+=$row[6];
+echo "<td align=right >".amount2Rs($row[6])."</td>";
+$r7+=$row[7];
+echo "<td align=right >".amount2Rs($row[7])."</td>";
+$r8+=$row[8];
+echo "<td align=right >".amount2Rs($row[8])."</td>";
+$ccb_p=$row[6]*100/$row[3];
+if(empty($ccb_p))$ccb_p=0;
+echo "<td align=right >".amount2Rs($ccb_p)."%</td>";
+$r9+=$row[9];
+echo "<td align=right >".amount2Rs($row[9])."</td>";
+$r12+=$row[12];
+echo "<td align=right >".amount2Rs($row[12])."</td>";
+$r11+=$row[11];
+echo "<td align=right >".amount2Rs($row[11])."</td>";
+$r10+=$row[10];
+echo "<td align=right >".amount2Rs($row[10])."</td>";
+$r13+=$row[13];
+echo "<td align=right >".amount2Rs($row[13])."</td>";
+
+   }
+}
+
+
+//====================================FINAL STATEMENT ========================================
+echo "<tr>";
+echo "<th align=right bgcolor=aqua colspan=\"2\">Total:";
+echo "<th align=right bgcolor=aqua>".amount2Rs($r1);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r2);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r3);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r4);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r5);
+echo "<th align=right bgcolor=aqua>";
+echo "<th align=right bgcolor=aqua>";
+echo "<th align=right bgcolor=aqua>".amount2Rs($r6);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r7);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r8);
+echo "<th align=right bgcolor=aqua>";
+echo "<th align=right bgcolor=aqua>".amount2Rs($r9);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r12);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r11);
+
+echo "<th align=right bgcolor=aqua>".amount2Rs($r10);
+echo "<th align=right bgcolor=aqua>".amount2Rs($r13);
+echo "</table>";
+echo "</body>";
+echo "</html>";
+?>

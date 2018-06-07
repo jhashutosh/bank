@@ -1,0 +1,69 @@
+USETEXTLINKS = 1
+
+STARTALLOPEN = 0
+
+ICONPATH = "../image/";
+foldersTree = gFld("30000 Purchase ")
+  foldersTree.treeID = "Frameset"
+//---------------------------------31000---------------------------------------
+aux1 = insFld(foldersTree, gFld("31000 Opening stock(Including Transit) Trading Commodities"))
+         aux2 = insFld(aux1, gFld("31100 Opening Stock-Agricultural Inputs"))
+	aux2 = insFld(aux1, gFld("31200 Opening Stock-Agricultural Implements"))
+	aux2 = insFld(aux1, gFld("31300 Opening Stock-Agricultural produces"))
+	aux2 = insFld(aux1, gFld("31400 Opening Stock-Consumer Goods"))
+	aux2 = insFld(aux1, gFld("31500 Opening Stock-Office Supply Items"))
+	aux2 = insFld(aux1, gFld("31600 Opening Stock-Government Procurement Scheme Items"))
+	aux2 = insFld(aux1, gFld("31700 Opening Stock-Midday Mill Scheme Items"))
+	aux2 = insFld(aux1, gFld("31900 Opening Stock-Other Trading Commidities"))
+//---------------------------------32000------------------------------------------
+aux1 = insFld(foldersTree, gFld("32000 Opening Stock(Including Transit) Processing"))
+	insDoc(aux1, gLnk("R", "32100 Opening Stock(Stores & Spares)"))
+	insDoc(aux1, gLnk("R", "32200 Opening Stock(Raw Meterials)"))
+	insDoc(aux1, gLnk("R", "32300 Opening Stock-In-Process"))
+	insDoc(aux1, gLnk("R", "32400 Opening Stock(Finish Products-Processing)"))
+
+//----------------------------------33000----------------------------------------
+aux1 = insFld(foldersTree, gFld("33000 Opening Stock(Including Transit)-Cold Storage"))
+	insDoc(aux1, gLnk("R", "33100 Opening Stock(Agricultural Produces-Cold Storage)"))
+
+//--------------------------------34000------------------------------------------
+aux1 = insFld(foldersTree, gFld("34000 Purchase Trading Commidities"))
+	aux2=insFld(aux1,gFld("34100 Purchase of Agricultural Inputs"))
+	aux2=insFld(aux1,gFld("34200 Purchase of Agricultural Implements"))
+	aux2=insFld(aux1,gFld("34300 Purchase of Agricultural Produces"))
+	aux2=insFld(aux1,gFld("34400 Purchase of Consumer Goods"))
+	aux2=insFld(aux1,gFld("34500 Office Supply Items Purchase"))
+	aux2=insFld(aux1,gFld("34600 Government supply Procurement Scheme Items Purchase"))
+	aux2=insFld(aux1,gFld("34700 Midday mill scheme items purchase"))
+	aux2=insFld(aux1,gFld("34900 Purchase of other trading commidities"))
+
+//-----------------------------------35000------------------------------------
+aux1 = insFld(foldersTree, gFld("35000 Purchase etc for processing"))
+	insDoc(aux1, gLnk("R", "35100 Stores & Spares purchase"))
+	insDoc(aux1, gLnk("R", "35200 Raw Meterials Purchase"))
+	insDoc(aux1, gLnk("R", "35900 Other Processing Expenses"))
+//-----------------------------36000-------------------------------------
+
+aux1 = insFld(foldersTree, gFld("36000 Purchase etc for cold-storage"))
+//---------------------------37000-----------------------------------
+aux1 = insFld(foldersTree, gFld("37000 Trade Charges"))
+//-----------------------------39000-------------------------------
+aux1 = insFld(foldersTree, gFld("39000 Gross Profit"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

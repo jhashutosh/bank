@@ -1,0 +1,94 @@
+<?
+include "config.php";
+$menu=$_REQUEST['menu'];
+echo "<html>";
+echo "<head>";
+echo "<title>List of Members";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "</i><hr>";
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+$sql_statement="SELECT * from member_view ";
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>Not found!!!</h4>";
+} else {
+echo "<table border=\"1\" width=95%>";
+
+
+ echo "<tr><td bgcolor=\"green\" colspan=\"8\" align=\"center\"><font color=\"yellow\" size=\"6\">LIST OF MEMBERS</font>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color colspan=\"1\">Membership no</th>";
+echo "<th bgcolor=$color colspan=\"1\">Name</th>";
+echo "<th bgcolor=$color colspan=\"1\">No of Share</th>";
+echo "<th bgcolor=$color colspan=\"1\">Value of Share</th>";
+echo "<th bgcolor=$color colspan=\"1\">No of Land</th>";
+echo "<th bgcolor=$color colspan=\"1\">Size of Land</th>";
+echo "<th bgcolor=$color colspan=\"1\">Value Of Land</th>";
+
+echo "<th bgcolor=$color colspan=\"1\">Opening date</th>";
+
+//echo "<th bgcolor=$color colspan=\"1\">Actions</th>";
+
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+$mem_id=$row['membership_no'];
+echo "<td align=\"right\" bgcolor=$color>".$mem_id."</a></td>";
+echo "<td align=\"right\" bgcolor=$color>".ucwords($row['name1'])."</td>";
+current_balance_share(trim($mem_id),$no_of_share,$value_of_share);
+$total_no_share=$total_no_share+$no_of_share;
+$total_val=$total_val+$value_of_share;
+echo "<td align=\"right\" bgcolor=$color><a href=\"set_account.php?menu=$menu&account_no=$mem_id\">".$no_of_share."</a></td>";
+echo "<td align=\"right\" bgcolor=$color>".$value_of_share."</td>";
+$no_of_land=$row['land_no'];
+
+if($no_of_land>0){
+echo "<td align=\"left\" bgcolor=$color>"."<a href=\"land_info_t_ef.php?membership_no=".$row['membership_no']."\" target=\"_self\">A</a>"."&nbsp;&nbsp;".$row['land_no']."</td>";}
+else {
+echo "<td align=\"left\" bgcolor=$color><blink><a href=\"land_info_t_ef.php?membership_no=".$row['membership_no']."\" target=\"_self\">Add land</a></blink></td>";}
+echo "<td align=\"left\" bgcolor=$color><a href=\"land_info_statment.php?membership_no=".$row['membership_no']."\" target=\"_self\">L.info</a>"."&nbsp;&nbsp;".$row['land_size']."</td>";
+$total_land_size+=$row['land_size'];
+
+echo "<td align=\"right\" bgcolor=$color>".$row['land_value']."</td>";
+$total_land_val+=$row['land_value'];
+
+echo "<td align=\"right\" bgcolor=$color>".$row['membership_opening_date']."</td>";
+//echo "<td align=\"right\" bgcolor=$color>".$row['remarks']."</td>";
+//echo "<td align=\"center\" bgcolor=$color><a href=\"membership_t_uf.php?membership_no=".$row['membership_no']."\" target=\"_self\">M</a>&nbsp;";
+//echo "<a href=\"member_del.php?membership_no=".$row['membership_no']."\" target=\"_self\">D</a></td>";
+}
+}
+ 
+{
+$color="cyan";
+
+echo "<tr>";
+echo "<td align=\"center\" bgcolor=$color colspan=2><B>Total: ".($j-1)."</B></td>";
+//echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+echo "<td align=\"right\" bgcolor=$color><B>".$total_no_share."</B></td>";
+ echo "<td align=\"right\" bgcolor=$color><B>".$total_val."</B></td>";
+
+echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+echo "<td align=\"right\" bgcolor=$color><B>$total_land_size</B></td>";
+
+echo "<td align=\"right\" bgcolor=$color><B>$total_land_val</B></td>";
+echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+
+//echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+
+// END of Summary -------------------------------------
+echo "</table>";
+}
+
+footer();
+
+echo "</body>";
+echo "</html>";
+?>

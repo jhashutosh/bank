@@ -1,0 +1,292 @@
+<?php 
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$op_v_v=$_REQUEST['op_v'];
+if(!empty($op_v_v)){$_SESSION['op_v']=$op_v_v;}
+$op_vtion=$_REQUEST['op_vtion'];
+if($op_v=="r"){$name="Receipt"; $color="#4562DACDAC"; $mode_name='Forward Account';}
+if($op_v=="pa"){$name="Payment";$color="#00BFFF"; $mode_name='Account No.';}
+if($op_v=="s"){$name="Sales";$color="#DAA520"; $mode_name='Forward Account';}
+if($op_v=="pu"){$name="Purchases";$color="#FF69B4"; $mode_name='Account No.';}
+if($op_v=="jv"){$name="Journal";$color="#FFE4C4";}
+if($op_vtion=='i'){
+$dhead=getData($_REQUEST['dhead']);
+$chead=getData($_REQUEST['chead']);
+$damount=$_REQUEST['damount'];
+$camount=$_REQUEST['camount'];
+$remarks=$_REQUEST['remarks'];
+$vdate=$_REQUEST['vdate'];
+$v1=$_REQUEST['v1']; //for reference tran_id
+$mode=$_REQUEST['mode'];
+$account_no=$_REQUEST['account_no'];
+$b_name=$_REQUEST['b_name'];
+$br_name=$_REQUEST['br_name'];
+$ch_no=$_REQUEST['ch_no'];
+$ch_dt=(empty($_REQUEST['ch_dt']))?$DOB_DEFAULT:$_REQUEST['ch_dt'];
+$fy1=getFy();
+//---------------------------------------INSERT--------------------------------------------
+if(empty($fy1)){
+echo "<h1><center><b>You Can't Insert any value Into database Because Financial Year already Locked by administrator !!!!!!!!!";
+}
+else{
+	
+	$t_id=getTranId();
+	$sql_statement="INSERT INTO gl_ledger_hrd (tran_id,type,certificate_no,action_date,fy, cheque_no,cheque_dt,remarks,operator_code,entry_time) VALUES('$t_id','$op_v','$v1','$vdate','$fy1','$ch_no','$ch_dt','$remarks','$staff_id',CAST('$vdate'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP))";
+	if($op_v=="pa"||$op_v=="pu")
+	{
+		$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr,particulars) VALUES('$t_id','vouchar','$dhead',$damount,'Dr','$op_v')";
+		if($mode=='cash')
+		{
+			$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','28101',$damount,'Cr','$op_v')";
+			}
+		else{
+	//cheque payment
+			$bk_gl_code=getGlCode4mBank($account_no);	
+			$sql_statement.=";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,account_no, amount,dr_cr, particulars) VALUES('$t_id','$bk_gl_code','$account_no',$damount,'Cr','$op_v')"; 
+			$sql_statement.=";INSERT INTO cheque_reg (tran_id,account_no, action_date,cheque_no,cheque_date,amount,status,operator_code,entry_time) VALUES('$t_id', '$account_no','$vdate','$ch_no','$ch_dt','$damount','g','$staff_id',CAST('$vdate'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP))";	
+		}
+	}
+	if($op_v=="r"||$op_v=="s"){
+		if($mode=='cash')
+		{
+			$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','28101',$damount,'Dr','$op_v')";
+		}
+		else{
+	
+			$bk_gl_code=getGlCode4mBank($account_no);
+			$sql_statement.=";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,account_no, amount,dr_cr, particulars) VALUES('$t_id','$bk_gl_code','$account_no',$damount,'Dr','$op_v')";
+			$sql_statement.=";INSERT INTO cheque_reg (tran_id,forward_account, action_date,cheque_no,cheque_date,bank_name,branch,amount,status,operator_code,entry_time) VALUES('$t_id','$account_no','$vdate','$ch_no','$ch_dt','$damount','clearing', '$staff_id',CCAST('$vdate'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP))";
+		}
+			$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','vouchar','$dhead',$damount,'Cr','$op_v')";
+	}
+	if($op_v=="jv"){
+		
+		if($mode=='payment'){
+			$bk_gl_code=getGlCode4mBank($account_no);
+			if(trim($bk_gl_code)==trim($chead)){
+			$sql_statement.=";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,account_no, amount,dr_cr, particulars) VALUES('$t_id','$bk_gl_code','$account_no',$damount,'Cr','$op_v')";
+			$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','','$dhead',$damount,'Dr','$op_v')";
+				}
+			else{
+				$ERROR_MSG="Bank GL Code and Credit Header Code Not Match !!!";
+				$sql_statement.="Hi";
+			 }
+		}
+		if($mode=='receipt'){
+			$bk_gl_code=getGlCode4mBank($account_no);
+			if(trim($bk_gl_code)==trim($dhead)){
+			//$bk_gl_code=getGlCode4mBank($account_no);
+			$sql_statement.=";INSERT INTO cheque_reg (tran_id,forward_account, action_date,cheque_no,cheque_date,bank_name,branch,amount,status,operator_code,entry_time) VALUES('$t_id','$account_no','$vdate','$ch_no','$ch_dt','$b_name','$br_name','$damount','clearing', '$staff_id',CAST('$vdate'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP))";
+			$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$account_no','$dhead',$damount,'Dr','$op_v')";
+			$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','vouchar','$chead',$damount,'Cr','$op_v')";			
+			}
+			else{
+				$ERROR_MSG="Bank GL Code and Dedit Header Code Not Match !!!";
+				$sql_statement.="Hi";
+			  }
+			
+		}
+	
+		if($mode=='adjustment'){
+			$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$account_no','$dhead',$damount,'Dr','$op_v')";
+			$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','vouchar','$chead',$damount,'Cr','$op_v')";
+		}
+		
+	}
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_affected_rows($result)<1) {
+	echo "<h4><center><blink><font color=\"RED\">Failed to insert data into database.....<br>$ERROR_MSG</font></h4>";
+	} 
+else {
+	$i_flag=1;
+    }
+  }
+}
+//-----------------------------INSERT END --------------------------------------------------
+echo "<html>";
+echo "<head>";
+echo "<title>Voucher";
+echo "</title>";
+echo "<script language=\"JavaScript\" src=\"../JS/gen_validatorv31.js\" type=\"text/javascript\"></script>";
+echo "<link rel=\"stylesheet\" href=\"../css/autosuggest_inquisitor.css\" type=\"text/css\" media=\"screen\" charset=\"utf-8\" />";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "<script type=\"text/javascript\" src=\"../JS/bsn.AutoSuggest_c_2.0.js\"></script>";
+echo "<script src=\"../JS/calendar.js\"></script>";
+echo "</head>";
+echo "<body bgcolor=\"silver\"	onload=\"dhead.focus();\">";
+echo "<h1><i><b>$name Voucher</i></b></h1>";
+echo "<i>varify before submission</i><hr>";
+echo "<form action=\"voucher.php?op_vtion=i\" method=\"post\" name=\"f1\" onsubmit=\"return varify();\">";
+echo "<table align=center width=80% bgcolor=$color><tr>";
+echo "<th bgcolor=#9932CC colspan=4>$name Voucher";
+echo "<tr><td>Date :<td><input type=TEXT  name=\"vdate\" size=12 value=\"".date('d.m.Y')."\"$HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.vdate,'dd/mm/yyyy','Choose Date')\">";
+echo "<td>Ref. Id:<td><input type=TEXT name=\"v1\"  $HIGHLIGHT>";
+echo "<tr><td>Account Head :<td><input type=\"TEXT\" id=\"dhead\"  name=\"dhead\" size=\"45\" $HIGHLIGHT>";
+echo "<td>Amount :<td>Rs.&nbsp<input type=TEXT  name=\"damount\" size=\"10\" $HIGHLIGHT>";
+if($op_v=='jv'){
+echo "&nbsp<b>Dr.</b>";
+
+echo "<tr><td>Account Head :<td><input type=\"TEXT\" id=\"chead\"  name=\"chead\" size=\"45\" $HIGHLIGHT>";
+//echo "<td>Amount :<td>Rs.&nbsp<input type=TEXT  name=\"camount\" size=\"10\" $HIGHLIGHT> &nbsp<b>Cr.</b>";
+}
+
+echo "<tr><td>Mode of Transaction:<td>";
+if($op_v=='r' ||  $op_v=='s' || $op_v=='pu' || $op_v=='pa'){
+echo"<select name=\"mode\" onchange=\"activeText(this.value);\">";
+echo "<option>cash</select>";
+echo "<td>$mode_name:<td>";
+}
+else{
+echo"<select name=\"mode\" onchange=\"activeText(this.value);\">";
+echo "<option>adjustment<option>receipt<option>payment</select>";
+echo "<td>Account No:<td>";
+}
+selectBankAccount("account_no","disabled",'');
+	if($op_v=='r' ||  $op_v=='s' || $op_v=='jv'){
+	echo "<tr><td>Bank Name :<td><input type=\"TEXT\" id=\"b_name\"  name=\"b_name\" size=\"15\" $HIGHLIGHT disabled>";
+	echo "<td>Branch Name :<td><input type=TEXT name=\"br_name\" id=\"br_name\" size=\"15\" $HIGHLIGHT disabled>";
+}
+echo "<tr><td>Cheque NO. :<td><input type=\"TEXT\" id=\"ch_no\"  name=\"ch_no\" size=\"15\" $HIGHLIGHT disabled>";
+echo "<td>Cheque Date:<td><input type=TEXT  name=\"ch_dt\" id=\"ch_dt\" size=\"10\" value=\"".date('d.m.Y')."\" $HIGHLIGHT disabled>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" id=\"b1\" disabled onclick=\"showCalendar(f1.ch_dt,'dd.mm.yyyy','Choose Date')\">";
+
+echo "<tr><td valign=\"middle\" align=\"left\">Narration:<td colspan=3><textarea name=\"remarks\" rows=\"3\" cols=\"50\" id=\"re\" $HIGHLIGHT></textarea>";
+echo "<input type=\"HIDDEN\" value=\"$op_v\" id=\"op_v\" name=\"op_v\">";
+echo "&nbsp;<input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Submit\">";
+echo "</table>";
+echo "<hr>";
+if($i_flag==1){
+echo "<h2><font color=\"green\">Successfully Inserted data into database.
+<br>Please Write drown Tranection Id is :<b>$t_id</b></font></h2>";
+}
+//----------------------------------------------------------------------------------------------
+?>
+<script type="text/javascript">
+	var op_vtions = {
+		script:"autoComplete.php?json=true&",
+		varname:"input",
+		json:true,
+	};
+	var as_json1 = new AutoSuggest('dhead', op_vtions);
+	var as_json2 = new AutoSuggest('chead', op_vtions);
+function activeText(str){
+//alert(str);
+if(str=="cash" || str=="adjustment"){
+document.f1.account_no.disabled=true;
+document.f1.b_name.disabled=true;
+document.f1.br_name.disabled=true;
+document.f1.ch_no.disabled=true;
+document.f1.ch_dt.disabled=true;
+document.f1.b1.disabled=true;
+document.f1.re.focus();
+}
+else if(str=="receipt"){
+document.f1.account_no.disabled=false;
+document.f1.b1.disabled=false;
+document.f1.ch_no.disabled=false;
+document.f1.ch_dt.disabled=false;
+document.f1.b_name.disabled=false;
+document.f1.br_name.disabled=false;
+document.f1.b_name.focus();
+}
+else if(str=="payment"){
+document.f1.account_no.disabled=false;
+document.f1.b1.disabled=false;
+document.f1.ch_no.disabled=false;
+document.f1.ch_dt.disabled=false;
+document.f1.b_name.disabled=true;
+document.f1.br_name.disabled=true;
+document.f1.account_no.focus();
+
+} 
+else{
+document.f1.account_no.disabled=false;
+document.f1.b1.disabled=false;
+document.f1.ch_no.disabled=false;
+document.f1.ch_dt.disabled=false;
+document.f1.b_name.disabled=false;
+document.f1.br_name.disabled=false;
+document.f1.b_name.focus();
+ }
+}
+function varify(){
+//alert(document.f1.op_v.value)
+if(document.f1.vdate.value.length==0){
+alert("Please Enter the Voucher Date")
+document.f1.vdate.focus();
+return false;
+}
+if(document.f1.vdate.value.length==0){
+alert("Please Enter the Voucher Date")
+document.f1.vdate.focus();
+return false;
+}
+if(document.f1.dhead.value.length==0){
+alert("Please Enter the Voucher Header")
+document.f1.dhead.focus();
+return false;
+}
+if(document.f1.damount.value.length==0){
+alert("Please Enter the Voucher Amount")
+document.f1.damount.focus();
+return false;
+}
+if(document.f1.op_v.value=='pa'||document.f1.op_v.value=='pu'){
+if(document.f1.mode.value=='cheque'){
+if(document.f1.ch_dt.value.length==0){
+alert("Please Enter the Cheque Date")
+document.f1.chead.focus();
+return false;
+}
+if(document.f1.ch_no.value.length==0){
+alert("Please Enter the Cheque No.")
+document.f1.ch_no.focus();
+return false;
+}
+
+}
+}
+if(document.f1.op_v.value=='s'||document.f1.op_v.value=='r'){
+if(document.f1.mode.value=='cheque'){
+if(document.f1.ch_dt.value.length==0){
+alert("Please Enter the Cheque Date")
+document.f1.chead.focus();
+return false;
+}
+if(document.f1.ch_no.value.length==0){
+alert("Please Enter the Cheque No.")
+document.f1.ch_no.focus();
+return false;
+}
+if(document.f1.b_name.value.length==0){
+alert("Please Enter the Bank Name")
+document.f1.chead.focus();
+return false;
+}
+if(document.f1.br_name.value.length==0){
+alert("Please Enter the Branch Name")
+document.f1.ch_no.focus();
+return false;
+}
+}
+}
+if(document.f1.op_v.value=='jv'){
+if(document.f1.chead.value.length==0){
+alert("Please Enter the Voucher Header")
+document.f1.chead.focus();
+return false;
+}
+
+
+}
+
+return true;
+}
+</script>
+<?php
+echo "</body>";
+echo "</html>";
+?>

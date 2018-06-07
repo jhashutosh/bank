@@ -1,0 +1,29 @@
+<? include "../config/config.php"; 
+//$staff_id=varifyAutho();
+echo "<HTML>";
+echo "<HEAD>";
+echo "<LINK href=\"../css/test.css\" type=text/css rel=STYLESHEET>";
+echo "<TITLE>$PROJECT_TITLE</TITLE>";
+echo "</HEAD>";
+echo "<BODY  VLINK=WHITE LINK=WHITE  ALINK=WHITE ALIGN=\"CENTER\">";
+
+echo "<BR><BR><BR>";
+echo "<BR>";
+echo "<CENTER><font size=2 color=#B22222><b>NETWARE<BR><BR>";
+echo "BANKING<BR><BR>";
+echo "SYSTEM<BR><BR>";
+echo "SOLUTIONS<BR></font>";
+
+//echo "<BR><br><br>";
+echo "<BR>";
+echo "<BR>";
+echo "<BR>";
+echo "<BR><center>";
+echo "<A HREF=\"../index.php\" target=_top><IMG SRC=\"../image/logo.gif\" height=62 width=62 ></A>";
+echo "<BR>";
+echo "<TT><b>$ORGANISATION_ADDRESS1<BR><B>$ORGANISATION_ADDRESS2<BR><B>$ORGANISATION_ADDRESS3</TT>";
+echo "</CENTER>";
+echo "</BODY>";
+echo "</HTML>";
+
+?>

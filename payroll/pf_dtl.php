@@ -1,0 +1,75 @@
+ <?
+include "../config/config.php";
+$status=$_REQUEST['status'];
+$id=$_REQUEST['id'];
+$name=$_REQUEST['name'];
+$acno=$_REQUEST['acno'];
+//$menu=$_REQUEST['menu'];
+$s="select * from customer_account a,emp_master b where b.emp_id=$id and a.customer_id=b.customer_id and a.account_no like 'PFSB%'";
+$r=dBConnect($s);
+$pfr=pg_fetch_array($r,0);
+$sql="select * from emp_master where emp_id=$id";
+$sql1="select * from emp_pf_dtl where emp_id=$id";
+$result=dBConnect($sql);
+$result1=dBConnect($sql1);
+$row=pg_fetch_array($result,0);
+echo"<input type='hidden' name=\"dob\" id=\"dob\" value=\"".$row['dob']."\">";
+$row1=pg_fetch_array($result1,0);
+echo "<head>";
+echo "<title>PF DETAILS";
+echo "</title>";
+echo "<script src=\"../JS/calendar.js\">";
+echo "</script>";
+echo "<script src=\"../JS/loading2.js\"></script>";
+//echo "<script language=\"JavaScript\" src=\"../JS/gen_validatorv31.js\" type=\"text/javascript\"></script>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+?>
+<script LANGUAGE="JavaScript">
+function f2(str)
+  {
+//alert("str"+str);
+showHint_subemp_pf(str);
+  }
+function doj_val(f)
+    {
+var dob=document.getElementById('dob').value;
+var dobs=dob.split('.');
+dobf=dobs[1]+'/'+dobs[0]+'/'+dobs[2];
+DateofBirth=new Date(dobf);
+datebf=DateofBirth.getTime();
+//alert(dob);
+var opd=document.getElementById('pf_acc_dt').value;
+var opds=opd.split('/');
+opdf=opds[1]+'/'+opds[0]+'/'+opds[2];
+Dateofopen=new Date(opdf);
+dateof=Dateofopen.getTime();
+if(dateof<datebf)
+ {
+alert("Your Date of Birth is :"+dob+"\nPlease enter correct Account Opening Date");
+return false;
+ } 
+  } 
+</script>
+<?
+echo "<body bgcolor=\"#90AACC\">";
+echo"<form  name='f1' action='pf_dtl_add.php' method='post' onsubmit='return doj_val(this.form);' >";
+echo"<table valign=\"top\"width='100%' align='center'>";//sas1
+echo"<tr><th colspan='3' bgcolor='#A9A9A9'><font color='white' size='2'>Staff PF Details</font></th></tr><tr><td  colspan='3'></td></tr><tr><td  colspan='3'></td></tr><tr><td  colspan='3'></td></tr>";
+echo"<tr><td align='left'> Employee Id</td><td width='1%'>:</td><td>";
+echo"<input type='text' name='id' size='2' value=$id $HIGHLIGHT>";
+//makeselectemp('id',"onChange=\"f2(this.value);\"");
+echo"</td></tr><tr><td align='left'>Name </td><td width='1%'>:</td><td>";
+
+echo"<input type='hidden' name='name' size='15' value='".ucwords($row['name'])."'  $HIGHLIGHT>".ucwords($row['name'])."</td></tr>";
+echo"<tr><td align='left'> PF Savings Account No.</td><td width='1%'>:</td><td><input type='text' name='pf_ac_no' value='".$pfr['account_no']."' size='15' value='$acno' $HIGHLIGHT><font color='red'>*</font></td></tr>";
+echo"<tr><td align='left'> PF Account opening Date</td><td width='1%'>:</td><td><input type='text' name='pf_acc_dt' value='".$pfr['opening_date']."' id=\"pf_acc_dt\" size='15' $HIGHLIGHT>";
+//echo "&nbsp<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.pf_acc_dt,'dd/mm/yyyy','Choose Date')\"></td></tr>";
+//echo"<tr><td align='left'> PF Certificate No.</td><td width='1%'>:</td><td><input type='text' name='pf_cer_no' value='".$row1['pf_certificate_no']."' size='15'$HIGHLIGHT></td></tr>";
+echo"<tr><td align='left'> PF Opening Balance</td><td width='1%'>:</td><td><input type='text' name='of_op_bal' value='".$row1['op_bal']."'  size='15'$HIGHLIGHT></td></tr>";
+//echo"<tr><td align='left'> PF Employee Contribution</td><td width='1%'>:</td><td><input type='text' name='eec' size='15'$HIGHLIGHT></td></tr>";
+//echo"<tr><td align='left'> PF Employer Contribution</td><td width='1%'>:</td><td><input type='text' name='erc' size='15'$HIGHLIGHT></td></tr>";
+if(empty($row1['op_bal']))
+echo"<tr><td align='center' colspan='3'><input type='submit' value='Submit Details'></td></tr>";
+echo"</table></form></body></html>";
+?>

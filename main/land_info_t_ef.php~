@@ -1,0 +1,53 @@
+<?
+include "config.php";
+$membership_no=$_REQUEST['membership_no'];
+echo "<html>";
+echo "<head>";
+echo "<title>Entry Form - Table: Land_info_t";
+echo "</title>";
+echo "</head>";
+$c_id=getCustomerId($membership_no);
+echo "<body bgcolor=\"silver\">";
+/*echo "<h1>Entry Form : Land Information";
+echo "</h1>";
+echo "<h3>Please fill-up this form";
+echo "</h3>";*/
+
+
+$flag=getGeneralInfo_Customer($c_id);
+echo "<hr>";
+if($flag==1){
+$land_id=getId("land");
+
+echo "<form method=\"POST\" action=\"land_info_t_evf.php\"><br>";
+echo "<table align=center bgcolor=pink>";
+echo "<tr BGCOLOR=RED><th colspan=6>Land Information";
+echo "<tr><td align=\"left\" colspan=\"2\">Membership No. &nbsp;<input type=\"TEXT\" name=\"membership_no\" size=\"7\" value=\"$membership_no\" readonly><br>";
+echo "<td align=\"left\" colspan=\"2\">Land Id<td><input type=\"TEXT\" name=\"land_id\" size=\"7\" value=\"$land_id\" readonly><br>";
+
+echo "<tr><td align=\"left\" colspan=\"2\">Farmer Type: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+makeSelect($farmer_type_array,"farmer_type","");
+echo "<td align=\"left\" colspan=\"2\">Land Type:<td>";
+
+makeSelect($land_array,"land_type","");
+echo "<tr><td align=\"left\" colspan=\"2\">Land size:<input type=\"TEXT\" name=\"land_size\" size=\"10\" value=\"\">&nbsp;&nbsp;acres<br>";
+echo "<td align=\"left\" colspan=\"2\">Value Of Land:<td><input type=\"TEXT\" name=\"value_of_land\" size=\"10\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Mouja:<td><input type=\"TEXT\" name=\"mouja\" size=\"15\" value=\"\"><br>";
+echo "<td align=\"left\">J.L.No:<td><input type=\"TEXT\" name=\"j_l_no\" size=\"15\" value=\"\"><br>";
+echo "<td><td align=\"left\">Mini No.:<input type=\"TEXT\" name=\"mini\" size=\"5\" value=\"\"><br>";
+echo "<tr><td align=\"left\">Dag No:<td><input type=\"TEXT\" name=\"dag_no\" size=\"15\" value=\"\"><br>";
+echo "<td align=\"left\" colspan=\"2\">Gram panchayeet Name:<td><input type=\"TEXT\" name=\"gp_name\" size=\"20\" value=\"\"><br>";
+echo "<tr><td valign=\"top\" align=\"left\">Remarks:<td><textarea name=\"remarks\" rows=\"3\" cols=\"49\">$remarks</textarea><br>";
+echo "<tr><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Submit\">";
+
+echo "</table>";
+echo "</form>";
+}
+else{
+echo "<font size=+2 color=RED><b>Record Not Found</b></font>";
+}
+footer();
+echo "</body>";
+echo "</html>";
+
+?>

@@ -1,0 +1,29 @@
+USETEXTLINKS = 1
+
+STARTALLOPEN = 0
+
+ICONPATH = "../image/";
+foldersTree = gFld("40000 Purchase ")
+  foldersTree.treeID = "Frameset"
+aux1 = insFld(foldersTree, gFld("41000 Sale trading commidities"))
+	aux2 = insFld(aux1, gFld("41100 Sale of agricultural inputs"))
+	aux2 = insFld(aux1, gFld("41200 Sale of agricultural implements"))
+	aux2 = insFld(aux1, gFld("41300 Sale of agricultural produces"))
+	aux2 = insFld(aux1, gFld("41400 Sale of consumer goods"))
+	aux2 = insFld(aux1, gFld("41500 Sale of office supply goods"))
+	aux2 = insFld(aux1, gFld("41600 Sale of government procurement scheme items"))
+	aux2 = insFld(aux1, gFld("41700 Sale of midday meal scheme items"))
+	aux2 = insFld(aux1, gFld("41900 Sale of other trading commidities"))
+
+//------------------------------42000---------------------------------------
+aux1 = insFld(foldersTree, gFld("42000 Sale under processing activities"))
+//--------------------------------43000------------------------------
+aux1 = insFld(foldersTree, gFld("43000 Sale from cold storage"))
+//-----------------------------44000---------------------------------
+aux1 = insFld(foldersTree, gFld("44000 Other trading income"))
+//------------------------------45000-------------------------------
+aux1 = insFld(foldersTree, gFld("45000 Closing stock(including transit)-trading commodities"))
+//-------------------------------46000------------------------------------------
+aux1 = insFld(foldersTree, gFld("46000 Closing stock-processing"))
+//-----------------------------49000-----------------------------------
+aux1 = insFld(foldersTree, gFld("49000 Gross Loss"))

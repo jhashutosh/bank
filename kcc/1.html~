@@ -1,0 +1,7 @@
+<html>
+<body>
+<form name="f1" action="examplejs2.html">
+<input type="TEXT" VALUE="MONOJIT">
+<form name="f2" action="1.html">
+<input type="SUBMIT" VALUE="1"></form>
+<input type="SUBMIT" VALUE="JS"></form>

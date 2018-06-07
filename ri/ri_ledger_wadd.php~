@@ -1,0 +1,67 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST["menu"];
+$account_no=$_REQUEST["account_no"];
+$certificate_no=$_REQUEST["certificate_no"];
+$holder_sb_account_no=$_REQUEST["holder_sb_account_no"];
+$total_interest=$_REQUEST["withdrawal_int"];
+//$maturity_amount=$_REQUEST["maturity_amount"];
+$maturity_date=$_REQUEST["maturity_date"];
+$withdrawn_type=$_REQUEST["withdrawal_type"];
+$principal=$_REQUEST['amount_deposit'];
+$withdrawal_date=$_REQUEST["withdrawal_date"];
+$with_val=$_REQUEST["withdrawal_amount"];
+$remarks=$_REQUEST["remarks"];
+$operator_code=$staff_id;
+if(empty($withdrawal_date)) { $withdrawal_date=date('d/m/Y'); }
+echo "<html>";
+echo "<head>";
+echo "<title>Update Form - Reinvestment";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<h1>Update Form - Reinvestment";
+echo "</h1>";
+echo "<h3>Your submission has been accepted.";
+echo "</h3>";
+echo "<hr>";
+$fy=getFy();
+if(empty($fy)){
+echo "<h1><center><b>You Can't Insert any value Into database Because Financial Year already Locked by administrator !!!!!!!!!";
+}
+else{
+	 $t_id=getTranId();
+	//echo "fy=$fy";
+	 $gl_code=getGlCode4mCustomerAccount($account_no);
+	 $gl_code_int=getGlCodeInterest($gl_code,$menu);
+	 $sql_statement="INSERT INTO gl_ledger_hrd(tran_id,type, action_date,certificate_no,fy,remarks, operator_code, entry_time) VALUES ('$t_id','fd','$withdrawal_date','$certificate_no','$fy','$remarks','$staff_id', now())";
+//gl_details for Principal withdrawal --Dr.
+	$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr,particulars) VALUES('$t_id','$account_no','$gl_code',$principal,'Dr','cash')";
+//gl_details for Interest withdrawal --Dr.
+	$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,account_no,amount,dr_cr, particulars) VALUES('$t_id','$gl_code_int','$account_no',$total_interest,'Dr','cash')";
+//gl_details for cash withdrawal --Cr
+	if(empty($account_sb)){
+		$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','28101',$with_val,'Cr','cash')";
+		}
+	//For Transfer to SB A/C.
+		else{
+		$gl_code=getGlCode4mCustomerAccount($account_sb,$action_date);
+		$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars,account_no) VALUES('$t_id','$gl_code',$with_val,'Cr','trf[$account_no]','$account_sb')";
+		}
+//       $sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','28101',$with_val,'Cr','cash')";
+
+       $sql_statement=$sql_statement.";UPDATE deposit_info set  withdrawal_date= '$withdrawal_date',withdrawal_type='$withdrawn_type',withdrawal_amount=$with_val where account_no='$account_no' AND certificate_no='$certificate_no'";
+}
+echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_affected_rows($result)<1) {
+	echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+	} 
+else {
+	header("location:../main/set_account.php?menu=ri&account_no=$account_no");
+}
+echo "</body>";
+echo "</html>";
+
+?>

@@ -1,0 +1,69 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$id=$_REQUEST['id'];
+$desc=$_REQUEST['panchayat_desc'];
+$op=$_REQUEST['op'];
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<h1>Panchayat Information ..............</h1>";
+if (empty($op)){
+echo "<hr><br><br>";
+echo "<form method=\"POST\" action=\"panchayat_ledger_ef.php?op=i\">";
+echo "<table bgcolor=AQUA align=center width=50%>";
+$id=countRows('panchayat_mas');
+echo "<tr><TH colspan=2 bgcolor=BLUE><font color=WHITE size=+2 align=\"center\"><b>PANCHAYAT-ENTRY-FORM";
+echo "<tr><td align=\"left\">Panchayat Id:<td><input type=\"TEXT\" name=\"id\" size=\"10\" value=\"$id\" $HIGHLIGHT READONLY><td>";
+echo "<tr><td align=\"left\">Panchayat Description:<td><input type=\"TEXT\" name=\"panchayat_desc\" size=\"15\" value=\"$desc\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Enter\">";
+echo "</table>";
+echo "</form>";
+}
+if ($op=='up'){
+$sql_statement="SELECT * from panchayat_mas where panchayat_id='$id'";
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0) {
+$desc=pg_result($result,1);
+echo "<hr><br><br>";
+echo "<form method=\"POST\" action=\"panchayat_ledger_ef.php?op=u\">";
+echo "<table bgcolor=AQUA align=center width=50%>";
+echo "<tr><TH colspan=2 bgcolor=BLUE><font color=WHITE size=+2 align=\"center\"><b>PANCHATAT-ENTRY-FORM";
+echo "<tr><td align=\"left\">Panchayat Id:<td><input type=\"TEXT\" name=\"id\" size=\"10\" value=\"$id\" $HIGHLIGHT READONLY><td>";
+echo "<tr><td align=\"left\">Panchayat Description:<td><input type=\"TEXT\" name=\"panchayat_desc\" size=\"15\" value=\"$desc\" $HIGHLIGHT>";
+echo "&nbsp;<input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Enter\">";
+echo "</table>";
+echo "</form>";
+}
+else{
+echo 'Wrong Crop Id';
+}
+}
+if ($op=='u'){
+$sql_statement="UPDATE panchayat_mas set panchayat_desc='$desc' where panchayat_id='$id'";
+echo $sql_statement;
+$result=dBConnect($sql_statement);
+if (pg_affected_rows($result)<1){
+	echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+	}
+else{
+	header('location:general_master_view.php?op=p');
+	}
+}
+if ($op=='i'){
+$sql_statement="INSERT INTO panchayat_mas VALUES('$id', lower('$desc'))";
+$result=dBConnect($sql_statement);
+if (pg_affected_rows($result)<1){
+	echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+	}
+else{
+	header('location:general_master_view.php?op=p');
+	}
+}
+echo "</body>";
+echo "</html>";
+
+?>

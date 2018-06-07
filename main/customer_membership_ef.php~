@@ -1,0 +1,51 @@
+<?
+include "config.php";
+$customer_id=$_REQUEST['id'];
+$type=$_REQUEST['type'];
+$status="Membership";
+$m_id=getId($type);
+echo "<HTML>";
+echo "<script src=\"calendar.js\">";
+echo "</script>";
+echo "<script src=\"validation.js\">";
+echo "</script>";
+echo "<BODY bgcolor=\"silver\">";
+//echo "<h1><b>Membership Form</h1>";
+//echo "<h5>just check it</h5><hr>";
+$flag=getGeneralInfo_Customer($id);
+if($flag==1){
+echo "<hr>";
+echo "<table width=\"100%\">";
+echo "<tr><th colspan=\"2\" bgcolor=green><b><font color=White>Membership Form</font></b></th>";
+echo "<form name=\"f1\" method=\"POST\" action=\"customer_membership_eadd.php\">";
+echo "<tr><td>Customer No. : <td><input type=\"TEXT\" name=\"id\" size=50 value=\"$customer_id\" readonly>";
+echo "<tr><td>Membership No. : <td><input type=\"TEXT\" name=\"ac_no\" size=50 value=\"$m_id\" readonly>";
+echo "<tr><td>Status : <td><input type=\"TEXT\" name=\"type\" size=50 value=\"$status\" readonly>";
+echo "<tr><td>opening Date:<td><input type=\"TEXT\" name=\"op_dt\" size=\"25\" value=\"".date('d/m/Y')."\" readonly>";
+echo "&nbsp;<input type=\"button\" name=\"date1\" value=\"Choose Date\" onclick=\"showCalendar(f1.op_dt,'dd/mm/yyyy','Choose Date')\">";
+echo "<tr><td>No. of Share :<td><input type=text size=25 name=no_of_share>";
+echo "<tr><td>Value of Share :<td><input type=text size=25 name=val_of_share value=10>";
+echo "<tr><td>Nomination :<td> <input type=RADIO value=yes name=r1 onClick=enable_txt(this.value)>Yes&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "<input type=RADIO value=no name=r1 CHECKED onClick=enable_txt(this.value)>No";
+echo "<tr><td>Name of Nominee:<td><input type=TEXT name=n_name size=50 disabled>";
+echo "<tr><td>Address:<td><input type=TEXT name=n_add size=50 disabled>";
+echo "<tr><td>Age:<td><input type=TEXT name=n_age size=25 disabled>";
+echo "<tr><td>Relation:<td>";
+makeSelect($relation_array,'relation');
+echo "<tr><td>If Nominee is minor:<td>";
+echo "<input type=RADIO value=yes name=r2 onClick=enable_button(this.value);> Yes&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "<input type=RADIO value=no name=r2 CHECKED onClick=enable_button(this.value);>No";
+echo "<tr><td>Date of Birth:<td><input type=\"TEXT\" name=\"ndob\" size=\"25\" value=\"\" readonly>";
+echo "&nbsp;<input type=\"button\" name=\"b1\" value=\"Choose Date\" onclick=\"showCalendar(f1.ndob,'dd/mm/yyyy','Choose Date')\" disabled>";
+echo "<tr><td><td><input type=submit value=Submit>&nbsp;";
+echo "<input type=Button value=Return onClick=\"Location.href=customer_statement.php?id=$customer_id\"> ";
+echo "</form>";
+echo "</table>";
+}
+
+//echo "<br><br>";
+footer();
+
+echo "</body>";
+echo "</HTML>";
+?>

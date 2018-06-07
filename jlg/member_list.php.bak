@@ -1,0 +1,108 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST['menu'];
+$current_date=$_REQUEST["current_date"];
+if(empty($current_date) ) { $current_date=date("d/m/Y"); }
+echo "<html>";
+echo "<head>";
+echo "<title>JLG List";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "<script language=\"JAVASCRIPT\">";
+echo "function closeme() 
+{ 
+close(); 
+}";
+echo "</script>";
+echo "<body bgcolor=\"silver\">";
+echo "<h1>Member Information Of JLG</h1>";
+echo "<hr>";
+echo "<form name=\"f1\" action=\"member_list.php?menu=$menu\" method=\"POST\">";
+echo "<table align=center bgcolor=\"#90EE90\"><tr><td  align=\"\"><b>Member List as on :<td><input type=TEXT size=12 name=current_date id=cd value=$current_date $HIGHLIGHT>";
+echo "&nbsp;<input type=\"button\" name=\"caldate\" value=\"...\" onclick=\"showCalendar(f1.current_date,'dd/mm/yyyy','Choose Date')\">";
+echo "&nbsp;<input type=\"Submit\"  value=\"Enter\">";
+echo "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"BUTTON\" name=\"CLOSE_BUTTON\" value=\"Close\" onclick=\"closeme()\"> ";
+echo " <input type=\"BUTTON\" name=\"PRINT_BUTTON\" value=\"Print\" onclick=\"print()\"> ";
+echo "</table>";
+echo "</form>";
+$sql_statement="select a.customer_id,a.type_of_customer,a.name1,a.sex1,
+a.father_name1,b.loan_amount,b.b_principal,case when '$current_date'<=repay_date
+then round((b.b_principal*d_int_r*('$current_date'-b.action_date))/36500,2) 
+else round((b.b_principal*d_int_r*(repay_date-b.action_date))/36500,2) end as due_int,
+case when '$current_date'>repay_date
+then round((b.b_principal*od_int_r*('$current_date'-repay_date))/36500,2) else 0 end as overdue_int
+from customer_master a,shg_loan_ledger_dtl b,shg_loan_ledger_hrd c 
+where a.customer_id=b.member_id and c.member_id=b.member_id  and 
+c.status='op' and a.type_of_customer like 'JLG-%' 
+order by name1";
+//echo $sql_statement;
+
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4><font color=\"red\">Data Not Found !!!!!!!!</font></h4>";
+} 
+else {
+
+
+echo "<table  bgcolor=\"black\" align=\"center\" width=\"100%\">";
+echo "<tr><td bgcolor=\"green\" colspan=\"12\" align=\"center\"><font color=\"white\">JLG Member List</font>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color Rowspan=\"2\">Customer Id</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Customer Type</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Name</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Sex</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Father Name</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Loan Amount</th>";
+echo "<th bgcolor=$color colspan=\"3\">Balance</th>";
+echo "<th bgcolor=$color Rowspan=\"2\">Total</th>";
+echo "</tr>";
+echo "<tr>";
+echo "<th bgcolor=$color colspan=\"1\" >Principal</th>";
+echo "<th bgcolor=$color colspan=\"1\">Due Int</th>";
+echo "<th bgcolor=$color colspan=\"1\">O/D Int</th>";
+echo "</tr>";
+for($j=1;$j<=pg_NumRows($result);$j++){
+	$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+	$row=pg_fetch_array($result,($j-1));
+$tot=$row[6]+$row[7]+$row[8];
+echo "<tr>";
+echo "<td align=right bgcolor=$color>".$row['customer_id']."</td>";
+echo "<td align=right bgcolor=$color>".$row['type_of_customer']."</td>";
+echo "<td align=right bgcolor=$color>".$row['name1']."</td>";
+echo "<td align=right bgcolor=$color>".$row['sex1']."</td>";
+echo "<td align=right bgcolor=$color>".$row['father_name1']."</td>";
+echo "<td align=right bgcolor=$color>".$row[5]."</td>";
+$row1+=$row[5];
+echo "<td align=right bgcolor=$color>".$row[6]."</td>";
+$row2+=$row[6];
+echo "<td align=right bgcolor=$color>".$row[7]."</td>";
+$row3+=$row[7];
+echo "<td align=right bgcolor=$color>".$row[8]."</td>";
+$row4+=$row[8];
+echo "<td align=right bgcolor=$color>$tot</td>";
+$row5+=$tot;
+}
+echo "<tr>";
+
+$color="cyan";
+$x=$j-1;
+echo "<td align=center bgcolor=$color colspan=\"5\"><B>Total Account:$x </B></td>";
+echo "<td align=center bgcolor=$color colspan=\"1\"><B>$row1 </B></td>";
+echo "<td align=center bgcolor=$color colspan=\"1\"><B>$row2 </B></td>";
+echo "<td align=center bgcolor=$color colspan=\"1\"><B>$row3 </B></td>";
+echo "<td align=center bgcolor=$color colspan=\"1\"><B>$row4 </B></td>";
+echo "<td align=center bgcolor=$color colspan=\"1\"><B>$row5 </B></td>";
+echo "<br>";
+echo "</table>";
+}
+
+echo "</body>";
+echo "</html>";
+?>

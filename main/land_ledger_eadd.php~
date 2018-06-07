@@ -1,0 +1,27 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST["menu"];
+//$id=$_REQUEST['crop_id'];
+$desc=$_REQUEST['land_desc'];
+echo "<html>";
+echo "<head>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<h3>Your submission has been accepted.";
+echo "<hr>";
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+$sql_statement="INSERT INTO land_identification_mas( land_id,land_desc) VALUES ('$id', '$desc')";
+echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)!=0) {
+	echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+} else {
+	echo "<br><h5><font color=\"GREEN\">Data entered into database.</font></h5>";
+}
+echo "</body>";
+echo "</html>";
+
+?>

@@ -1,0 +1,39 @@
+<?
+include "../confg/config.php";
+
+$account_no=$_REQUEST['current_account_no'];
+$menu=$_REQUEST['menu'];
+isPermissible($menu);
+
+echo "<html>";
+echo "<head>";
+echo "<title>Update Form - Fixed Deposit";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+$sql_statement="select * from fd_ledger where account_no= '$account_no' and withdrawal_date is null";
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {header ("Location: account_no_error.php") ;}
+
+
+echo "<h1>Update Form - Fixed Deposit";
+echo "</h1>";
+echo "<h3>Please update information prior to submission";
+echo "</h3>";
+echo "<hr>";
+
+echo "<form method=\"POST\" action=\"fd_ledger_uf.php\"><br>";
+echo "<table>";
+echo "<tr><td align=\"left\">Account no:<td><input type=\"TEXT\" name=\"account_no\" size=\"50\" value=\"$account_no\"><br>";
+echo "<tr><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"   Withdrawal   \">";
+echo "  <input type=\"RESET\" name=\"RESET_BUTTON\" value=\"Cancel\"><br>";
+echo "</table>";
+echo "</form>";
+
+footer();
+echo "</body>";
+echo "</html>";
+
+?>

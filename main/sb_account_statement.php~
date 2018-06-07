@@ -1,0 +1,86 @@
+<?
+include "config.php";
+
+// PHP4 
+$account_no=$_REQUEST["current_account_no"];
+$menu=$_REQUEST['menu'];
+isPermissible($menu);
+
+$staff_id=verifyAutho();
+
+echo "<html>";
+echo "<head>";
+echo "<title>Statement";
+echo "</title>";
+//echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"table1.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$title='Saving Bank';
+echo "<h3>Account Statement [$account_no]";
+echo "</h3><hr>";
+
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+$id=getCustomerId($account_no);
+//echo "id is :$id";
+// Customization required for WHERE CLAUSE
+$flag=getGeneralInfo_Customer($id);
+if($flag==1)
+{
+$sql_statement="SELECT * FROM sb_ledger WHERE account_no='$account_no' ORDER BY entry_time DESC";
+//echo $sql_statement;
+$result=pg_Exec($db,$sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>New Account</h4>";
+} else {
+echo "<table valign=\"top\" width=\"100%\">";
+echo "<tr><td bgcolor=\"green\" colspan=\"13\" align=\"center\"><font color=\"white\">Statement</font><font color=BLACK size=+1><b>[Current Balance:Rs.".sb_current_balance($account_no)."]</b></font>";
+
+// Place line comments if you do not need column header.
+$color=$TCOLOR;
+echo "<tr>";
+echo "<th bgcolor=$color>Date</th>";
+echo "<th bgcolor=$color>Particulars</th>";
+
+if(strcmp($menu,"sb")){
+echo "<th bgcolor=$color>Max. Limit</th>";
+echo "<th bgcolor=$color>Min. Limit</th>";
+}
+
+echo "<th bgcolor=$color>Withdrawals (Rs.)</th>";
+echo "<th bgcolor=$color>Deposits (Rs.)</th>";
+echo "<th bgcolor=$color>Balance (Rs.)</th>";
+echo "<th bgcolor=$color>Remarks</th>";
+echo "<th bgcolor=$color>Operator code</th>";
+echo "<th bgcolor=$color>Entry time</th>";
+
+for($j=1; $j<=pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j-1));
+echo "<tr>";
+echo "<td align=right bgcolor=$color>".$row['action_date']."</td>";
+echo "<td align=right bgcolor=$color>".$row['particulars']."</td>";
+
+if(strcmp($menu,"sb")){
+if($row['maximum_limit']==$MAX_LIMIT_DEFAULT){$row['maximum_limit']="";}
+echo "<td align=right bgcolor=$color>".$row['maximum_limit']."</td>";
+if($row['minimum_limit']==$MIN_LIMIT_DEFAULT){$row['minimum_limit']="";}
+echo "<td align=right bgcolor=$color>".$row['minimum_limit']."</td>";
+}
+if($row['withdrawals']==$WITHDRAWALS_DEFAULT){$row['withdrawals']="";}
+echo "<td align=right bgcolor=$color>".$row['withdrawals']."</td>";
+if($row['deposits']==$DEPOSITS_DEFAULT){$row['deposits']="";}
+echo "<td align=right bgcolor=$color>".$row['deposits']."</td>";
+echo "<td align=right bgcolor=$color>".$row['balance']."</td>";
+echo "<td align=right bgcolor=$color>".$row['remarks']."</td>";
+echo "<td align=right bgcolor=$color>".$row['operator_code']."</td>";
+echo "<td align=right bgcolor=$color>".$row['entry_time']."</td>";
+   }
+echo "</table>";
+ }
+}
+footer();
+
+echo "</body>";
+echo "</html>";
+?>

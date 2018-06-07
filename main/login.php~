@@ -1,0 +1,42 @@
+<HTML>
+<? include "config.php"; ?>
+<TITLE>
+login 
+</TITLE>
+<script language="javascript">
+function onLoadFocus(){
+document.getElementById("name1").focus();
+}
+</script>
+<BODY onload="onLoadFocus()">
+<CENTER>
+<BR>
+<IMG src="./image/logo.gif" height="120" >
+<BR>
+<font color=#448844"> 
+<I><? echo $SYSTEM_TITLE; ?></I>
+<BR>
+<? echo $VERSION_INFO; ?> 
+</FONT>
+<BR>
+<FORM  method=POST action="authorization.php" target=_top>
+<font color=gray><I>To access advance facilities, administrator(s) should go through login procedure.<BR>Please ask system administrator if you want to open a new account.</I></FONT>
+<TABLE bgcolor="#FFFFFF" width="400">
+<TR><td><br><td>
+<TR>
+<TD align=left><b>User Id :<TD align=left><INPUT type="text"  id="name1" name="id" value="" size=25>
+<TR>
+<TD align=left><b>Password:<TD aligh=left><INPUT type="password"  name="password" value="" size=25>
+<tr>
+<TD align=left><b>Financial Year:<TD aligh=left>
+<? makeSelectFromDB("fy_list","fy","fy");?>
+<INPUT type="hidden"  name="lgn" value="1">
+<TR><TD><TD align=center><INPUT type="submit" name="submit" value=" Sign In "></TD>
+</TABLE>
+</FORM>
+<CENTER>
+
+<? footer(); ?>
+
+</BODY>
+</HTML>

@@ -1,0 +1,38 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$amount=0;
+echo "<html>";
+echo "<head>";
+echo "<title>monthly report";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=silver text=black>";
+echo "<center>";
+echo "<p><b><font color=blue>Monthly Report- Profit & Loss Account.</font></b></p>";
+echo "<table border=0>";
+echo "<tr><th bgcolor=green>Particulars</th><th bgcolor=green>Amount</th><th bgcolor=green>Particulars</th><th bgcolor=green>Amount</th></tr>";
+echo "<tr><td bgcolor=#CCCC5522>1. Interest on Deposits</td><td align=right bgcolor=#CCCC5522>".$amount."</td><td bgcolor=#CCCC5522>1.Interest on Loans and Advances</td><td align=right bgcolor=#CCCC5522>".$amount."</td>";
+echo "<tr><td bgcolor=white>2.Interest on Borrowings from DCCB/SCB</td><td align=right bgcolor=white>".$amount."</td><td bgcolor=white>2.Dividend on Investments</td><td align=right bgcolor=white>".$amount."</td></tr>";
+echo "<tr><td bgcolor=#CCCC5522>3.Interest on Loans availed from State Government</td><td align=right bgcolor=#CCCC5522>".$amount."</td><td bgcolor=#CCCC5522>3.Interest on deposits with banks/institutions.</td><td align=right bgcolor=#CCCC5522>".$amount."</td></tr>";
+echo "<tr><td bgcolor=white>4.Interest on Borrowings from others</td><td align=right bgcolor=white>".$amount."</td><td bgcolor=white>4.Rental Income</td><td align=right bgcolor=white>".$amount."</td></tr>";
+echo "<tr><td bgcolor=#CCCC5522>5. Salary and Allowances(including Contribution to<br>PF, Bonus, Gratuity and Pension Fund)</td><td align=right bgcolor=#CCCC5522>".$amount."</td><td bgcolor=#CCCC5522>5.Admission Fees</td><td align=right bgcolor=#CCCC5522>".$amount."</td></tr>";
+echo "<tr><td bgcolor=white>6.Management expenses(expenditure relating to board meetings etc)</td><td align=right bgcolor=white>".$amount."</td><td bgcolor=white>6.Other Miscellaneous Income (Locker Rent,Fee-based income,Custom hiring etc.)</td><td align=right bgcolor=white>".$amount."</td></tr>";
+echo "<tr><td bgcolor=#CCCC5522>7. Rent, Taxes,Electricity</td><td align=right bgcolor=#CCCC5522>".$amount."</td><td bgcolor=#CCCC5522></td><td align=right bgcolor=#CCCC5522></td></tr>";
+echo "<tr><td bgcolor=white>8.Repair Costs of Premises</td><td align=right bgcolor=white>".$amount."</td><td bgcolor=white></td><td align=right bgcolor=white></td></tr>";
+echo "<tr><td bgcolor=#CCCC5522>9.Insurance</td><td align=right bgcolor=#CCCC5522>".$amount."</td><td bgcolor=#CCCC5522></td><td align=right bgcolor=#CCCC5522></td></tr>";
+echo "<tr><td bgcolor=white>10.Law charges</td><td align=right bgcolor=white>".$amount."</td><td bgcolor=white></td><td align=right bgcolor=white></td></tr>";
+echo "<tr><td bgcolor=#CCCC5522>11.Postage and telephone charges</td><td align=right bgcolor=#CCCC5522>".$amount."</td><td bgcolor=#CCCC5522></td><td align=right bgcolor=#CCCC5522></td></tr>";
+echo "<tr><td bgcolor=white>12.Printing and Stationery</td><td align=right bgcolor=white>".$amount."</td><td bgcolor=white></td><td align=right bgcolor=white></td></tr>";
+echo "<tr><td bgcolor=#CCCC5522>13.Audit Fees</td><td align=right bgcolor=#CCCC5522>".$amount."</td><td bgcolor=#CCCC5522></td><td align=right bgcolor=#CCCC5522></td></tr>";
+echo "<tr><td bgcolor=white>14.Vehicle expenses</td><td align=right bgcolor=white>".$amount."</td><td bgcolor=white></td><td align=right bgcolor=white></td></tr>";
+echo "<tr><td bgcolor=#CCCC5522>15.Travelling & Conveyance expenses</td><td align=right bgcolor=#CCCC5522>".$amount."</td><td bgcolor=#CCCC5522></td><td align=right bgcolor=#CCCC5522></td></tr>";
+echo "<tr><td bgcolor=white>16.Donations and Subscriptions</td><td align=right bgcolor=white>".$amount."</td><td bgcolor=white></td><td align=right bgcolor=white></td></tr>";
+echo "<tr><td bgcolor=#CCCC5522>17.Depreciation on properties</td><td align=right bgcolor=#CCCC5522>".$amount."</td><td bgcolor=#CCCC5522></td><td align=right bgcolor=#CCCC5522></td></tr>";
+echo "<hr>";
+echo "<tr><td bgcolor=white>Total.</td><td align=right bgcolor=white>".$amount."</td><td bgcolor=white>Total.</td><td align=right bgcolor=white>".$amount."</td></tr>";
+echo "</table>";
+echo "</center>";
+echo "</body>";
+echo "</html>";
+?>

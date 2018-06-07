@@ -1,0 +1,37 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+echo "<html>";
+echo "<head>";
+echo "<title>country selection</title>";
+?>
+<script language="javascript">
+function onsubmits()
+{
+  alert("Please check it");
+}
+</script>
+
+<?
+echo "</head>";
+echo "<body>";
+echo "<h1>Pattern design</h1>";
+echo "<form name=\"\form1\">";
+echo "<table align=\"left\">";
+echo "<tr><td align=\"left\">country:<td>";
+//makeSelectdesign($country_type_array,'country','');
+echo "<select name=\"select1\" onchange=\"document.location.href=document.form1.select.options[document.form1.select.selectedIndex].value\">";
+echo "<option value=\"sujoy_design.php\">..select..</option>";
+echo "<option id=\"ind\" value=\"1\">India</option>";
+echo "<option id=\"pak\">Pakistan</option>";
+echo "<option id=\"ban\">Bangladesh</option>";
+echo "</select>";
+if(document.getElementById('ind').value==1){
+echo "<td>State:";
+makeSelectdesign($statepak_type_array,'state','');
+echo "</td>";
+}
+echo "</table>";
+echo "</form>";
+echo "</body>";
+?>

@@ -1,0 +1,25 @@
+<? 
+include "../config/config.php";
+registerSession();
+$id=$_REQUEST["id"];
+$password=$_REQUEST["password"];
+$lgn=$_REQUEST["lgn"]; // From login screen
+$fy=$_REQUEST['fy'];
+if ($lgn!=NULL){
+	$password=md5($password);
+}
+
+$sql_statement="SELECT * FROM staff WHERE id='".$id."' AND password='".$password."'";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)>0){
+$_SESSION['staff_id']=$id;
+$_SESSION['role']=trim(pg_result($result,'role'));
+$_SESSION['fy']=$fy;
+header("Location: ../main/main.php?status=ok");
+}
+else {
+	//setcookie("staff_id");
+	header("Location: ../index.php?af=1");
+}
+?>

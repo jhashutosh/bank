@@ -1,0 +1,84 @@
+<?php
+include "../config/config.php";
+$caste=$_REQUEST['caste'];
+//$caste=getIndex($caste_array,$caste);
+echo "<html>";
+echo "<head>";
+echo "<title>List of Members";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "<script language=\"JAVASCRIPT\">";
+echo "function closeme() { close(); }";
+echo "</script>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "</i><hr>";
+$sql_statement="select *  from customer_member order by lf_no";
+//echo $sql_statement;
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0) {
+echo "<h4>Not found!!!</h4>";
+} else {
+echo "<table bgcolor=\"YELLOW\" width=\"100%\">";
+$color='darkblue';
+echo "<tr>";
+echo "<th bgcolor=$color colspan=\"1\"><font color='white'>Membership no</th>";
+echo "<th bgcolor=$color colspan=\"1\"><font color='white'>Name</th>";
+echo "<th bgcolor=$color colspan=\"1\"><font color='white'>Value of Share</th>";
+echo "<th bgcolor=$color colspan=\"1\"><font color='white'>Father's Name</th>";
+echo "<th bgcolor=$color colspan=\"1\"><font color='white'>Address</th>";
+//echo "<th bgcolor=$color colspan=\"1\">Remarks</th>";
+echo "<th bgcolor=$color colspan=\"1\"><font color='white'>Customer Id</th>";
+echo "<th bgcolor=$color colspan=\"1\"><font color='white'>Joining date</th>";
+echo "<th bgcolor=$color colspan=\"1\"><font color='white'>Sex</th>";
+echo "<th bgcolor=$color colspan=\"1\"><font color='white'>Caste</th>";
+echo "<th bgcolor=$color colspan=\"1\"><font color='white'>LF No</th>";
+echo "</tr>";
+for($j=0; $j<pg_NumRows($result); $j++) {
+$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+$row=pg_fetch_array($result,($j));
+echo "<tr>";
+$mem_id=$row['membership_no'];
+echo "<td align=\"Center\" bgcolor=$color>".$mem_id."</a></td>";
+echo "<td align=\"right\" bgcolor=$color>".ucwords($row['name1'])."</td>";
+share_current_balance(trim($mem_id),$no_of_share,$value_of_share);
+$total_val=$total_val+$value_of_share;
+echo "<td align=\"right\" bgcolor=$color>".$value_of_share."</td>";
+echo "<td align=\"right\" bgcolor=$color>".ucwords($row['father_name1'])."</td>";
+echo "<td align=\"right\" bgcolor=$color>".ucwords($row['address11'])." ".ucwords($row['address12'])." ".ucwords($row['address13'])."</td>";
+//echo "<td align=\"right\" bgcolor=$color>".$row['remarks']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['customer_id']."</td>";
+
+echo "<td align=\"right\" bgcolor=$color>".$row['date_of_opening']."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$sex_array[$row['sex1']]."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$caste_array[$row['caste1']]."</td>";
+echo "<td align=\"right\" bgcolor=$color>".$row['lf_no']."</td>";
+}
+}
+
+{
+$color="cyan";
+
+echo "<tr>";
+echo "<td align=\"center\" bgcolor=$color colspan=2><B>Total: ".$j."</B></td>";
+
+ echo "<td align=\"right\" bgcolor=$color><B>".$total_val."</B></td>";
+
+echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+echo "<td align=\"right\" bgcolor=$color><B>".$row1['total_size_of_land']."</B></td>";
+
+echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+
+echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+//echo "<td align=\"right\" bgcolor=$color><B>&nbsp;</B></td>";
+
+echo "</table>";
+}
+
+
+echo "</body>";
+echo "</html>";
+?>

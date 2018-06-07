@@ -1,0 +1,30 @@
+<?
+include "../config/config.php";
+echo"<html>";
+echo"<head>";
+echo"<title>";
+echo"MINI Operator Relation";
+echo"</title>";
+echo"</head>";
+echo "<script src=\"../JS/calendar.js\">";
+echo "</script>";
+echo"<body bgcolor=\"silver\">";
+echo "<table width=\"95%\" height=\"80\" bgcolor=\"#F5F5DC\" align=\"CENTER\">";
+echo "<tr><th colspan=\"4\" bgcolor=green><b><font color=White>".$type_of_account1_array[trim($type)]." Mini Operator Relation</font></b></th>";
+echo "<form name=\"f1\" method=\"POST\" action=\"mini_operator_relation_eadd.php?menu=$menu&op=$op\">";
+//echo "<tr><td>Customer Id::<td><input type=\"TEXT\" name=\"cust_id\" size=\"25\" disabled value=\"$customer_id\" readonly>";
+//echo "<tr><td>Mini:<select><option>MINI</option></select>";
+echo "<tr><td align=\"left\">Mini:<td>";
+makeSelectSubmit4mdb('id','mini_name','mini_master','mini_name');
+//echo "<td>Operator<select><option>Operator</option></select>";
+echo "<tr><td align=\"left\">Operator:<td>";
+makeSelectSubmit4mdb('id','operator_name','operator_master','operator_name');
+echo "<td>Link Date:<td><input type=\"TEXT\" name=\"op_dt\" id=\"op_dt\" size=\"10\" value=\"\" $HIGHLIGHT>";
+echo "<input type=\"button\" name=\"date1\" value=\"...\" onclick=\"showCalendar(f1.op_dt,'dd/mm/yyyy','Choose Date')\">";
+echo "<tr><td><td align=RIGHT colspan=3><input type=submit value=Submit>&nbsp;";
+//echo "<input type=Button value=Return onClick=\"Location.href='customer_statement.php?id=$customer_id'\"> ";
+echo "</form>";
+echo "</table>";
+echo"</body>";
+echo"</html>";
+?>

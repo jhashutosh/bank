@@ -1,0 +1,69 @@
+<?
+include "config.php";
+
+// PHP4
+$land_id=$_REQUEST['land_id']; 
+
+// NOTICE:
+// Data retrival form database 
+$db=pg_pConnect("host=$HOST dbname=$DATABASE");
+$result=pg_Exec($db,$DATESTYLE);
+
+// Make WHERE CLAUSE such that only one row retrive in actual case
+$sql_statement="SELECT * FROM land_info_t WHERE land_id='$land_id'";
+$result=pg_Exec($db,$sql_statement);
+echo "<html>";
+echo "<head>";
+echo "<title>Update Form";
+echo "</title>";
+echo "</head>";
+echo "<body bgcolor=\"skyblue\">";
+echo "<h3>Update Form of Land information";
+echo "</h>";
+echo "<h5>Please update information prior to submission";
+echo "</h5>";
+echo "<hr>";
+
+if(pg_NumRows($result)==0) {
+  echo "<h4>Record Not found!!!</h4>";
+} else {
+  $land_id=pg_result($result,'land_id');
+  $gp_name=pg_result($result,'gp_name');
+  $land_size=pg_result($result,'land_size');
+  $membership_no=pg_result($result,'membership_no');
+  $value_of_land=pg_result($result,'value_of_land');
+  $j_l_no=pg_result($result,'j_l_no');
+  $dag_no =pg_result($result,'dag_no');
+  $mini_no=pg_result($result,'mini_no');
+  $mouja=pg_result($result,'mouja');
+  $farmer_type =pg_result($result,'farmer_type');
+  $land_type=pg_result($result,'land_type');
+  
+echo "<form method=\"POST\" action=\"land_info_t_ufa.php\"><br>";
+echo "<table>";
+echo "<tr><td align=\"left\">Membership No:<td><input type=\"TEXT\" name=\"membership_no\" size=\"50\" value=\"$membership_no\" readonly><br>";
+echo "<tr><td align=\"left\">Land id:<td><input type=\"TEXT\" name=\"land_id\" size=\"50\" value=\"$land_id\" readonly><br>";
+echo "<tr><td align=\"left\">Land size:<td><input type=\"TEXT\" name=\"land_size\" size=\"50\" value=\"$land_size\"><br>";
+echo "<tr><td align=\"left\">Value Of Land :<td><input type=\"TEXT\" name=\"value_of_land\" size=\"50\" value=\"$value_of_land\"><br>";
+echo "<tr><td align=\"left\">Farmer Type:<td>";
+makeSelect($farmer_type_array,"farmer_type",$farmer_type);
+echo "<tr><td align=\"left\">Farmer Type:<td>";
+makeSelect($land_array,"land_type",$land_type);
+echo "<tr><td align=\"left\">Mouja No.:<td><input type=\"TEXT\" name=\"mouja\" size=\"50\" value=\"$mouja\"><br>";
+echo "<tr><td align=\"left\">J.L.No:<td><input type=\"TEXT\" name=\"j_l_no\" size=\"50\" value=\"$j_l_no\"><br>";
+echo "<tr><td align=\"left\">Dag No.:<td><input type=\"TEXT\" name=\"dag_no\" size=\"50\" value=\"$dag_no\"><br>";
+echo "<tr><td align=\"left\">Mini No.:<td><input type=\"TEXT\" name=\"mini_no\" size=\"50\" value=\"$mini_no\">";
+echo "<tr><td align=\"left\">Gram panchayeet name:<td><input type=\"TEXT\" name=\"gp_name\" size=\"50\" value=\"$gp_name\"><br>";
+echo "<tr><td valign=\"top\" align=\"left\">Remarks:<td><textarea name=\"remarks\" rows=\"3\" cols=\"49\">$remarks</textarea><br>";
+
+echo "<tr><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"Update my values\">";
+echo "  <input type=\"RESET\" name=\"RESET_BUTTON\" value=\"Cancel\"><br>";
+echo "</table>";
+echo "</form>";
+}
+
+footer();
+echo "</body>";
+echo "</html>";
+
+?>

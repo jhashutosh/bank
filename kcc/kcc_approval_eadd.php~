@@ -1,0 +1,66 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$approval_no=$_REQUEST['text3'];
+$customer_id=$_REQUEST['text1'];
+$approval_dt=$_REQUEST['text4'];
+$approval_valid_dt=$_REQUEST['text5'];
+$petition_no=$_REQUEST['text6'];
+$rabi=$_REQUEST['text7'];
+$kharif=$_REQUEST['text8'];
+$boro=$_REQUEST['text9'];
+$land_id=$_REQUEST['music'];
+echo "<html>";
+echo "<head>";
+echo "<title>Statement";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+if($rabi!=0)
+{
+//$crop=rabi;
+$credit_limit=$rabi;
+$sql_statement="INSERT INTO kcc_approval (customer_id,aprvl_no,aprvl_ref,aprvl_dt,valid_till,credit_limit,crop,land_id) VALUES('$customer_id','$approval_no','$petition_no','$approval_dt','$approval_valid_dt','$credit_limit','rabi','$land_id')";
+$result=dBConnect($sql_statement);
+}
+if($kharif!=0)
+{
+//$crop=kharif;
+$credit_limit=$kharif;
+$sql_statement="INSERT INTO kcc_approval (customer_id,aprvl_no,aprvl_ref,aprvl_dt,valid_till,credit_limit,crop,land_id) VALUES('$customer_id','$approval_no','$petition_no','$approval_dt','$approval_valid_dt','$credit_limit','kharif','$land_id')";
+$result=dBConnect($sql_statement);
+}
+if($boro!=0)
+{
+//$crop=boro;
+$credit_limit=$boro;
+$sql_statement="INSERT INTO kcc_approval (customer_id,aprvl_no,aprvl_ref,aprvl_dt,valid_till,credit_limit,crop,land_id) VALUES('$customer_id','$approval_no','$petition_no','$approval_dt','$approval_valid_dt','$credit_limit','boro','$land_id')";
+$result=dBConnect($sql_statement);
+}
+//echo "$crop";
+//echo "$credit_limit";
+//echo "$approval_no";
+//echo "$customer_id";
+//echo "$approval_dt";
+//echo "$approval_valid_dt";
+//echo "$petition_no";
+//echo "$rabi";
+//echo "$kharif";
+//echo "$boro";
+
+//$result=dBConnect($sql_statement);
+if(pg_affected_rows($result)<1)
+{
+  echo "<br><h5><font color=\"RED\" size=\"6\">Failed to insert data into database.</font></h5>";
+  //echo "$chbox";
+ }
+else
+ {
+
+  //echo "<br><h5><font color=\"GREEN\">Data entered into database.</font></h5>";
+  header("Location:../kcc/kcc_approval_issue.php");
+ }
+echo "</body>";
+echo "</html>";
+?>

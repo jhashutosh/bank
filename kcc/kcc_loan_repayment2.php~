@@ -1,0 +1,190 @@
+﻿<? include "../config/config.php"; 
+$staff_id=verifyAutho(); 
+$menu=$_REQUEST['menu']; 
+$op=$_REQUEST['op']; 
+if(empty($_REQUEST['account_no'])){
+ $account_no=$_SESSION["current_account_no"]; 
+if(empty($op)){ 
+$sql_statement="SELECT getLoanInterest('$account_no','current_date','kcc') as int"; $result=dBConnect($sql_statement);
+ if(pg_result($result,'int')==1){$iflag=true;} } } else{ $account_no=$_REQUEST['account_no']; $_SESSION["current_account_no"]=$account_no; } $id=getCustomerId($account_no,$menu); echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; $flag=getGeneralInfo_Customer($id); if($flag==1){ echo "
+
+"; //==========================DISPLAY HERE ====================================================== 
+if(empty($op)){
+ echo ""; $sql_statement="select loan_ser_no,sum(loan_amount-r_principal) as principal, sum(due_interest-r_due_int) as due_int, sum(od_interest-r_od_int) as od_int from get_mas_bal_dt(current_date) where account_no='$account_no' group by loan_ser_no"; 
+echo "$sql_statement"; //$sql_statement="SELECT * FROM loan_cal_int where account_no='$account_no'"; $result=dBConnect($sql_statement); if(pg_NumRows($result)>0){ $color="GREEN"; echo "
+KCC Details of [$account_no] as on ".date('d.m.Y').""; echo ""; echo "
+
+
+
+
+
+
+
+
+
+
+Loan 
+Serial No"; echo "
+Name"; echo "
+Crop
+Name"; echo "
+Days"; echo "
+Principal
+(Rs.)"; echo "
+Interest"; echo "
+Total
+(Rs.)"; echo "
+Operation"; echo "
+
+
+
+Due"; echo "
+Overdue"; for($j=0; $j"; $row=pg_fetch_array($result,$j); if($row['status']=='o'){ $color="#DC143C"; } else{ $color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR; } //$loan_sl_no=$row['loan_serial_no']; echo "
+".$row['loan_ser_no'].""; echo "
+".getName('customer_id',$id,'name1','customer_master').""; $c_id=$row['crop_id']; echo "
+".getName('crop_id',$c_id,'crop_desc','crop_mas').""; echo "
+0"; echo "
+".(float)$row['principal'].""; echo "
+".$row['due_int'].""; echo "
+".$row['od_int'].""; echo "
+".($row['principal']+$row['due_int']+$row['od_int']).""; echo "
+Repay"; } } else{ echo "
+Your dont have any KCC Loan!!!!!!!!!!!
+"; } } //==================================FOR REPAY FORM========================================= if($op=='r'){ $ln_sl=$_REQUEST['ln_sl']; //$sql_statement="SELECT * FROM loan_cal_int where account_no='$account_no' AND loan_serial_no='$ln_sl'"; 
+$sql_statement="select loan_ser_no,r_principal,r_due_int,r_od_int,loan_amount-r_principal as due_principal, due_interest-r_due_int as due_int, od_interest-r_od_int as due_od_int from get_mas_bal_dt(current_date) where loan_ser_no='$ln_sl'"; 
+echo "$sql_statement"; $result=dBConnect($sql_statement); if(pg_NumRows($result)>0){ $d_principal=pg_result($result,'due_principal'); $d_int=pg_result($result,'due_int'); $od_int=pg_result($result,'due_od_int'); echo ""; echo "
+KCC Repayment Form of [$account_no]"; echo "
+"; echo "
+
+Crop:
+"; echo "
+Date:
+"; echo "
+
+RECOVERY:
+DUE:"; recoverDetails($ln_sl,$p,$d,$o); echo "
+
+Principal :
+Rs. "; echo "
+Principal :
+Rs. "; echo "
+
+Due Interest :
+Rs. "; echo "
+Due Interest :
+Rs. "; echo "
+
+Over Due Interest:
+Rs. "; echo "
+Over Due Interest:
+Rs. "; echo "
+
+Days:
+Rs. "; echo "
+Amount:
+Rs. "; echo "
+
+
+"; echo ""; echo "
+"; } } //------------------------------new change by sujoy---------------------- if($op=='i'){ //echo "sujoy"; $action_date=$_REQUEST['action_date']; $amount=$_REQUEST['amount']; $ln_sl=$_REQUEST['ln_sl']; $sql_statement="SELECT * FROM loan_cal_int where account_no='$account_no' AND loan_serial_no='$ln_sl'"; $result=dBConnect($sql_statement); if(pg_NumRows($result)>0){ $d_principal=pg_result($result,'principal'); $d_int=pg_result($result,'due_int'); $od_int=pg_result($result,'overdue_int'); } //echo "$ln_sl"; //echo "$d_principal"; //echo "$d_int"; //echo "$od_int"; //echo "$amount";
+ if($od_int!=0)
+ { if($od_int<$amount)
+ { $balance=$amount-$od_int;
+ $od_int=0; 
+if($d_int<$balance)
+ { $balance=$balance-$d_int; 
+$d_int=0;
+ if($d_principal>$balance) 
+{ $d_principal=$d_principal-$balance;
+ $d_int=0;
+ $od_int=0; 
+}
+ else
+ { $d_principal=$balance-$d_principal;
+ $d_int=0;
+ $od_int=0;
+ }
+ }
+ else 
+{ $balance=$d_int-$balance;
+ $d_int=$balance;
+ }
+ } 
+else
+ { $balance=$od_int-$amount; 
+$od_int=$balance;
+ }
+ } 
+else
+ { 
+if($d_int<$amount)
+ { $balance=$amount-$d_int; 
+$d_int=0; 
+if($d_principal>$balance) 
+{ $d_principal=$d_principal-$balance;
+ $d_int=0; 
+$od_int=0;
+ } 
+else
+ { $d_principal=$balance-$d_principal; 
+$d_int=0;
+ $od_int=0;
+ }
+ }
+ else 
+{ $balance=$d_int-$amount;
+ $d_int=$balance;
+ }
+ }
+ //echo "
+
+"; //echo "$d_principal"; //echo "
+
+"; //echo "$d_int"; //echo "
+
+"; //echo "$od_int"; //echo "
+
+"; //echo "$amount"; //--------------------------------------insert-------------------------- $gl_code=getGlCode4mCustomerAccount($account_no,$action_date); $fy=getFy($action_date); if(empty($fy)){ echo "
+You Can't Insert any value Into database Because Financial Year already Locked by administrator !!!!!!!!!
+"; } else{ $t_id=getTranId(); echo "$t_id"; //For GL ENTRY------------------------------------- $sql_statement="UPDATE loan_ledger_hrd SET staff_id='$staff_id',already_return='$amount',last_interest_date='$action_date' WHERE account_no='$account_no' AND loan_serial_no='$ln_sl'"; echo "$sql_statement"; $sql_statement="INSERT INTO gl_ledger_hrd(tran_id,type, action_date,fy,remarks, operator_code, entry_time) VALUES ('$t_id','kcc','$action_date','$fy','$remarks','$staff_id', now())"; $sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$account_no', '$gl_code',$amount,'Dr','kcc issue')"; $sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$account_no','57997',$c_insurance,'Cr','crop Insurance')"; //if($upFlag){ $sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$account_no','57998',$s_insurance,'Cr','farmar self Insurance')"; //} $sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','28101',($amount-$c_insurance-$s_insurance),'Cr','kcc issue')"; } //----------------------------------------end------------------------ $sql_statement="UPDATE loan_cal_int SET due_int='$d_int',overdue_int='$od_int',principal='$d_principal' WHERE account_no='$account_no' AND loan_serial_no='$ln_sl'"; $result=dBConnect($sql_statement); if(pg_NumRows($result)>0){ //echo "update done"; } else { //echo "not updated"; echo ""; $sql_statement="SELECT * FROM loan_cal_int WHERE account_no='$account_no' AND loan_serial_no='$ln_sl'"; $result=dBConnect($sql_statement); if(pg_NumRows($result)>0){ $color="GREEN"; echo "
+
+KCC Details of [$account_no] as on ".date('d.m.Y').""; echo ""; echo "
+
+
+
+
+
+
+
+
+
+Loan 
+Serial No"; echo "
+Name"; echo "
+Crop
+Name"; echo "
+Days"; echo "
+Principal
+(Rs.)"; echo "
+Interest"; echo "
+Total
+(Rs.)"; //echo "
+Operation"; echo "
+
+
+Due"; echo "
+Overdue"; for($j=0; $j"; $row=pg_fetch_array($result,$j); if($row['status']=='i'){ $color="#DC143C"; } else{ $color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR; } $loan_sl_no=$row['loan_serial_no']; echo "
+$loan_sl_no"; echo "
+".getName('customer_id',$id,'name1','customer_master').""; $c_id=$row['crop_id']; echo "
+".getName('crop_id',$c_id,'crop_desc','crop_mas').""; echo "
+".$row['days'].""; echo "
+".(float)$row['principal'].""; echo "
+".$row['due_int'].""; echo "
+".$row['overdue_int'].""; echo "
+".($row['principal']+$row['due_int']+$row['overdue_int']).""; } } echo "
+
+"; } } //-------------------------------INSERT INTO DATABASE ------------------------------------------ /* if($op=='i'){ echo "sujoy"; $d_principal=$_REQUEST['d_principal']; $d_int=$_REQUEST['d_int']; $amount=$_REQUEST['amount']; $od_int$_REQUEST['od_int']; $ln_sl=$_REQUEST['ln_sl']; $action_date=$_REQUEST['action_date']; $gl_code=getGlCode4mCustomerAccount($account_no,$action_date); $fy=getFy($action_date); if(empty($fy)){ echo "
+You Can't Insert any value Into database Because Financial Year already Locked by administrator !!!!!!!!!
+"; } else{ $t_id=getTranId(); //For GL ENTRY------------------------------------- $sql_statement="INSERT INTO gl_ledger_hrd(tran_id,type, action_date,fy,remarks, operator_code, entry_time) VALUES ('$t_id','kcc','$action_date','$fy','$remarks','$staff_id', now())"; $sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$account_no', '$gl_code',$amount,'Dr','kcc issue')"; $sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$account_no','57997',$c_insurance,'Cr','crop Insurance')"; if($upFlag){ $sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,account_no,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$account_no','57998',$s_insurance,'Cr','farmar self Insurance')"; } $sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','28101',($amount-$c_insurance-$s_insurance),'Cr','kcc issue')"; } }*/ //---------------------------------------------------------------------------------------------- /* $sql_statement="UPDATE loan_cal_int SET due_int='$d_int',overdue_int='$od_int',principal='$d_principal' WHERE account_no='$account_no' AND loan_serial_no='$ln_sl'"; $result=dBConnect($sql_statement); if(pg_NumRows($result)>0){ echo "update done"; } else { echo "not updated"; } */ } ?> 
+
+

@@ -1,0 +1,44 @@
+<?
+include "../config/config.php";
+$q=strtolower($_REQUEST['q']);
+$s_type=strtolower($_REQUEST['s_type']);
+if(empty($q) || empty($s_type)){
+echo "<input type=\"TEXT\" name=\"gl_code\" READONLY $HIGHLIGHT>";
+}
+else if($q=='fd' && $s_type=='ccb'){
+echo "<input type=\"TEXT\" name=\"gl_code\" size=\"35\" VALUE=\"[22402]Investment in FD(SCB/CCB)\" READONLY $HIGHLIGHT >";
+}
+else if($q=='rd' && $s_type=='ccb'){
+echo "<input type=\"TEXT\" name=\"gl_code\"  size=\"35\" VALUE=\"[22401]Investment in RD(SCB/CCB)\"READONLY $HIGHLIGHT>";
+}
+else if($q=='ri' && $s_type=='ccb'){
+echo "<input type=\"TEXT\" name=\"gl_code\"  size=\"35\" VALUE=\"[22403]Investment in RI(SCB/CCB)\"READONLY $HIGHLIGHT>";
+}
+else if($q=='ri' && $s_type=='cm'){
+echo "<input type=\"TEXT\" name=\"gl_code\"  size=\"35\" VALUE=\"[22503]Investment in RI(Other Banks)\"READONLY $HIGHLIGHT>";
+}
+else if($q=='rd' && $s_type=='cm'){
+echo "<input type=\"TEXT\" name=\"gl_code\"  size=\"35\" VALUE=\"[22501]Investment in RD(Other Banks)\"READONLY $HIGHLIGHT>";
+}
+else if($q=='fd' && $s_type=='cm'){
+echo "<input type=\"TEXT\" name=\"gl_code\"  size=\"35\" VALUE=\"[22502]Investment in RD(Other Banks)\"READONLY $HIGHLIGHT>";
+}
+else if($q=='oth' && $s_type=='cm'){
+echo "<input type=\"TEXT\" name=\"gl_code\"  size=\"35\" VALUE=\"[22599]Investment in Others Deposits(Other Banks)\"READONLY $HIGHLIGHT>";
+}
+else if($q=='oth' && $s_type=='ccb'){
+echo "<input type=\"TEXT\" name=\"gl_code\"  size=\"35\" VALUE=\"[22499]Investment in Others Deposits(SCB/CCB)\"READONLY $HIGHLIGHT>";
+}
+else if($q=='oth' && $s_type=='oth'){
+echo "<input type=\"TEXT\" name=\"gl_code\"  size=\"35\" VALUE=\"[22901]Other Investments\"READONLY $HIGHLIGHT>";
+}
+else if($s_type=='po'){
+echo "<input type=\"TEXT\" name=\"gl_code\"  size=\"35\" VALUE=\"[22601]Investment in Post Office\"READONLY $HIGHLIGHT>";
+}
+else{
+echo "<input type=\"TEXT\" name=\"gl_code\" READONLY $HIGHLIGHT>";
+//echo "<td bgcolor=\"#BDB76B\">Loan Catagory:<td bgcolor=\"#BDB76B\">";
+}
+
+
+?>

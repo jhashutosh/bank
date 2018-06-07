@@ -1,0 +1,77 @@
+<?php 
+include "../config/config.php";
+$menu=$_REQUEST['menu'];
+$staff_id=verifyAutho();
+echo "<html>";
+echo "<head>";
+echo "<title>List of accounts";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../css/test.css\" />";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+echo "<table width=\"140%\" align=\"center\">";
+echo "<center><tr><th bgcolor=green colspan=15><font color=white size=5>Overdue List Of SAO Loan</font></center>";
+$color="#F0E68C";
+echo "<tr>";
+echo "<th bgcolor=$color width=\"15%\" rowspan=\"2\">SAO A/C NO.</th>";
+echo "<th bgcolor=$color width=\"30%\" rowspan=\"2\">FARMER NAME</th>";
+echo "<th bgcolor=$color width=\"40%\" colspan=\"3\">Overdue</th>";
+//echo "<th bgcolor=$color width=\"15%\" rowspan=\"2\">Date of Overdue</th>";
+//echo "<th bgcolor=$color width=\"15%\" rowspan=\"2\">OVERDUE DAYS COUNT</th>";
+//echo "<th bgcolor=$color width=\"20%\" colspan=\"2\">LOAN ISSUE</th>";
+//echo "<th bgcolor=$color width=\"15%\" rowspan=\"2\">LAST Repayment DATE</th>";
+echo "<th bgcolor=$color width=\"15%\" colspan=\"3\">LOAN ISSUE</th>";
+echo "<th bgcolor=$color width=\"15%\" rowspan=\"2\">LOAN Repayment(Rs.)</th>";
+//echo "<th bgcolor=$color width=\"15%\" rowspan=\"2\">DUE interest RATE(%)</th>";
+//echo "<th bgcolor=$color width=\"20%\" rowspan=\"2\">CROP</th>";
+//echo "<th bgcolor=$color width=\"100%\" rowspan=\"2\">YEAR</th>";
+echo "<tr><th bgcolor=$color>AMOUNT</th><th bgcolor=$color>INTEREST</th><th bgcolor=$color>TOTAL</th><th bgcolor=$color>Date Of First Operation</th><th bgcolor=$color>Date Of Last Operation</th><th bgcolor=$color>Total Issue</th></tr>";
+
+
+$sql_statement="SELECT account_no,sum(loan_amount) as principal, sum(due_interest-r_due_int) as due_int, sum(od_interest-r_od_int) as od_int FROM get_mas_bal_dt(current_date) GROUP BY account_no HAVING sum(od_interest-r_od_int)>0";
+
+$result=dBConnect($sql_statement);
+if(pg_NumRows($result)==0){
+echo "<tr>";
+echo "<th colspan=\"15\"><font color=green size=5><blink>!!! There is no Customer in Overdue List !!!</blink></font></th>";
+}
+else
+{
+$color=$TCOLOR;
+for($j=0; $j<=pg_NumRows($result); $j++){
+	$color=($color==$TCOLOR)?$TBGCOLOR:$TCOLOR;
+	$row=pg_fetch_array($result,$j);
+$sao_account_no=trim($row['account_no']);
+$principal=trim($row['principal']);
+//$due_int=trim($row['due_int']);
+$od_int=trim($row['od_int']);
+//$od_due_int=$due_int+$od_int;
+$total=$principal+$od_int;
+echo "<tr>";
+echo "<th bgcolor=$color width=\"15%\">$sao_account_no</a></th>";
+$customer_id=getCustomerNameFromSAOAccount($sao_account_no);
+$name=getCustomerName($customer_id);
+echo "<th bgcolor=$color width=\"30%\">$name</th>";
+echo "<th bgcolor=$color>$principal</th>";
+echo "<th bgcolor=$color>$od_int</th>";
+echo "<th bgcolor=$color>$total</th>";
+echo "<th bgcolor=$color>0</th>";
+echo "<th bgcolor=$color>0</th>";
+$amount=getSaoLoanAmount($sao_account_no);
+echo "<th bgcolor=$color>$amount</th>";
+$return_amount=getSaoLoanRepaymentAmount($sao_account_no);
+echo "<th bgcolor=$color>$return_amount</th>";
+//echo "<th bgcolor=$color>0</th>";
+//echo "<th bgcolor=$color>0</th>";
+//echo "<th bgcolor=$color>0</th>";
+//echo "<th bgcolor=$color>0</th>";
+//echo "<th bgcolor=$color>0</th>";
+//echo "<th bgcolor=$color>0</th>";
+}
+
+}
+
+echo "</table>";
+echo "</body>";
+echo "</html>";
+?>

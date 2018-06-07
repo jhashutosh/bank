@@ -1,0 +1,62 @@
+<?
+include "../config/config.php";
+$staff_id=verifyAutho();
+$menu=$_REQUEST["menu"];
+$pay_term=$_REQUEST['pay_term'];
+$group_no=$_REQUEST['group_no'];
+//$loan_account=$_REQUEST['loan_acc'];
+//$appl_date=$_REQUEST['appl_date'];
+$appl_amount=$_REQUEST['applied_amount'];
+$loan_amount=$_REQUEST['loan_amount'];
+$loan_date=$_REQUEST['date_of_issue'];
+$rate_of_int=$_REQUEST['interest_rate'];
+$over_rate_of_int=$_REQUEST['overdue_interest_rate'];
+//$repay_time=$_REQUEST['repay_date'];
+$period=$_REQUEST['period'];
+$purpose=$_REQUEST['purpose'];
+if ($menu=='shg'){
+$c_id=getCustomerIdFromGoupId($group_no);
+}/*
+echo "<html>";
+echo "<head>";
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$fy=getFy();
+if(empty($fy)){
+echo "<h1><center><b>You Can't Insert any value Into database Because Financial Year already Locked by administrator !!!!!!!!!";
+}
+else{
+$t_id=getTranId();
+if($period>1){
+$typeIn='mt';
+$gl_code=getGlCode4LN($typeIn,$menu);
+$account_no=getId($typeIn);
+}
+else{
+$typeIn='st';
+$gl_code=getGlCode4LN($typeIn,$menu);
+$account_no=getId($typeIn);
+}
+
+$sql_statement="INSERT INTO gl_ledger_hrd(tran_id,type,action_date,account_no,certificate_no,rate_of_interest,rate_of_overdue_int, amount,period,fy,remarks, operator_code,entry-time)VALUES('$t_id','$typeIn','$loan_date', '$account_no','$pay_term',$rate_of_int,$over_rate_of_int,$appl_amount,$period,'$fy', '$purpose','$staff_id',now())";
+$sql_statement=$sql_statement.";INSERT INTO customer_account(customer_id,opening_date, account_no,account_type,operator_code,entry_time,status) values('$c_id','$loan_date','$loan_account','MT','$staff_id',now(),'op')";
+$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','$gl_code',$loan_amount,'Dr','loan issue')";
+$sql_statement=$sql_statement.";INSERT INTO gl_ledger_dtl(tran_id,gl_mas_code,amount,dr_cr, particulars) VALUES('$t_id','28101',$loan_amount,'Cr','loan issue')";
+echo $sql_statement;
+$result=dBConnect($$sql_statement);
+if(pg_affected_rows($result)<1)
+{
+  echo "<br><h5><font color=\"RED\">Failed to insert data into database.</font></h5>";
+ 
+ }
+else
+ {
+  echo "<br><h5><font color=\"GREEN\">Data entered into database.</font></h5>";
+  header("Location:../main/next_account.php?menu=$menu&account_no=$group_no");
+ }
+
+}
+*/
+echo "</body>";
+echo "</html>";
+?>

@@ -1,0 +1,119 @@
+<?php
+include "../config/config.php";
+$staff_id=verifyAutho();
+$account_no=$_SESSION["current_account_no"];
+$certificate_no=$_REQUEST["certificate_no"];
+$op_date=$_REQUEST["op_date"];
+$date_with_effect=$_REQUEST["date_with_effect"];
+$scheme=$_REQUEST["scheme"];
+$holder_sb_account_no=$_REQUEST["holder_sb_account_no"];
+$period=$_REQUEST["period"];
+$amount_deposit=$_REQUEST["amount_deposit"];
+$remarks=$_REQUEST["remarks"];
+$menu=$_REQUEST['menu'];
+$t_status=$_REQUEST['pmood'];
+//$opening_date=date('d.m.y'); // after running
+$opening_date=$date_with_effect; //for date entry purpose
+echo "<html>";
+echo "<head>";
+echo "<title>Re Investment Deposit - Entry Form";
+echo "</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/test.css\" />";
+?>
+<script language="javascript">
+function findAccount()
+{
+	var str=document.getElementById("sb_ac").value;
+	if(str.length==0)
+	{
+		alert("Please enter introducer account no.")
+		document.form.sb_ac.disabled=false;
+		document.form.sb_ac.readonly=false;
+		document.form.sb_ac.focus();
+	}
+	else
+	{
+		url="../main/pop_up_account.php?menu=sb&account_no="+str;
+		window.open(url,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes, top=100,left=150,width=1050,height=500');
+		return false;
+	}
+}
+
+function varify_balance(f)
+{
+	var str=document.getElementById("sb_ac").value;
+	var bal=parseFloat(document.getElementById("balance").value);
+	var amt_deposit=parseFloat(document.getElementById("amount_deposit").value);
+	if(amt_deposit>bal){
+			alert("Amount Must Be lower than or Equal to Current Balance\nYou Current Balance is: Rs. "+bal+"\nYour Maximum Withdrawal amount is: Rs. "+(bal-100))
+			//return false;
+			window.location='../ri/ri_ledger_ef.php?menu=ri';
+			return false;
+			}
+}
+</script>
+<?php
+echo "</head>";
+echo "<body bgcolor=\"silver\">";
+$id=getCustomerId($account_no,$menu);
+$flag=getGeneralInfo_Customer($id);
+if($flag==1){
+echo "<hr>";
+echo "<form method=\"POST\" action=\"ri_ledger_eadd.php?menu=$menu\" onSubmit=\"return varify_balance(this.form);\">";
+echo "<table bgcolor=Orange align=center width=90%>";
+echo "<tr><th colspan=\"4\" bgcolor=GREEN>Varify Entry Form of New ".strtoupper($menu)."[$account_no]</th></tr>";
+//echo "<tr><td align=\"left\">Account no:<td><input type=\"TEXT\" name=\"account_no\" size=\"10\" value=\"$account_no\" $HIGHLIGHT><br>";
+echo "<tr><td align=\"left\">opening Date:<td><input type=\"TEXT\" name=\"op_date\" size=\"12\" value=\"$op_date\" readonly $HIGHLIGHT><br>";
+echo "<td align=\"left\">Date With Effect:<td><input type=\"TEXT\" name=\"date_with_effect\" size=\"12\" value=\"$date_with_effect\" readonly $HIGHLIGHT><br>";
+echo "<tr><td align=\"left\">Certificate no:<td><input type=\"TEXT\" name=\"certificate_no\" size=\"25\" value=\"$certificate_no\" readonly $HIGHLIGHT><br>";
+echo "<td align=\"left\">Scheme:<td><input type=\"TEXT\" name=\"scheme\" size=\"25\" value=\"$scheme\" readonly $HIGHLIGHT>";
+echo "<tr><td align=\"left\">Amount deposit:<td><input type=\"TEXT\" name=\"amount_deposit\" id=\"amount_deposit\" size=\"15\" value=\"$amount_deposit\" $HIGHLIGHT><br>";
+echo "<td align=\"left\">Period:<td> <input type=\"TEXT\" name=\"period\" size=\"5\" value=\"$period\" readonly $HIGHLIGHT>&nbsp;Months";
+$scheme=getIndex($scheme_array,$scheme);
+compute_deposit($scheme,$amount_deposit,$period,$rate_of_interest,$total_interest,$maturity_amount,$opening_date,$menu);
+//echo $maturity_amount;
+echo "<tr><td align=\"left\">Rate of interest:<td><input type=\"TEXT\" name=\"rate_of_interest\" size=\"5\" value=\"$rate_of_interest\" $HIGHLIGHT readonly><a href=\"../general/interest_rate_tabular.php?menu=ri&period=$period\" onClick=\"window.open(this.href,'_blank','toolbar=no,status=no,location=no,directories=no,resizeable=no,scrollbars=yes,top=100,left=150, width=1000,height=300'); return false;\">View Rate</a>";
+echo "<td align=\"left\">Interest Amount:<td><input type=\"TEXT\" name=\"total_interest\" size=\"15\" value=\"$total_interest\" $HIGHLIGHT><br>";
+echo "<tr><td align=\"left\">Maturity amount:<td><input type=\"TEXT\" name=\"maturity_amount\" size=\"15\" value=\"$maturity_amount\" $HIGHLIGHt><br>";
+$maturity_date=maturity_date($opening_date,$period,'m');
+echo "<td align=\"left\">Maturity date:<td><input type=\"TEXT\" name=\"maturity_date\" size=\"12\" value=\"$maturity_date\" readonly $HIGHLIGHT><br>";
+/*
+if ($_REQUEST['r1']=='y'){
+echo "<tr><td align=\"left\">Holder sb account no:<td><input type=\"TEXT\" name=\"holder_sb_account_no\" size=\"25\" value=\"$holder_sb_account_no\" readonly $HIGHLIGHT><br>";
+echo "<td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"<<<Conform>>>\">";
+}
+else{
+echo "<tr><td><td><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"<<<Conform>>>\">";
+}
+*/
+//********************************************************************************
+
+if(trim($t_status)=='q'){
+echo "<tr>";
+echo "<td>Cheque No:<td><input type=TEXT name=\"ch_no\" size=\"12\" id=\"ch_no\" value=\"0\" $HIGHLIGHT>";
+echo "<td>Transfer From:<td>";
+selectBankAccount('bank_ac_no','ENABLE');
+echo "<input type=HIDDEN name=\"t_status\" size=\"12\" id=\"t_status\" value=\"q\" $HIGHLIGHT>";
+echo "</tr>";
+}
+
+if (trim($t_status)=='y'){
+$sb_account_no=customerAccountNo($id,'sb');
+$balance=sb_current_balance($sb_account_no,$op_date);
+echo "<tr>";
+echo "<td>Transfer From Your SB A/C : <td><INPUT NAME=\"t_status\" id=\"r1\" TYPE=\"HIDDEN\" VALUE=\"y\" >";
+echo "<input type=\"TEXT\" id=\"sb_ac\" size=\"8\" value=\"$sb_account_no\" name=\"sb_account_no\" READONLY ><input type=\"BUTTON\" id=\"sb_bt\" name=\"BUTTON\" value=\"Search\" onClick=\"findAccount();\">";
+echo "<td>Current Balance Of Your SB A/C : <td><INPUT NAME=\"balance\" name=\"balance\" id=\"balance\" TYPE=\"text\" VALUE=\"$balance\" readonly>";
+}
+
+if (trim($t_status)=='c'){
+echo "<input type=HIDDEN name=\"t_status\" size=\"2\" id=\"t_status\" value=\"c\" $HIGHLIGHT>";
+}
+//*********************************************************************************
+echo "<tr><td><td><td><td align=\"right\"><input type=\"SUBMIT\" name=\"SUBMIT_BUTTON\" value=\"<<<Conform>>>\">";
+echo "</table>";
+}
+echo "</form>";
+echo "</body>";
+echo "</html>";
+?>
