@@ -1278,212 +1278,207 @@ return $loan_bal;
 }
 //--------------------------------------------------------------------------------------------
 
-function getGlCode4Deposit($customer_id,$status){
-// echo "status is $status";
- $sql_statement="SELECT type_of_customer FROM customer_master where customer_id='$customer_id'";
-//echo $sql_statement;
- $result=dBConnect($sql_statement);
- if(pg_NumRows($result)>0){
- $type=pg_result($result,'type_of_customer');
-echo $type;
- switch(trim($status)){
- case 'sb':
-	  switch($type){
- 		case "so":
- 		case "jn":
-		case 'jl':
-			$code='14201';
-			break;
- 		case "or":
-			$code=searchMember($customer_id);
-     			if(empty($code)){
-			$code='14301';//non-member
-			}
-			else{
-			$code='14101';//member
-			}
-     		break;
- 		case "gp":
-    			$code='14201';//SHG
-    		break;
- 		case "nr":
-    			$code='14401';//NREGS
-    		break;
-   		}
+// function getGlCode4Deposit($customer_id,$status){
+// // echo "status is $status";
+//  $sql_statement="SELECT type_of_customer FROM customer_master where customer_id='$customer_id'";
+// //echo $sql_statement;
+//  $result=dBConnect($sql_statement);
+//  if(pg_NumRows($result)>0){
+//  $type=pg_result($result,'type_of_customer');
+// echo $type;
+//  switch(trim($status)){
+//  case 'sb':
+// 	  switch($type){
+//  		case "so":
+//  		case "jn":
+// 		case 'jl':
+// 			$code='14201';
+// 			break;
+//  		case "or":
+// 			$code=searchMember($customer_id);
+//      			if(empty($code)){
+// 			$code='14301';//non-member
+// 			}
+// 			else{
+// 			$code='14101';//member
+// 			}
+//      		break;
+//  		case "gp":
+//     			$code='14201';//SHG
+//     		break;
+//  		case "nr":
+//     			$code='14401';//NREGS
+//     		break;
+//    		}
 
- break;
+//  break;
 
-case 'sd':
-	  switch($type){
- 		case "so":
- 		case "jn":
- 		case "or":
-			$code=searchMember($customer_id);
-     			if(empty($code)){
-			$code='18915';//non-member
-			}
-			else{
-			$code='18914';//member
+// case 'sd':
+// 	  switch($type){
+//  		case "so":
+//  		case "jn":
+//  		case "or":
+// 			$code=searchMember($customer_id);
+//      			if(empty($code)){
+// 			$code='18915';//non-member
+// 			}
+// 			else{
+// 			$code='18914';//member
 
-			}
+// 			}
 
      		
-    		break;
- 		case "nr":
-    			$code=findGlCode('Sundy deposit(nrgs)');
-    		break;
-   		}
- break;
+//     		break;
+//  		case "nr":
+//     			$code=findGlCode('Sundy deposit(nrgs)');
+//     		break;
+//    		}
+//  break;
 
 
 
- case 'fd':
+//  case 'fd':
 	
-	switch($type){
- 		case "so":
- 		case "jn":
- 		case "or":
-			$code=searchMember($customer_id);
-     			if(empty($code)){
-			$code='14303';//non-member
-			}
-			else{
-			$code='14103';//member
-			}
-     		break;
- 		case "gp":
-    			$code='14203';//SHG
-    		break;
- 		case "nr":
-    			$code=findGlCode('fixed deposit(nrgs)');
-    		break;
-   		}
-break;         
-case 'ri':
-	switch($type){
- 		case "so":
- 		case "jn":
- 		case "or":
-			$code=searchMember($customer_id);
-     			if(empty($code)){
-			$code='14304';//non-member
-			}
-			else{
-			$code='14104';//member
-			}
-     		break;
- 		case "gp":
-    			$code='14204';//SHG
-    		break;
- 		case "nr":
-    			$code=findGlCode('reinvestment term deposit(nrgs)');
-    		break;
-   		}
+// 	switch($type){
+//  		case "so":
+//  		case "jn":
+//  		case "or":
+// 			$code=searchMember($customer_id);
+//      			if(empty($code)){
+// 			$code='14303';//non-member
+// 			}
+// 			else{
+// 			$code='14103';//member
+// 			}
+//      		break;
+//  		case "gp":
+//     			$code='14203';//SHG
+//     		break;
+//  		case "nr":
+//     			$code=findGlCode('fixed deposit(nrgs)');
+//     		break;
+//    		}
+// break;         
+// case 'ri':
+// 	switch($type){
+//  		case "so":
+//  		case "jn":
+//  		case "or":
+// 			$code=searchMember($customer_id);
+//      			if(empty($code)){
+// 			$code='14304';//non-member
+// 			}
+// 			else{
+// 			$code='14104';//member
+// 			}
+//      		break;
+//  		case "gp":
+//     			$code='14204';//SHG
+//     		break;
+//  		case "nr":
+//     			$code=findGlCode('reinvestment term deposit(nrgs)');
+//     		break;
+//    		}
  
-break;
-case 'rd':
-	switch($type){
- 		case "so":
- 		case "jn":
- 		case "or":
-			$code=searchMember($customer_id);
-     			if(empty($code)){
-			$code='14302';//non-member
-			}
-			else{
-			$code='14102';//member
-			}
-     		break;
- 		case "gp":
-    			$code='14202';//SHG
-    		break;
- 		case "nr":
-    			$code=findGlCode('recurring deposit(nrgs)');
-    		break;
-   		}
-break;
-//sas
- case 'pfsb':
-	  switch($type){
- 		case "so":
- 		case "jn":
- 		case "or":
-			$code=searchMember($customer_id);
-     			if(empty($code)){
-			$code='12216';//non-member
-			}
-			else{
-			$code='12216';//member
-			}
-     		break;
+// break;
+// case 'rd':
+// 	switch($type){
+//  		case "so":
+//  		case "jn":
+//  		case "or":
+// 			$code=searchMember($customer_id);
+//      			if(empty($code)){
+// 			$code='14302';//non-member
+// 			}
+// 			else{
+// 			$code='14102';//member
+// 			}
+//      		break;
+//  		case "gp":
+//     			$code='14202';//SHG
+//     		break;
+//  		case "nr":
+//     			$code=findGlCode('recurring deposit(nrgs)');
+//     		break;
+//    		}
+// break;
+// //sas
+//  case 'pfsb':
+// 	  switch($type){
+//  		case "so":
+//  		case "jn":
+//  		case "or":
+// 			$code=searchMember($customer_id);
+//      			if(empty($code)){
+// 			$code='12216';//non-member
+// 			}
+// 			else{
+// 			$code='12216';//member
+// 			}
+//      		break;
  	
 
 
 
-   		}
- break;
+//    		}
+//  break;
 
 
 
- case 'hsb':
-	  switch($type){
- 		case "so":
- 		case "jn":
- 		case "nr":
-			$code=searchMember($customer_id);
-     			if(empty($code)){
-			$code='14305';//non-member
-			}
-			else{
-			$code='14105';//member
-			}
-     		break;
+//  case 'hsb':
+// 	  switch($type){
+//  		case "so":
+//  		case "jn":
+//  		case "nr":
+// 			$code=searchMember($customer_id);
+//      			if(empty($code)){
+// 			$code='14305';//non-member
+// 			}
+// 			else{
+// 			$code='14105';//member
+// 			}
+//      		break;
  	
 
 
 
-   		}
- break;
+//    		}
+//  break;
 
+// //sas
+// case 'mis':
+// 	switch($type){
+//  		case "so":
+//  		case "jn":
+//  		case "or":
+// 			$code=searchMember($customer_id);
+//      			if(empty($code)){
+// 			$code='14306';//non-member
+// 			}
+// 			else{
+// 			$code='14106';//member
+// 			}
+//      		break;
+//  		case "gp":
 
-
-
-
-
-
-
-//sas
-case 'mis':
-	switch($type){
- 		case "so":
- 		case "jn":
- 		case "or":
-			$code=searchMember($customer_id);
-     			if(empty($code)){
-			$code='14306';//non-member
-			}
-			else{
-			$code='14106';//member
-			}
-     		break;
- 		case "gp":
-
-    			$code='14206';//SHG
-    		break;
- 		case "nr":
-    			$code=findGlCode(' mis deposit(nregs)');
-    		break;
-   		}
+//     			$code='14206';//SHG
+//     		break;
+//  		case "nr":
+//     			$code=findGlCode(' mis deposit(nregs)');
+//     		break;
+//    		}
  
-break; 
+// break; 
 
-	}						
- }
-else{
-   echo "System error";
-}
-return $code;
-}
+// 	}						
+//  }
+// else{
+//    echo "System error";
+// }
+// return $code;
+// }
+
+
 function getGlCode4Deposit($customer_id,$status){
  //echo "status is $status";
  $sql_statement="SELECT type_of_customer FROM customer_master where customer_id='$customer_id'";
@@ -1620,6 +1615,7 @@ else{
 }
 return $code;
 }
+
 //-------------------------------------------------------------------------------------------------
 function searchMember($customer_id){
  $sql_statement="SELECT * FROM membership_info where customer_id='$customer_id'";
@@ -1672,7 +1668,7 @@ $result=dBConnect($sql_statement);
  }
  }
 //---------------------------------------------------------------------------------------------
-function getGlCode4mCustomerAccount($account_no,$action_date){
+function getGlCode4mCustomerAccount($account_no,$action_date =null){
 if(empty($action_date))
 {$action_date='CURRENT_DATE';}
 else
@@ -2988,6 +2984,21 @@ if(pg_NumRows($result)>0){
    }
 
 }
+
+function getCorrectDate($date){
+  $timestamp = strtotime($date);
+  if ($timestamp === FALSE) {
+    $timestamp = strtotime(str_replace('/', '-', $date));
+  }
+  if ($timestamp === FALSE) {
+    $timestamp = strtotime(str_replace('.', '-', $date));
+  }
+
+  $converted_date = date("d-m-Y", $timestamp);
+
+ return $converted_date;
+}
+
 /////////////////////-------------------------------------------------------------------
 ?>
 

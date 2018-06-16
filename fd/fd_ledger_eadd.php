@@ -1,5 +1,6 @@
 <?php
 include "../config/config.php";
+
 $staff_id=verifyAutho();
 $menu=$_REQUEST["menu"];
 $t_status=$_REQUEST['t_status'];
@@ -8,12 +9,16 @@ $ch_no=$_REQUEST['ch_no'];
 //echo "<h1>==$bank_account_no==$ch_no==$menu==$t_status</h1>";
 $account_no=$_SESSION["current_account_no"];
 $certificate_no=$_REQUEST["certificate_no"];
-$date_with_effect=$_REQUEST["date_with_effect"];
+$date_with_effect=getCorrectDate($_REQUEST["date_with_effect"]);
 $scheme=$_REQUEST["scheme"];
 $holder_sb_account_no=$_REQUEST["holder_sb_account_no"];
 $period=$_REQUEST["period"];
 $amount_deposit=$_REQUEST["amount_deposit"];
 $rate_of_interest=$_REQUEST["rate_of_interest"];
+if(empty($rate_of_interest)){
+	$rate_of_interest = 0;
+}
+
 $total_interest=$_REQUEST["total_interest"];
 $maturity_amount=$_REQUEST["maturity_amount"];
 $maturity_date=$_REQUEST["maturity_date"];
@@ -22,11 +27,21 @@ if(empty($rate_of_interest)){$rate_of_interest=$RATE_OF_INTEREST_DEFAULT;}
 if(empty($total_interest)){$total_interest=$TOTAL_INTEREST_DEFAULT;}
 if(empty($maturity_amount)){$maturity_amount=$MATURITY_AMOUNT_DEFAULT;}
 if(empty($withdrawal_amount)){$withdrawal_amount=$WITHDRAWAL_AMOUNT_DEFAULT;}
-$opening_date=$_REQUEST['op_date'];
+
+$opening_date = getCorrectDate($_REQUEST['op_date']);
 if(trim($t_status)=='q')
-{$cheque_dt=$opening_date;}
-if(empty($maturity_date)){$maturity_date=date("d.m.y");}
-if(empty($withdrawal_date)){$withdrawal_date="01/01/1970";}
+{
+	$cheque_dt=$opening_date;
+}
+if(empty($maturity_date)){
+	$maturity_date=date("d-m-y");
+}
+if(empty($withdrawal_date)){
+	$withdrawal_date= "01-01-1970";
+}
+$maturity_date= getCorrectDate($maturity_date);
+$withdrawal_date= getCorrectDate($withdrawal_date);
+
 $scheme=getIndex($scheme_array,$scheme);
 //$fy=$getFy($opening_date);
 $fy=$_SESSION['fy'];
@@ -55,9 +70,10 @@ else{
    	// Modification required to suite data type
 
 	//GL_ledger_Hrd
-	$sql_statement="INSERT INTO gl_ledger_hrd (tran_id,type,action_date, certificate_no,fy,operator_code,entry_time,cheque_no,cheque_dt)VALUES ('$t_id','$menu','$opening_date', '$certificate_no','$fy','$staff_id',CAST('$opening_date'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP),'$ch_no','$cheque_dt');";
+	$sql_statement = "SET datestyle = dmy;"; 
+	$sql_statement=$sql_statement."INSERT INTO gl_ledger_hrd (tran_id,type,action_date, certificate_no,fy,operator_code,entry_time,cheque_no,cheque_dt)VALUES ('$t_id','$menu','$opening_date', '$certificate_no','$fy','$staff_id',CAST('$opening_date'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP),'$ch_no','$cheque_dt');";
 	//Deposit_info
-	$sql_statement=$sql_statement."INSERT INTO deposit_info (account_no, certificate_no, account_type, scheme, action_date,date_with_effect ,principal ,period, interest_rate, maturity_amount, maturity_date, sb_account_no,interest_method,operator_code, entry_time) VALUES ('$account_no','$certificate_no', '$menu', '$scheme','$opening_date','$date_with_effect', $amount_deposit,$period,$rate_of_interest,     $maturity_amount,'$maturity_date','$holder_sb_account_no','sp','$staff_id',CAST('$opening_date'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP));";
+	$sql_statement=$sql_statement."INSERT INTO deposit_info (account_no, certificate_no, account_type, scheme, action_date,date_with_effect ,principal ,period, interest_rate, maturity_amount, maturity_date, sb_account_no,interest_method,operator_code, entry_time) VALUES ('$account_no','$certificate_no', '$menu', '$scheme','$opening_date','$date_with_effect', $amount_deposit,$period,$rate_of_interest,$maturity_amount,'$maturity_date','$holder_sb_account_no','sp','$staff_id',CAST('$opening_date'||SUBSTR(CAST(now() AS VARCHAR),11,LENGTH(CAST(NOW() AS VARCHAR))) AS TIMESTAMP));";
 	
 if(trim($t_status)=='c')
 {
@@ -93,6 +109,7 @@ if(trim($t_status)=='q')
 }
 $result=dBConnect($sql_statement);
 echo $sql_statement;
+
 if(pg_affected_rows($result)<1) {
 	echo "<div class='failed'><h3><font color=\"white\">Failed to update database.</font></h3></div>";	
 	} 
